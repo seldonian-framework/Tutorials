@@ -1,9 +1,104 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Seldonian Framework Library</title>
-  </head>
-  <body>
-    <h1> Welcome to the Seldonian Framework Library tutorials
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seldonian - Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0014A8;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Seldonian ML</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="overview.html">Overview</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Documentation
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="overview.html">Overview</a></li>
+                            <li><a class="dropdown-item" href="https://seldonian-framework.github.io/Tutorials/build/html/index.html">Tutorials</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="https://seldonian-framework.github.io/Engine/build/html/index.html">Engine</a></li>
+                            <li><a class="dropdown-item" href="https://seldonian-framework.github.io/experiment-framework/build/html/index.html">Experiment-Framework</a></li>
+                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="faq.html">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="support.html">Support</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="license.html">License</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="about.html">About</a>
+                    </li>
+        </div>
+    </nav>
+
+    <!-- Title Container -->
+    <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
+            <h1 class="mb-3">Seldonian Machine Learning Library</h1>
+            <h5 class="mb-3">Safe and fair machine learning for reseachers, data scientists, and beginners.</h5>
+            <hr class="my-4">
+            <h4>Seldonian ML Algorithms...</h4>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    ... <b>are machine learning algorithms</b>, including <a href="https://en.wikipedia.org/wiki/Supervised_learning" data-bs-toggle="tooltip" data-bs-placement="top" title="Wikipedia link">supervised learning</a> (regression and classification) and <a href="https://en.wikipedia.org/wiki/Reinforcement_learning" data-bs-toggle="tooltip" data-bs-placement="top" title="Wikipedia link">reinforcement learning</a> algorithms. <u>Regression example</u>: Given data describing students' university applications and their subsequent GPA at university (<a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/O35FW8">data link</a>), they can be used to predict future student GPAs from application materials. <u>Classification example</u>: Given data describing people convicted of crimes and information about whether they later commit a violent crime (<a href="https://github.com/propublica/compas-analysis">data link</a>), they can be used to predict whether a new person convicted of a crime will commit a violent crime in the future. <u>Reinforcement learning example</u>: They can be used to automatically optimize the amount of bolus insulin injected by an insulin pump (<a href="https://www.science.org/doi/10.1126/science.aag3311">study link</a>) or they might be used to optimize sepsis treatment (<a href="https://www.nature.com/articles/s41591-018-0213-5" data-bs-toggle="tooltip" data-bs-placement="bottom" title="This study shows one possible use of reinforcement learning (RL) for optimizing sepsis treatment, not Seldonian RL specifically.">study link</a>). 
+                </li>
+                <li class="list-group-item">
+                    ... <b>make it easier for data scientists to enforce safety and fairness constraints.</b> In many cases, safety and fairness constraints are necessary for the responsible use of machine learning. This is because machine learning algorithms, even when used by the best experts in the field, can often misbehave. Examples include <a href="https://www.statnews.com/2018/07/25/ibm-watson-recommended-unsafe-incorrect-treatments/">IBM watson recommending unsafe cancer treatments</a> and a <a href="https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing">machine learning system that exhibited racial bias</a> when predicting whether a person will commit a violent crime in the future (the predictions of this system were used by judges during criminal sentencing in 11 states).
+                </li>
+                <li class="list-group-item">
+                    ... <b>make it easier for data scientists to select the appropriate definition of safety or fairness.</b> Machine learning has a wide variety of possible applications including predicting who will commit a violent crime in the future, predicting whether someone would repay a loan, deciding which resumes should be looked at by a human, predicting how far a landslide would travel when determining how for to build a house from a slope, optimizing bolus insulin dosing for type 1 diabetes treatment, and optimizing sepsis treatments. The appropriate definition of safety or fairness can differ for each application. Seldonian algorithms provide an <i>interface</i> that allows data scientists to easily select the appropriate definition of safety or fairness for the application at hand, and even make it easy for data scientists to enforce constraints on new definitions of safety and fairness when needed.
+                </li>
+                <li class="list-group-item">
+                    ... <b>were introduced in a 2019 report published in <i>Science</i>, and are an active research topic at top machine learning conferences like NeurIPS, ICML, and ICLR.</b> Seldonian algorithms were introduced in the report titled <i>Preventing undesirable behavior of intelligent machines</i> published in <i>Science</i> (Vol 366, Issue 6468, pages 999&#8211;1004, <a href="https://www.science.org/doi/10.1126/science.aag3311">link</a>, open access <a href="http://aisafety.cs.umass.edu/paper.html">link</a>). Since then, papers at <a href="https://nips.cc/">NeurIPS</a>, <a href="https://icml.cc/">ICML</a>, and <a href="https://iclr.cc/">ICLR</a> have shown how Seldonian algorithms can be used to enforce fairness constraints in the contextual bandit and reinforcement learning regimes (<a href="https://people.cs.umass.edu/~pthomas/papers/Metevier2019.pdf">link</a>), how Seldonian reinforcement learning algorithms can account for the constantly changing nature of the real world modeled using nonstationarity Markov decision processes (<a href="https://people.cs.umass.edu/~pthomas/papers/Jordan2020.pdf">link</a>), how Seldonian classification algorithms can use data from one city to train models that are fair when deployed in a different city with different demographics (<a href="https://people.cs.umass.edu/~pthomas/papers/Giguere2022.pdf">link</a>), how Seldonian reinforcement learning algorithms can provide various types of generalization guarantees for distributions over tasks (<a href="https://people.cs.umass.edu/~pthomas/papers/Kostas2021.pdf">link</a>), how Seldonian reinforcement learning algorithms can use a model-based approach rather than high-variance Monte Carlo approaches based on importance sampling (<a href="https://proceedings.neurips.cc/paper/2021/file/0f65caf0a7d00afd2b87c028e88fe931-Paper.pdf">link</a>), and how Seldonian reinforcement learning algorithms can be secured against (adversarially) corrupted training data (<a href="https://people.cs.umass.edu/~pthomas/papers/Ozisik2020.pdf">link</a>). They have also driven research into reducing data requirements for safety and fairness guarantees related to statistical risk measures (<a href="https://people.cs.umass.edu/~pthomas/papers/Thomas2019.pdf">link</a>), overcoming technical challenges that limited the possible definitions of safety and fairness (<a href="https://people.cs.umass.edu/~pthomas/papers/Chandak2021.pdf">link</a>), and formal verification (machine-checked proofs) of the safety and fairness guarantees of Seldonian algorithms (<a href="https://easychair.org/smart-program/FLoC2022/ITP-2022-08-09.html#talk:194998">link</a>).
+                </li>
+            </ul>
+            <hr class="my-4">
+            <h4>This Seldonian ML Library...</h4>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    ... <b>is a tool for researchers.</b> It includes code to both use Seldonian algorithms (the <i>engine</i> repository) and to evaluate their performance for scientific studies and papers (the <i>experiment-framework</i> repository). It's was deliberately designed in a modular manner that makes it easy for other researchers to extend and improve the existing algorithms, and to scientifically evaluate novel methods.
+                </li>
+                <li class="list-group-item">
+                    ... <b>is a tool for data scientists.</b> The Python 3 API for this library makes it easy for data scientists to apply Seldonian machine learning. If you have a data set and want to run a Seldonian algorithm once, you can use the <i>engine</i> repository to be up and running in minutes. The <i>experiment-framework</i> repository wraps the engine, making it easy for you to experiment with Seldonian algorithms to see roughly how well they perform, how much data they need for your application and safety/fairness constraints, and even makes it easy for you to compare the Seldonian algorithm implemented in this library to other machine learning methods or libraries.
+                </li>
+                <li class="list-group-item">
+                    ... <b>is a tool for beginners.</b> It comes with a graphical user interface (GUI) that lets you build, train, and evaluate the safety and fairness of machine learning systems without any programming. For those learning to program, this GUI shows you the Python code for everything it does, providing an easy and hands-on way to learnprogramming for data science and machine learning.
+                </li>
+            </ul>
+    </div>
+
+    <!-- High-Level Overview Container -->
+    <div class="container p-3 my-5 border bg-warning" style="background-color: #f3f4fc;">
+            <h1 class="mb-3">Pre-Alpha Warning</h1>
+            <p>This project is still in the <a href="https://en.wikipedia.org/wiki/Software_release_life_cycle">pre-alpha</a> stage. That means that this project is still in development and is not ready for use. The current schedule is for an initial release of this software in a usable form in August 2022. Still, you're welcome to track its development as features, documentation, and tutorials are added!</p>
+    </div>
+
+    <!-- Bottom line to avoid spacing issues -->
+    <hr class="my-4">
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Script to run tooltips (information when hovering over links or buttons) -->
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+</body>
 </html>
