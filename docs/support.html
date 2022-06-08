@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seldonian - Support</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0014A8;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Seldonian ML</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="overview.html">Overview</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Documentation
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="overview.html">Overview</a></li>
+                            <li><a class="dropdown-item" href="https://seldonian-framework.github.io/Tutorials/build/html/index.html">Tutorials</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="https://seldonian-framework.github.io/Engine/build/html/index.html">Engine</a></li>
+                            <li><a class="dropdown-item" href="https://seldonian-framework.github.io/experiment-framework/build/html/index.html">Experiment-Framework</a></li>
+                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="faq.html">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="support.html">Support</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="license.html">License</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="about.html">About</a>
+                    </li>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
+        <h1 class="mb-3">Support</h1>
+        <hr class="my-4">
+        <p>
+            We use <a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues">GitHub Issues</a> to track ideas, feedback, tasks, bugs, and to answer questions. As described on the <a href="overview.html">overview</a> page, this project consists of three repositories: <code>Engine</code>, <code>Tutorials</code>, and <code>experiment-framework</code>. Each repository has its own GitHub Issues page. To determine which is the appropriate page for your question or feedback, see below.
+        </p>
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                <p>
+                    <b><code>Tutorials</code></b>: The GitHub Issues page in the <code>Tutorials</code> repository should be used for beginner questions, general questions about how to use the library, and for any feedback or questions related to the tutorials and examples provided in the <code>Tutorials</code> repository. If you are unsure where to post, start here!
+                </p>
+                <a type="button" href="https://github.com/seldonian-framework/Tutorials/issues" class="btn btn-primary mb-3" style="background-color: #0014A8;">Go to GitHub Issues for the <b>Tutorials</b> repository</a>
+            </li>
+            <li class="list-group-item">
+                <p>
+                    <b><code>Engine</code></b>: The GitHub Issues page in the <code>Engine</code> repository should be used for questions and feedback related to the implementation of the Seldonian algorithm. Examples include questions related to how different optimzers can be selected or how different parametric models (parameterized policies in reinforcement learning) can be used by the engine.
+                </p>
+                <a type="button" href="https://github.com/seldonian-framework/Engine/issues" class="btn btn-primary mb-3" style="background-color: #0014A8;">Go to GitHub Issues for the <b>Engine</b> repository</a>
+            </li>
+            <li class="list-group-item">
+                <p>
+                    <b><code>experiment-framework</code></b>: The GitHub Issues page in the <code>experiment-framework</code> repository should be used for questions and feedback related to the experiment framework for evaluating the performance of Seldonian and other machine learning algorithms. Examples include questions related to how the multiple trials can be parallelized or why a certain plot is shown when <code>plot_generator.make_plots</code> is called.
+                </p>
+                <a type="button" href="https://github.com/seldonian-framework/experiment-framework/issues" class="btn btn-primary mb-3" style="background-color: #0014A8;">Go to GitHub Issues for the <b>experiment-framework</b> repository</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Bottom line to avoid spacing issues -->
+    <hr class="my-4">
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Script to run tooltips (information when hovering over links or buttons) -->
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+</body>
+</html>
