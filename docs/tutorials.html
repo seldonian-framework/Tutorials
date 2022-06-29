@@ -3,9 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Seldonian - About</title>
+    <title>Seldonian - Overview</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Mathjax -->
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -18,7 +20,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="overview.html">Overview</a>
+                        <a class="nav-link active" aria-current="page" href="overview.html">Overview</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -41,46 +43,26 @@
                         <a class="nav-link" aria-current="page" href="license.html">License</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="about.html">About</a>
+                        <a class="nav-link" aria-current="page" href="about.html">About</a>
                     </li>
         </div>
     </nav>
 
     <!-- Main Container -->
     <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-        <h5 class="mb-3">This open source project is a collaboration between the community and several primary contributors listed below. We thank the many students and volunteers who have contributed to this library, though they are not listed below.</h5>
-        
-        <hr class="my-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-2">
-                    <img src="static/austin_photo.jpg" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" alt="Austin Hoag"> 
-                </div>
-                <div class="col-md-10">
-                    <h4><a href="https://austinhoag.github.io/">Austin Hoag</a></h4>
-                    <h5>Machine Learning Engineer, Berkeley Existential Risk Initiative (BERI)</h5>
-                    <hr>
-                    Dr. Hoag is the primary software engineer behind this library. Before working for BERI, he worked as a software developer at the Princeton Neuroscience Institute at Princeton University, where he developed tools for brain-wide visualization and analysis. He received his PhD in Physics from UC Davis in 2018 and conducted postdoctoral research in astrophysics at UCLA. 
-                </div>
-            </div>
-        </div>
-
-        <hr class="my-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-2">
-                    <img src="https://people.cs.umass.edu/~pthomas/img/my_picture.jpg" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" alt="Philip S. Thomas"> 
-                </div>
-                <div class="col-md-10">
-                    <h4><a href="https://people.cs.umass.edu/~pthomas/">Philip S. Thomas</a></h4>
-                    <h5>Assistant Professor, Manning College of Information and Computer Sciences, University of Massachusetts</h5>
-                    <i>pthomas@cs.umass.edu</i>
-                    <hr>
-                    Prof. Thomas initiated the creation of this library, and continues to supervise and contribute to its development. His research focuses on ensuring the safety of artificial intelligence systems, with emphases on ensuring the safety and fairness of machine learning algorithms and on creating safe and practical reinforcement learning algorithms. He is the co-director of the <a href="https://all.cs.umass.edu/">Autonomous Learning Lab (ALL)</a> at the University of Massachusetts.
-                </div>
-            </div>
-        </div>
+            <h1 class="mb-3">Tutorials</h5>
+            <hr class="my-4">
+            <p>Here you will find tutorials on how to use the software in the Seldonian Toolkit. If you are new these libraries, we recommend starting with the first tutorial. The content below is organized into the following topics:</p>
+            <ol>
+                <li>
+                    <a href="simple_engine_tutorial.html">Getting started with the Seldonian Engine</a>
+                </li>
+                <li>
+                    <a href="#next">More tutorials...</a>
+                </li>
+            </ol>
     </div>
+
 
     <!-- Bottom line to avoid spacing issues -->
     <hr class="my-4">
