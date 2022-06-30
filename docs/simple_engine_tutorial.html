@@ -60,7 +60,15 @@
     <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
         <h1 class="mb-3">Tutorial: Getting started with the Seldonian Engine</h5>
         <hr class="my-4">
-        <h3> Installation </h3>
+        <h3>Outline</h3>
+        <p>In this tutorial, you will learn how to:</p>
+        <ul>
+            <li>Install the Seldonian Engine</li>
+            <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
+            <li>Run a Seldonian algorithm using the Engine</li>
+        </ul>
+        <h3
+        > Installation </h3>
         <p> 
             The first step is to install (or upgrade) the Seldonian Engine if you have not already:
         </p>
@@ -79,16 +87,16 @@
         </p> 
         <h3> A first example </h3>
         <p>
-            Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict label Y using the single feature X. To solve this problem we could use univariate linear regression with an objective function of the mean squared error (MSE). We can find the optimal solution to this problem by minimizing the objective function w.r.t. to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
+            Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict label Y using the single feature X. To solve this problem we can use linear regression with an objective function of the mean squared error (MSE). We can find the optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
         </p>
 
         <p>
             Now let's suppose we want to add the following two constraints into the problem:
         </p>
         <ol>
-            <li>Ensure that the MSE is less than 2.0 with a probability of at least 0.9. </li>  
+            <li>Ensure that the MSE is less than $2.0$ with a probability of at least $0.9$. </li>  
 
-            <li>Ensure that the MSE is <i>greater than</i> 1.25 with a probability of at least 0.9.</li>
+            <li>Ensure that the MSE is <i>greater than</i> $1.25$ with a probability of at least $0.9$.</li>
         </ol> 
         <p>
             This problem can now be fully formulated as a Seldonian machine learning problem:
@@ -106,12 +114,9 @@
         </ul>
 
         <p>
-            While the first constraint is aligned with the primary objective function, the MSE, the second is conflicting. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. In this case, the ideal solution, ${\theta}$, will have a MSE between 1.25 and 2 and as close to 1.25 as possible. If it cannot, it will return "NSF", i.e. "No solution found". If it can, it will return a solution that satisfies the behavioral constraints. 
+            First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. While the first constraint is aligned with the primary objective function, the MSE, the second is conflicting. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. In this case, an ideal solution, ${\theta}$, will have a MSE between 1.25 and 2 and as close to 1.25 as possible. If it cannot find a solution that satisfies the constraints, it will return "NSF", i.e. "No solution found". 
         </p>
 
-        <p>
-            Also notice
-        </p>
         <p>
 
             To code up this example using the engine, we need to follow these steps:
