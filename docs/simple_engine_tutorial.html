@@ -65,7 +65,7 @@
         <ul>
             <li>Install the Seldonian Engine</li>
             <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
-            <li>Run a Seldonian algorithm using the Engine</li>
+            <li>Run the algorithm using the Engine and understand its outputs</li>
         </ul>
         <h3
         > Installation </h3>
@@ -114,7 +114,7 @@
         </ul>
 
         <p>
-            First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. While the first constraint is aligned with the primary objective function, the MSE, the second is conflicting. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. In this case, an ideal solution, ${\theta}$, will have a MSE between 1.25 and 2 and as close to 1.25 as possible. If it cannot find a solution that satisfies the constraints, it will return "NSF", i.e. "No solution found". 
+            First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. While the first constraint is aligned with the primary objective function, the MSE, the second is conflicting. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. If it cannot find a solution that satisfies the constraints, it will return "NSF", i.e. "No solution found". 
         </p>
 
         <p>
@@ -143,6 +143,7 @@
             <li> Create a spec object containing all of this information and some hyperparameters - we can ignore many of these in this example. For a full list of parameters and their defaults see the API docs for <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a>.</li>
 
             <li> Run the Seldonian algorithm using the spec object. </li>
+
         </ol>
             Let's write out the code to do this. Each step above is enumerated in comments in the code below:
 
@@ -156,7 +157,7 @@ from seldonian.models.model import LinearRegressionModel
 from seldonian.dataset import SupervisedDataSet
 from seldonian.parse_tree.parse_tree import ParseTree
 from seldonian.spec import SupervisedSpec
-from seldonian.seldonian_algorithm import seldonian_algorithm
+from seldonian.seldonian_algorithm import SeldonianAlgorithm
 
 
 if __name__ == "__main__":
@@ -258,7 +259,8 @@ if __name__ == "__main__":
     )
 
     # 11. Run seldonian algorithm using the spec object
-    passed_safety,solution = seldonian_algorithm(spec)
+    SA = SeldonianAlgorithm(spec)
+    passed_safety,solution = SA.run()
     print(passed_safety,solution)
 </pre>
             </code>
@@ -290,11 +292,32 @@ True [0.16911355 0.1738146 ]
 </code>
             </p>
             <p>
-            Notice in the last few lines of the script that <code>seldonian_algorithm()</code> returns two values. <code>passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code>passed_safety==False</code>, then <code>solution="NSF"</code>, i.e. "No Solution Found". If <code>passed_safety==True</code> then the candidate solution is a numpy array of model weights. In this example, you should get <code>passed_safety=True</code> and a candidate solution of something like: <code>[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+            Notice in the last few lines of the script that <code>SA.run()</code> returns two values. <code>passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code>passed_safety==False</code>, then <code>solution="NSF"</code>, i.e. "No Solution Found". If <code>passed_safety==True</code> then the solution is a the array of model weights that cause the safety test to be passed. In this example, you should get <code>passed_safety=True</code> and a candidate solution of something like: <code>[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
         </p>
 
+        <p> Also notice that <code>SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code>SA</code> object provides the introspection we need to  extract this information:
 
+            <code> 
+                <pre>
+# Check the value of the primary objective on the safety dataset
+st_primary_objective = SA.evaluate_primary_objective(theta=solution,
+    branch='safety_test')
+print(st_primary_objective)
+                </pre>  
+            </code>
+            This should print a value around: $1.61$, which satsifies the behavioral constraints. 
+        </p>
+        <h3>Summary</h3>
+        <p>In this tutorial, we demonstrated how to:</p>
+        <ul>
+            <li>Install the Seldonian Engine</li>
+            <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
+            <li>Run the algorithm using the Engine and understand its outputs</li>
+        </ul>
 
+        <p>In the next tutorial, we will cover how to run a Seldonian Experiment. </p>
+
+        </ul>
     </div>
 
 
