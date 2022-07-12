@@ -6,7 +6,8 @@ url: https://seldonian.cs.umass.edu
 relative_permalinks: false
 
 # build settings
-exclude: ["script", "vendor", "bower.json", "Gemfile", "Gemfile.lock", "Rakefile", "readme.md", "package.json", "node_modules"]
+include: ["_tutorials"]
+exclude: ["script", "Gemfile", "Gemfile.lock", "Rakefile", "README.md", "package.json", "node_modules"]
 markdown: kramdown
 plugins:
   - jekyll-avatar
@@ -23,3 +24,6 @@ sass:
   # Where sass should look for other scss
   load_paths:
     - node_modules/
+
+collections:
+  - tutorials

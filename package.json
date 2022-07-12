@@ -1,7 +1,7 @@
 {
-  "name": "government.github.com",
+  "name": "Seldonian tutorials",
   "version": "1.0.0",
-  "description": "![screenshot](assets/img/screenshot.png)",
+  "description": "Instructions for how to use the software in the Seldonian toolkit",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github/government.github.com.git"
+    "url": "https://github.com/seldonian-toolkit/Tutorials"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/github/government.github.com/issues"
+    "url": "https://github.com/seldonian-toolkit/Tutorials/issues"
   },
-  "homepage": "http://government.github.com",
+  "homepage": "",
   "dependencies": {
     "octicons": "^5.0.1",
     "primer-core": "^6.2.0",
