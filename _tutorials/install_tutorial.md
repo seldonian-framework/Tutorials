@@ -13,24 +13,42 @@ permalink: /tutorials/install_engine_tutorial/
     </p>
     <p>
         <code>
-        $ python -m pip install --upgrade seldonian-engine
+        $ python -m pip install --upgrade seldonian-engine --no-warn-script-location
         </code>
     </p>
     <p>
         This will make the "seldonian" package available for you to import in Python. To test that it worked, run this command from the command line:
     </p>
     <p> <code>
-        $  python -c "from seldonian import parse_tree,candidate_selection,safety_test"
-        </code>  </p>
+        $  python -c "from seldonian.seldonian_algorithm import SeldonianAlgorithm"
+        </code>  
+        If it worked, there will be nothing printed to the command line. 
+        </p>
     <p>
         If you get this error:
+    </p>
+    <p>
         <code> 
         ModuleNotFoundError: No module named 'seldonian'
-        </code> make sure that the python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your python command by running:
+        </code>
+    </p> 
+    <p>
+        make sure that the python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your python command by running:
     </p>
     <p>
         <code>
         $ which python 
         </code>
+    </p>
+    <p>
+        on Unix systems or:
+    </p>
+    <p>
+        <code>
+        $ where python 
+        </code>
+    </p>
+    <p>
+        on Windows systems. The "gcm" command may work instead of "where" in Powershell.
     </p> 
 </div>
