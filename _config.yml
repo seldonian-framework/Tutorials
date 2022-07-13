@@ -5,10 +5,14 @@ permalink: "/stories/:title"
 url: https://seldonian-toolkit.github.io/Tutorials
 relative_permalinks: false
 
+
 # build settings
+# Syntax highlighting
+highlighter: rouge
+markdown: kramdown
+
 include: ["_tutorials"]
 exclude: ["script", "Gemfile", "Gemfile.lock", "Rakefile", "README.md", "package.json", "node_modules"]
-markdown: kramdown
 plugins:
   - jekyll-avatar
   - jekyll-redirect-from
@@ -16,6 +20,10 @@ plugins:
   - jekyll-coffeescript
   - jekyll-sitemap
   - jekyll-octicons
+  - jekyll
+
+whitelist:
+  - jekyll_inline_highlight
 
 sass:
   style: :compressed
