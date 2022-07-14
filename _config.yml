@@ -23,9 +23,6 @@ plugins:
   - jekyll-octicons
   - jekyll
 
-whitelist:
-  - jekyll_inline_highlight
-
 sass:
   style: :compressed
   # Where you keep your scss files

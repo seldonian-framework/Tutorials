@@ -1,6 +1,8 @@
 ---
-layout: home
+layout: tutorial
 permalink: /tutorials/install_engine_tutorial/
+next_url: /tutorials/simple_engine_tutorial/
+next_page_name: Simple Engine tutorial
 ---
 
 <!-- Main Container -->

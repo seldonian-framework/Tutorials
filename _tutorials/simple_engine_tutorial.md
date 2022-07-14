@@ -1,10 +1,12 @@
 ---
 layout: tutorial
 permalink: /tutorials/simple_engine_tutorial/
+prev_url: /tutorials/install_engine_tutorial/
+prev_page_name: Install Engine tutorial
+next_url: /tutorials/gui_tutorial/
+next_page_name: GUI tutorial
 ---
 
-{% assign prev_url = "/tutorials/install_engine_tutorial/" | relative_url %}
-{% assign next_url = "/tutorials/gui_tutorial/" | relative_url %}
 <!-- Main Container -->
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h1 class="mb-3">Tutorial: Getting started with the Seldonian Engine</h1>
@@ -56,7 +58,7 @@ permalink: /tutorials/simple_engine_tutorial/
         <li> Define the behavioral constraints (constraint strings and confidence levels), which we already did above.</li>
         <li> Make the parse trees from these behavioral constraints.</li>
         <li> Define the underlying machine learning model and primary objective. </li>
-        <li> Define an initial solution function which takes the features and labels as inputs and outputs an initial weight vector to start candidate selection. In this case we will define a function <code class='highlight py'> initial_solution() </code> function which just returns a zero vector as the initial solution.</li>
+        <li> Define an initial solution function which takes the features and labels as inputs and outputs an initial weight vector to start candidate selection. In this case we will define a function <code class='highlight'> initial_solution() </code> function which just returns a zero vector as the initial solution.</li>
         <li> Decide what fraction of the data to split into candidate selection vs. the safety test.</li>
         <li> Decide what method to use for computing the high confidence upper bound on each $g_{i}$. We will use the Student $t$-statistic.</li>
         <li> Create a spec object containing all of this information and some hyperparameters - we can ignore many of these in this example. For a full list of parameters and their defaults see the API docs for <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a>.</li>
@@ -201,9 +203,9 @@ True [0.16911355 0.1738146 ]
 {% endhighlight %}
     </p>
     <p>
-    Notice in the last few lines of the script that <code class="highlight py"> SA.run() </code> returns two values. <code class="highlight py"> passed_safety </code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight py">passed_safety==False </code>, then <code class='highlight py'> solution="NSF" </code>, i.e. "No Solution Found". If <code class="highlight py"> passed_safety==True </code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight py"> passed_safety=True </code> and a candidate solution of something like: <code class="highlight py"> [0.16911355 0.1738146] </code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+    Notice in the last few lines of the script that <code class="highlight"> SA.run() </code> returns two values. <code class="highlight">passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF" </code>, i.e. "No Solution Found". If <code class="highlight"> passed_safety==True </code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight"> passed_safety=True </code> and a candidate solution of something like: <code class="highlight"> [0.16911355 0.1738146] </code>, although the exact numbers might differ slightly depending on your machine's random number generator.
 </p>
-<p> Also notice that <code class="highlight py"> SA.run() </code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code class="highlight py"> SA </code> object provides the introspection we need to  extract this information:
+<p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code class="highlight">SA</code> object provides the introspection we need to  extract this information:
 
 {% highlight python %}
 # Check the value of the primary objective on the safety dataset
@@ -221,5 +223,7 @@ This should print a value around: $1.61$, which satsifies the behavioral constra
         <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
         <li>Run the algorithm using the Engine and understand its outputs</li>
     </ul>
+<p>
+</p>
 
 </div>

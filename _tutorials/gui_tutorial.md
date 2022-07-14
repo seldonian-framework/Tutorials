@@ -1,6 +1,8 @@
 ---
-layout: home
+layout: tutorial
 permalink: /tutorials/gui_tutorial/
+prev_url: /tutorials/simple_engine_tutorial/
+prev_page_name: Simple Engine tutorial
 ---
 
 <!-- Main Container -->
