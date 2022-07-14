@@ -205,7 +205,7 @@ True [0.16911355 0.1738146 ]
     <p>
     Notice in the last few lines of the script that <code class="highlight"> SA.run() </code> returns two values. <code class="highlight">passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF" </code>, i.e. "No Solution Found". If <code class="highlight"> passed_safety==True </code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight"> passed_safety=True </code> and a candidate solution of something like: <code class="highlight"> [0.16911355 0.1738146] </code>, although the exact numbers might differ slightly depending on your machine's random number generator.
 </p>
-<p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code class="highlight">SA</code> object provides the introspection we need to  extract this information:
+<p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information:
 
 {% highlight python %}
 # Check the value of the primary objective on the safety dataset
@@ -219,7 +219,6 @@ This should print a value around: $1.61$, which satsifies the behavioral constra
     <h3>Summary</h3>
     <p>In this tutorial, we demonstrated how to:</p>
     <ul>
-        <li>Install the Seldonian Engine</li>
         <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
         <li>Run the algorithm using the Engine and understand its outputs</li>
     </ul>
