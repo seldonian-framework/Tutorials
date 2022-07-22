@@ -16,7 +16,7 @@ permalink: /tutorials/
             <a href="{{ "/tutorials/simple_engine_tutorial/" | relative_url}}">Getting started with the Seldonian Engine</a>
         </li>
         <li>
-            <a href="{{ "/tutorials/gui_tutorial/" | relative_url}}">The Seldonian GUI interface</a>
+            <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">Fair loans tutorial</a>
         </li>
         <li>
             <a href="#next">More tutorials...</a>

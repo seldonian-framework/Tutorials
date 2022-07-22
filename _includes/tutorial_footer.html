@@ -2,7 +2,7 @@
       <!-- Bottom line to avoid spacing issues -->
       <div class="container p-3 my-5" align="center">
         {% if page.prev_url %}
-          <a href="{{ page.prev_url | relative_url }}"class="btn btn-primary">&laquo; Previous: {{page.prev_page_name}}</a>
+          <a href="{{ page.prev_url | relative_url }}" class="btn btn-primary">&laquo; Previous: {{page.prev_page_name}}</a>
         {% endif %}
         {% if page.next_url %}
           <a href="{{ page.next_url | relative_url }}" class="btn btn-primary">Next: {{page.next_page_name}} &raquo;</a>

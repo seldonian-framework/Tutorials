@@ -3,8 +3,8 @@ layout: tutorial
 permalink: /tutorials/simple_engine_tutorial/
 prev_url: /tutorials/install_engine_tutorial/
 prev_page_name: Install Engine tutorial
-next_url: /tutorials/gui_tutorial/
-next_page_name: GUI tutorial
+next_url: /tutorials/fair_loans_tutorial/
+next_page_name: Fair loans tutorial
 ---
 
 <!-- Main Container -->
