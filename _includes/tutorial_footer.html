@@ -24,6 +24,26 @@
         return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+
+    <script>
+    function copy2Clipboard(elem) {
+      /* Get the text field */
+      // var copyText = elem.parentNode;
+      var copyText = elem.parentNode.children[1].textContent
+       /* Copy the text inside the text field */
+      navigator.clipboard.writeText(copyText);
+
+      // /* Select the text field */
+      // copyText.select();
+      // copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+      //  Copy the text inside the text field 
+      // navigator.clipboard.writeText(copyText.value);
+      
+      // /* Alert the copied text */
+      // alert("Copied the text: " + copyText.value);
+    }
+</script>
   </body>
 </html>
 <!-- Proudly powered by GitHub Pages ~ Generated {{ site.time }} -->
