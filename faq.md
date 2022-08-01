@@ -9,11 +9,11 @@ permalink: /faq/
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Does this library support deep learning?</b></h5>
-Yes, this library supports deep learning using <a href="https://pytorch.org/">PyTorch</a>. However, due to the added complexity of enforcing safety and fairness constraints while training, large neural networks like those used for language models and some computer vision tasks are unlikely to be computationally infeasiable. This will be one priority for future versions.
+Yes, this library supports deep learning using <a href="https://pytorch.org/">PyTorch</a>. However, due to the added complexity of enforcing safety and fairness constraints while training, large neural networks like those used for language models and some computer vision tasks are unlikely to be computationally feasible. This will be one priority for future versions.
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Why did you choose the write the library in Python 3?</b></h5>
-Machine learning researchers usually use and are most familiar with Python 3. Writing the entire library in Python therefore makes it easier for researhers to extend and improve all of the methods in the library, facilitating further research into safe and fair machine learning. 
+Machine learning researchers usually use and are most familiar with Python 3. Writing the entire library in Python therefore makes it easier for researchers to extend and improve all of the methods in the library, facilitating further research into safe and fair machine learning. 
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Can the engine be used on its own?</b></h5>
@@ -21,7 +21,7 @@ Yes! As discussed in the <a href="overview.html">overview</a> section of this pa
 
 <hr class="my-4">
 <h5 class="mb-3"><b>How can I contribute?</b></h5>
-Yes! This project is open source and hosted as three repositories on GitHub <a href="https://github.com/seldonian-toolkit">here</a>. You are welcome to fork the project repositories and submit pull requests. We welcome both minor fixes and new functionality. If you have questions about the library, please see the <a href="support.html">support</a> page.
+Yes! This project is open source and hosted as several repositories on GitHub <a href="https://github.com/seldonian-toolkit">here</a>. You are welcome to fork the project repositories and submit pull requests. We welcome both minor fixes and new functionality. If you have questions about the library, please see the <a href="support.html">support</a> page.
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Who funded this library?</b></h5>
