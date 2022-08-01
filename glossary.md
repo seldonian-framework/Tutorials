@@ -26,7 +26,7 @@ permalink: /glossary/
 <h5>Regime</h5>
 <p>The broad category of machine learning problem, e.g. supervised learning or reinforcement learning. </p>
 
-<h5>Safety test
+<h5>Safety test</h5>
 <p>One of the three major components of a Seldonian algorithm. It is the component that, given a solution determined during candidate selection, tests whether that solution satisfies the behavioral constraints on the held out safety dataset that were not used to find the solution. Analogous to the test set in the standard supervised machine learning paradigm. </p>
 
 <h5>Seldonian algorithm</h5>
