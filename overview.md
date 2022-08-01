@@ -147,18 +147,18 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3" id="library"><b>What is this software library?</b></h5>
+    <h5 class="mb-3" id="library"><b>What software do we provide?</b></h5>
     <hr class="my-4" />
     <p>
-        This software library provides:
+        We developed the Seldonian Toolkit to provide:
         <ul>
-            <li><b>Basic Seldonian algorithms and interfaces.</b> The <code>engine</code> module provides a basic Seldonian algorithm that can be used for regression, classification (binary and multi-class), and offline (batch) reinforcement learning. It also provides basic interfaces for communicating definitions of undesirable behavior to these algorithms, along with tutorials showing how the engine and interfaces can be used.</li>
-            <li><b>Tools to facilitate the development of new Seldonian algorithms.</b> The modular design of the library was chosen so that researchers can easily swap out components with new methods. Though the current Seldonian algorithms are quite effective, there significant remains room for improvement, and the library is designed to enable researchers to develop these improvements.</li>
-            <li><b>Tools to evaluate the performance of Seldonian algorithms.</b> Whether you are a data scientist considering using Seldonian algorithms for your application, or a researcher trying to determine whether your improvement to our algorithms actually provides better performance, you will want tools to quickly and easily evaluate how effective the algorithms are. This includes evaluating A) how much data the algorithm requires, B) how often the algorithm produces undesirable behavior (how often \(g_i(a(D)) > 0\)), and C) how good the solutions found are in terms of the primary objective (the primary loss function). The library therefore contains an <code>evaluation</code> module that makes it easy to evaluate Seldonian algorithms (and any other algorithms you would like to compare against!) on both many existing problems and new problems and data sets that you provide.</li>
+            <li><b>Basic Seldonian algorithms and interfaces.</b> The <code>Engine</code> library provides a basic Seldonian algorithm that can be used for regression, classification (binary and multi-class), and offline (batch) reinforcement learning. It also provides basic interfaces for communicating definitions of undesirable behavior to these algorithms, along with tutorials showing how the <code>Engine</code> and interfaces can be used.</li>
+            <li><b>Tools to facilitate the development of new Seldonian algorithms.</b> The modular design of the <code>Engine</code> library was chosen so that researchers can easily swap out components with new methods. Though the current Seldonian algorithms are quite effective, there remains room for improvement, and the library is designed to enable researchers to develop these improvements.</li>
+            <li><b>Tools to evaluate the performance of Seldonian algorithms.</b> Whether you are a data scientist considering using Seldonian algorithms for your application, or a researcher trying to determine whether your improvement to our algorithms actually provides better performance, you will want tools to quickly and easily evaluate how effective the algorithms are. This includes evaluating A) how much data the algorithm requires, B) how often the algorithm produces undesirable behavior (how often $g_i(a(D)) > 0)$, and C) how good the solutions found are in terms of the primary objective (the primary loss function). The Seldonian Toolkit therefore contains an <code>Experiments</code> library that makes it easy to evaluate Seldonian algorithms (and any other algorithms you would like to compare against!) on both many existing problems and new problems and data sets that you provide.</li>
         </ul>
     </p>
     <p>
-       To get started using the library, we recommend starting with the <a href="https://seldonian.cs.umass.edu/Tutorials/tutorials/">tutorials</a>. These start with how to install the library (if you already have Python, it should be a simple pip install command!), and then provides examples of how the library can be used to solve real problems of interest.
+       To get started using the Seldonian Toolkit, we recommend starting with the <a href="{{ "/tutorials/" | relative_url}}">tutorials</a>. These start with how to install the libraries in the Seldonian Toolkit (if you already have Python, it should be a simple pip install command!), and then provides examples of how the libraries can be used to solve real problems of interest.
     </p>
 </div>
 

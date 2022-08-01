@@ -16,10 +16,10 @@ permalink: /tutorials/
             <a href="{{ "/tutorials/simple_engine_tutorial/" | relative_url}}">Getting started with the Seldonian Engine</a>
         </li>
         <li>
-            <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">Fair loans tutorial</a>
+            <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">Fairness in loan decision making</a>
         </li>
         <li>
-            <a href="#next">More tutorials...</a>
+            <a href="{{ "/tutorials/custom_base_node_tutorial/" | relative_url}}">Defining your own custom base variables</a>
         </li>
     </ol>
 </div>
