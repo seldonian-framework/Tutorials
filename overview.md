@@ -105,13 +105,13 @@ permalink: /overview/
     Notation:
     <ul>
         <li>\(\mathcal D\) is the set of all possible inputs (data sets) to the algorithm. If a machine learning algorithm takes any other inputs beyond the data set (like random numbers), this is also viewed as part of \(\mathcal D\), though for simplicity one can initially think of \(\mathcal D\) as just the data set.</li>
-        <li> \(\Theta\) is the set of all possible outputs of the algorithm, each of which we refer to as a <em>solution</em> \(\theta \in \Theta\). For supervised learning problems, \(\theta\) corresponds to the weights or parameters of the model (e.g., weights of the learned neural network). For reinforcement learning problems, \(\theta\) corresponds to the weights or parameters of the policy. 
+        <li> \(\Theta\) is the set of all possible outputs of the algorithm, each of which we refer to as a <em>solution</em> \(\theta \in \Theta\). For supervised learning problems, \(\theta\) corresponds to the weights or parameters of the model (e.g., weights of the learned neural network). For reinforcement learning problems, \(\theta\) corresponds to the weights or parameters of the policy.</li>
         <li>\(D\) is the data set given as input to the algorithm, which we view as a <a href="https://en.wikipedia.org/wiki/Random_variable">random variable</a>.</li>
         <li>\(a:\mathcal D \to \Theta\) is a machine learning algorithm, which takes a data set as input and returns a solution. That is, \(a(D)\) is the solution (an element of \(\Theta\)) output by the algorithm when run on input \(D\). Recall that any random numbers required by the algorithm should be included in \(D\).</li>
         <li>\(\mathcal A\) is the set of all possible machine learning algorithms.</li>
         <li>\(f:\mathcal A \to \mathbb R\) is the <em>objective function</em> of the algorithm designer. The goal of the designer of the algorithm is to find an algorithm that maximizes \(f\), subject to the behavioral constraints.</li>
         <li>\(n\) is the number of <em>behavioral constraints</em>.</li>
-        <li>\((g_i,\delta_i)_{i=1}^n\) is a set of \(n\) behavioral constraints, each of which contains a <em>constraint function</em> \(g_i:\Theta\to\mathbb R\) and a <em>confidence level</em> \(\delta_i\).
+        <li>\((g_i,\delta_i)_{i=1}^n\) is a set of \(n\) behavioral constraints, each of which contains a <em>constraint function</em> \(g_i:\Theta\to\mathbb R\) and a <em>confidence level</em> \(\delta_i\).</li>
             <ul>
                 <li>
                     The constraint function measures undesirable behavior: we say that \(\theta \in \Theta\) produces undesirable behavior if and only if \(g_i(\theta) > 0\). In more colloquial terms, we might say that \(g_i(\theta) \leq 0\) means that \(\theta\) is "safe" or "fair".
