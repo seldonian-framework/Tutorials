@@ -3,12 +3,14 @@ layout: tutorial
 permalink: /tutorials/fair_loans_tutorial/
 prev_url: /tutorials/simple_engine_tutorial/
 prev_page_name: Simple Engine tutorial
+next_url: /tutorials/custom_base_node_tutorial
+next_page_name: Custom base variables tutorial
 ---
 
 <!-- Main Container -->
-<div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h1 class="mb-3">Tutorial: Fairness in loan decision making</h1>
+<h2 align="center" class="mb-3">Tutorial: Fairness in loan decision making</h2>
 
 <hr class="my-4">
 

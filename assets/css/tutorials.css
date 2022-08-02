@@ -13,4 +13,20 @@
     line-height: 25px;
 }
 
+.testbutton {
+    color: ;
+    background-color: #bfbfbf;
+    border-col
+}
 
+.btn-primary {
+    color: #000000;
+    background-color: #bfbfbf;
+    border-color: #000000; /*set the color you want here*/
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+    color: #000000;
+    background-color: #ffffff;
+    border-color: #000000; /*set the color you want here*/
+}

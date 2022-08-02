@@ -6,8 +6,8 @@ next_page_name: Simple Engine tutorial
 ---
 
 <!-- Main Container -->
-<div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-<h1 class="mb-3">Tutorial: Installing the Seldonian Toolkit libraries</h1>
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
+<h2 align="center" class="mb-3">Tutorial: Installing the Seldonian Toolkit libraries</h2>
 <hr class="my-4">
 
 <h3> Installation </h3>
