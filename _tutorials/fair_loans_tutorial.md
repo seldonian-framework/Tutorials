@@ -23,19 +23,19 @@ next_page_name: Custom base variables tutorial
 <p>In this tutorial, you will learn how to:</p>
 
 <ul>
-    <li>Format a supervised learning (classification) dataset so that we can use it in the Seldonian Toolkit </li>
+    <li>Format a supervised learning (classification) dataset so that it can be used in the Seldonian Toolkit </li>
     <li>Build a Seldonian machine learning model that implements common fairness constraints </li>
-    <li>Run a Seldonian experiment, assessing the performance and safety of the Seldonian ML model </li>
+    <li>Run a Seldonian experiment, assessing the performance and safety of the Seldonian ML model relative to baseline models and other Fairness-aware ML models. </li>
 </ul>
 
 <h3 id="dataset_prep"> Dataset preparation </h3>
 
 <p>
-    We created a Jupyter notebook containing the steps described below in this section here: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/german_credit/loan_dataset_preprocessing.ipynb">https://github.com/seldonian-toolkit/Engine/blob/main/examples/german_credit/loan_dataset_preprocessing.ipynb</a>. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of this notebook here: <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit">https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit</a>. 
+    We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/german_credit/loan_dataset_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of the notebook here: <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit">https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit</a>. 
 </p>
 
 <p>
-    UCI provides two version of the dataset and a file "german.doc" describing the "german.data" file only. We ignored the "german.data-numeric" file because there was no documentation for it. We downloaded the file "german.data" from here: <a href="https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/">https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/</a>. We converted it to a CSV file by replacing the space characters with commas. Attribute 9 according to "german.doc" is the personal status/sex of each person. This is a categorical column with 5 possible values, 2 of which describe females and 3 of which describe males. We created a new column that has a value of "F" if female (A92 or A95) and "M" if male (any other value) and dropped the personal status column. We decided to ignore the marriage status of the person for the purpose of this tutorial. 
+    UCI provides two versions of the dataset: "german.data" and "german.data-numeric". They also provide a file "german.doc" describing the "german.data" file only. We ignored the "german.data-numeric" file because there was no documentation for it. We downloaded the file "german.data" from here: <a href="https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/">https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/</a>. We converted it to a CSV file by replacing the space characters with commas. Attribute 9 according to "german.doc" is the personal status/sex of each person. This is a categorical column with 5 possible values, 2 of which describe females and 3 of which describe males. We created a new column that has a value of "F" if female (A92 or A95) and "M" if male (any other value) and dropped the personal status column. We decided to ignore the marriage status of the person for the purpose of this tutorial. 
 </p>
 
 <p> 
@@ -43,17 +43,17 @@ next_page_name: Custom base variables tutorial
 </p>
 
 <p> 
-    We also prepared a JSON file containing the metadata that we will need to provide to the Seldonian Engine library. The column names beginning with "c__" were the columns modified by  scikit-learn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html">OneHotEncoder</a>. The columns "M" and "F" are somewhat buried in the middle of the columns list, and correspond to the male and female one-hot encoded columns. The "sensitive_columns" key in this JSON file points to those columns. We saved this file as a JSON file, which can be found <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json">here</a>
+    We also prepared a JSON file containing the metadata that we will need to provide to the Seldonian Engine library <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json">here</a>. The column names beginning with "c__" were the columns created by scikit-learn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html">OneHotEncoder</a>. The columns "M" and "F" are somewhat buried in the middle of the columns list, and correspond to the male and female one-hot encoded columns. The "sensitive_columns" key in the JSON file points to those columns. The "label_column" key in the JSON file points to the "credit_rating" column. 
 </p>
 
 <h3>Formulate the Seldonian ML problem</h3>
 
 <p>
-    As in the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we first need to define the standard machine learning problem in the absence of constraints. The decision of whether to deem someone as being a high or low credit risk is a binary classification problem, where the label "credit_rating" is 0 if the person is a low credit risk and 1 if the person is a high credit risk. We could use logistic regression and minimize the objective function, for example the logistic loss, via gradient descent to solve this standard machine learning problem.  
+    As in the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we first need to define the standard machine learning problem in the absence of constraints. The decision of whether to deem someone as being a high or low credit risk is a binary classification problem, where the label "credit_rating" is 0 if the person is a low credit risk and 1 if the person is a high credit risk. We could use logistic regression and minimize an objective function, for example the logistic loss, via gradient descent to solve this standard machine learning problem.  
 </p>
 
 <p>
-    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called disparate impact, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ more than some threshold fraction. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for positive rate, which is the fraction of positive class predictions. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.8 can be written as: $0.8 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$.
+    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called disparate impact, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ more than some threshold fraction. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $0.9 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$.
 Let us enforce this constraint function with a probability of $0.95$. 
 </p>
 
@@ -65,7 +65,7 @@ Let us enforce this constraint function with a probability of $0.95$.
     Using gradient descent on a logistic regression model, minimize the logistic loss, subject to the constraint:
 <ul>
     <li>
-        $g_{1} = 0.8 - \mathrm{min}( (PR | [M])/(PR | [F]),(PR | [F)/(PR | [M]) )$, and ${\delta}_1=0.05$.  
+        $g_{1} = 0.9 - \mathrm{min}( (PR | [M])/(PR | [F]),(PR | [F)/(PR | [M]) )$, and ${\delta}_1=0.05$.  
     </li>
 </ul>
 </p>
@@ -78,7 +78,7 @@ Let us enforce this constraint function with a probability of $0.95$.
 </p>
 <h5> Creating the specification object from a script </h5>
 <p>
-A complete script for creating the spec object for the Seldonian ML problem described above is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set as the directory where you run this script, so change <code class='highlight'>save_dir</code> in the code snippet below to another directory if you want to save it elsewhere. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
+A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set as the directory where you run this script, so change <code class='highlight'>save_dir</code> in the code snippet below to another directory if you want to save it elsewhere. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
 </p>
 
 <div>
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         file_type='csv')
     
     # Define behavioral constraints
-    constraint_strs = ['0.8 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))'] 
+    constraint_strs = ['0.9 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))'] 
     deltas = [0.05]
 
     # For each constraint (in this case only one), make a parse tree
@@ -154,7 +154,6 @@ if __name__ == '__main__':
         parse_trees=parse_trees,
         initial_solution_fn=model_class().fit,
         use_builtin_primary_gradient_fn=True,
-        bound_method='ttest',
         optimization_technique='gradient_descent',
         optimizer='adam',
         optimization_hyperparams={
@@ -187,7 +186,6 @@ spec = SupervisedSpec(
         parse_trees=parse_trees,
         initial_solution_fn=model_class().fit,
         use_builtin_primary_gradient_fn=True,
-        bound_method='ttest',
         optimization_technique='gradient_descent',
         optimizer='adam',
         optimization_hyperparams={
@@ -204,13 +202,13 @@ spec = SupervisedSpec(
     )
 {% endhighlight python %}
 
-First, the object takes the dataset and model_class that we created. Then we set <code class='highlight'>frac_data_in_safety=0.6</code>, which specifies the fraction of data points in our dataset that get used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, the object takes the primary objective and parse trees list that we defined above in the script. The argument: <code class='highlight'>initial_solution_fn</code> specifies the function we will use to provide the initial solution to candidate selection, which we are setting to <code class='highlight'>model_class().fit</code>. Because <code class='highlight'>model_class()</code> refers to our <code class='highlight'>LogisticRegressionModel()</code>, <code class='highlight'>model_class().fit</code> refers to that class' <code class='highlight'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective. Because we have constraints, this is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
+First, the object takes the <code class='highlight'>dataset</code> and <code class='highlight'>model_class</code>. Then, we set <code class='highlight'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='highlight'>primary_objective</code> function and <code class='highlight'>parse_trees</code> list that we defined above in the script. In our case we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. <code class='highlight'>initial_solution_fn</code> specifies the function we will use to provide the initial solution to candidate selection, which we are setting to <code class='highlight'>model_class().fit</code>. Because <code class='highlight'>model_class()</code> refers to our <code class='highlight'>LogisticRegressionModel()</code>, <code class='highlight'>model_class().fit</code> refers to that class' <code class='highlight'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
 </p>
 <p>
-The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This is telling the code to use a function that is part of the Engine library already to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = model_class().sample_logistic_loss</code>. Built-in gradients exist for some common objective functions, including the sample logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will cause an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
+The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This is telling the code to use a function that is part of the Engine library already to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = model_class().sample_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the sample logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
 </p>
 <p>
-Next is <code class='highlight'>bound_method='ttest'</code>, which indicates the method for calculating the high confidence bounds on the constraints. Using T-test to calculate bounds means that our algorithm will be Quasi-Seldonian. This argument is followed by <code class='highlight'>optimization_technique='gradient_descent'</code>, which specifies how we will search for a candidate solution during candidate selection. The other option for this argument is "barrier_function", which we will not cover here. The argument <code class='highlight'>optimizer='adam'</code> instructs the code to use the adam optimizer during gradient descent. The final argument <code class='highlight'>optimization_hyperparams</code> is for setting the parameters of gradient descent, which include:
+The next argument is <code class='highlight'>optimization_technique='gradient_descent'</code>, which specifies how we will search for a candidate solution during candidate selection. The other option for this argument is "barrier_function", which we will not cover here. The argument <code class='highlight'>optimizer='adam'</code> instructs the code to use the adam optimizer during gradient descent. The final argument <code class='highlight'>optimization_hyperparams</code> is for setting the parameters of gradient descent, which include:
 <ul>
 <li>'lambda_init': the initial value of the Lagrange multiplier </li>
 <li>'alpha_theta': the initial learning rate for the model parameters</li>
@@ -231,7 +229,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object 
 <h5> Creating the specification object from the Seldonian interface GUI</h5>
 
 <p>
-    The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Start up the GUI and then upload the data file to above in the "Data file" field of the "Data and metadata setup" section. Then select the "supervised" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
+    The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Start up the GUI and then upload the data file you downloaded from the link in the <a href="#dataset_prep"> Dataset preparation section</a> in the "Data file" field of the "Data and metadata setup" section. Then select the "supervised" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
 </p>
 <p>
     <code>
@@ -240,16 +238,16 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object 
 </p>
 
 <p>
-    Enter "M,F" (do not include the quotes) into the "Sensitive attributes" field, and "credit_rating" (do not include the quotes) into the "Label column" field.
+    This is the list of all of the columns in the dataset, including the label column. Enter: <code>M,F</code> into the "Sensitive attributes" field, and <code>credit_rating</code> into the "Label column" field.
 </p>
 
 <p>
-    Scroll down to the "Constraint building blocks" area and click the "Disparate impact" button. This will auto-fill Constraint #1 with a preconfigured constraint for disparate impact, which will have the exact form that we defined above. Type 0.05 into the field titled "${\delta} = $" just below where the constraint function was auto-filled. Then hit the submit button. A dialog box should show up displaying: "Saved ./spec.pkl", which indicates that the specification object has been saved as a pickle file to the directory where you launched the GUI. 
+    Scroll down to the "Constraint building blocks" area and click the "Disparate impact" button. This will auto-fill Constraint #1 with a preconfigured constraint for disparate impact, which will have the form that we defined above. The one change you will need to make is to remove the constant block titled "0.8" and create a new constant block titled "0.9". Drag the new constant block into the constraint so that it becomes solid. Type 0.05 into the field titled "${\delta} = $" just below where the constraint function was auto-filled. Then hit the submit button. A dialog box should show up displaying: "Saved ./spec.pkl", which indicates that the specification object has been saved as a pickle file to the directory where you launched the GUI. 
 </p>
 
 <h3> Running the Seldonian Engine </h3>
 <p>
-    We are now ready to run the Seldonian algorithm using the spec file generated in the previous step. The code below modifies some defaults of the spec object that we created using the GUI and then runs the Seldonian algorihtm using the modified spec object. Create a file called "loan_fairness.py" and copy the code above into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
+    We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code above into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
 
 <div>
 
@@ -290,17 +288,33 @@ $ python loan_fairness.py
 
 You should see some output like:
 {% highlight python %}
+Initial solution: 
+[-1.44155523e+00  8.09258063e-01  6.80745965e-01 -5.95671392e-01
+ -8.94987044e-01  3.34404367e-01  6.06307871e-01 -1.39965678e-02
+ -6.38347222e-02 -8.63535356e-01  1.64957467e-01 -7.47980062e-01
+ -5.95286690e-01 -1.35646079e-01  6.01829638e-02  2.90844178e-01
+  1.21636244e-01  8.61277619e-01 -4.05835816e-02  1.99435318e-02
+  6.10082399e-01  8.51243436e-02 -1.63380124e-01 -1.91609879e-01
+ -3.40871149e-01  4.81567617e-01  1.50176130e-01  7.28206974e-02
+ -7.81674833e-01  7.64559796e-02  1.80107871e-01  6.37038368e-01
+ -8.17800648e-01 -1.83439537e-01 -2.03213452e-01 -4.02715177e-02
+  4.26270097e-01 -3.94382892e-02  3.39194218e-01 -3.00410337e-01
+  5.90957423e-01  1.34099781e-01 -7.25711612e-01  2.69899358e-02
+ -3.17786349e-01 -2.22729289e-02  3.12414934e-01  1.98307003e-01
+ -1.98961411e-01  1.24484979e-03 -1.89925846e-03  3.99257232e-01
+  4.10266535e-01  5.13111566e-01 -7.92978584e-02  3.03845174e-02
+  2.43546364e-01  1.98443152e-01]
 Iteration 0
 Iteration 10
 Iteration 20
 Iteration 30
 Iteration 40
 ...
-Wrote /Users/ahoag/beri/code/engine-repo/examples/logs/candidate_selection_log1.p with candidate selection log info
+Wrote /Users/ahoag/beri/code/engine-repo/examples/logs/candidate_selection_log0.p with candidate selection log info
 Passed safety test!
 
 Primary objective (log loss) evaluated on safety dataset:
-0.5669508228909513
+0.5582021704446299
 {% endhighlight %}
 The exact numbers you see might differ slightly depending on your machine's random number generator. However, the safety test should pass and the log loss on the safety dataset should be very similar. 
 </p>
@@ -309,7 +323,7 @@ The exact numbers you see might differ slightly depending on your machine's rand
 {% highlight python %}
 Wrote /Users/ahoag/beri/code/engine-repo/examples/logs/candidate_selection_log0.p with candidate 
 {% endhighlight python %}
-This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path will displayed here  will point to somewhere on your computer, instead of mine. As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this file. The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
+This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path will displayed here will differ and instead point to somewhere on your computer. As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this file. The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
 
 <div>
 
@@ -338,11 +352,11 @@ Running this script will generate a figure like this:
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/loan_cs.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Candidate selection"> 
-        <figcaption> Figure 1 - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e. the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the single constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
+        <figcaption> Figure 1 - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e. the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
 
-Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if the Seldonian algorithm is returning NSF (i.e. "No solution found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values. If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
+Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e. "No solution found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values. If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
 
 <h3> Running a Seldonian Experiment </h3>
