@@ -356,29 +356,29 @@ Running this script will generate a figure like this:
     </figure>
 </div>
 
-Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e. "No solution found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values. If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
+Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e. "No solution found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values.  If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
 
 <h3> Running a Seldonian Experiment </h3>
 
 <p>
-Seldonian Experiments are a way to thoroughly evaluate the performance and safety of Seldonian algorithms, beyond what can be achieved with a single run of the Engine. A Seldonian Experiment runs a Seldonian algorithm many times using variable amounts of input data and creates three plots: 1) Performance, 2) Solution rate, and 3) Failure rate. The <a href="https://seldonian-toolkit.github.io/Experiments"> Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
+Seldonian Experiments are a way to thoroughly evaluate the performance and safety of Seldonian algorithms, beyond what can be achieved with a single run of the Engine. A Seldonian Experiment runs a Seldonian algorithm many times using variable amounts of input data and creates three plots: 1) Performance, 2) Solution rate, and 3) Failure rate as a function of the amount of data used. The <a href="https://seldonian-toolkit.github.io/Experiments"> Seldonian Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
 
 <p>
     Here is an outline of the experiment we will run: 
     <ul>
         <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 15 different data fractions, which will be log-spaced between 0.001 and 1.0. This array will make up the horizontal axis of the three plots.</li>
-        <li>Create 25 resampled datasets (one for each trial) by sampling with replacement from the dataset we used as input to the Engine above. Each resampled dataset will have the same number of rows (1000) as the original dataset. We use 25 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use the original dataset as the ground truth dataset</b> for calculating the performance and safety metrics.</li>
+        <li>Create 50 resampled datasets (one for each trial) by sampling with replacement from the dataset we used as input to the Engine above. Each resampled dataset will have the same number of rows (1000) as the original dataset. We use 50 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use the original dataset as the ground truth dataset</b> for calculating the performance and safety metrics.</li>
         <li>
-        For each <code>data_frac</code> in the array of data fractions, run 25 trials. In each trial, use only the first <code>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the Engine, where only the <code>dataset</code> parameter to <code>SupervisedSpec</code> will be modified for each trial. This will generate 15x25=375 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters (or NSF if no solution was found). </li>
-        <li>For each <code>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g. logistic loss or accuracy) across the 25 trials (at this <code>data_frac</code>) using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 25 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e. $g_1(\theta) > 0$. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
+        For each <code>data_frac</code> in the array of data fractions, run 50 trials. In each trial, use only the first <code>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the Engine, where only the <code>dataset</code> parameter to <code>SupervisedSpec</code> will be modified for each trial. This will generate 15x50=750 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters, or "NSF" if no solution was found. </li>
+        <li>For each <code>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g. logistic loss or accuracy) across the 50 trials at this <code>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e. $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
     </ul>
 
-We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a dummy classifier that always predicts the positive class regardless of input, 2) a simple logistic regression model with no behavioral constraints. The third model is another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. Each model requires its own experiment, but the main parameters of the experiment such as the number of trials and data fractions are identical. This will allow us to compare the Seldonian algorithm to these other models for the three metrics: performance, solution rate, and failure rate. 
+We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that always predicts $p=0.5$ for the positive class regardless of input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. We will describe the Fairlearn model used in more detail below. Each model requires its own experiment, but the main parameters of the experiment such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same Three Plots. 
 </p>
 <p>
-    Now we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code>PlotGenerator</code> class, and in our particular example the <code>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments and then make the three plots.  
+    Now we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code>PlotGenerator</code> class, and in our particular example the <code>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
 </p>
 
 <p>
@@ -392,8 +392,18 @@ from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
 from sklearn.metrics import log_loss,accuracy_score
 {% endhighlight %}
+</p>
+<p>
+Now we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. We will use log-spacing for the data fractions (the horizontal axis of each of the three plots) so that when plotted on a log scale the data points will be evenly separated. We will use 50 trials at each data fraction so that we can sample a reasonable spread on each quantity at each data fraction. 
+</p>
 
-Now we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. We will use log-spacing for the data fractions (the horizontal axis of each of the three plots) so that when plotted on a log scale the data points will be evenly separated. We will use 25 trials at each data fraction so that we can sample a reasonable spread on each quantity at each data fraction. The results for each experiment we run will be saved in subdirectories of <code class='highlight'>results_dir</code>.  <code class='highlight'>n_workers</code> is how many parallel processes will be used for running the experiments. Each trial is independent of all other trials in an experiment, so parallelization can speed this up enormously. Set this parameter to however many CPUs you want to use. Note: using 7 CPUs, this entire script takes 5-10 minutes to run on an M1 Macbook Air. 
+<p>
+Fairlearn's fairness definitions are rigid and do not exactly match the definition we used in the Engine. To approximate the same definition of disparate impact as ours, we use their definition of demographic parity with a ratio bound of four different values. We will show later that we can change our constraint to match theirs exactly, and the results we find do not change significantly. 
+</p>
+<p>
+Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set this parameter to however many CPUs you want to use. Note: using 7 CPUs, this entire script takes 5-10 minutes to run on an M1 Macbook Air. The results for each experiment we run will be saved in subdirectories of <code class='highlight'>results_dir</code>. <code class='highlight'>n_workers</code> is how many parallel processes will be used for running the experiments. 
+</p>
+
 
 {% highlight python %}
 if __name__ == "__main__":
@@ -403,17 +413,16 @@ if __name__ == "__main__":
     save_plot = True
     constraint_name = 'disparate_impact'
     fairlearn_constraint_name = constraint_name
-    fairlearn_epsilon_constraint = 0.9 # the epsilon used in the fitting constraint
-    fairlearn_epsilon_eval = 0.9 # the epsilon used in the evaluation constraint
+    fairlearn_epsilon_eval = 0.9 # the epsilon used to evaluate g, needs to be same as epsilon in our definition
+    fairlearn_eval_method = 'two-groups' # the method for evaluating the Fairlearn model, must match Seldonian constraint definition
+    fairlearn_epsilons_constraint = [0.1,1.0,0.9,1.0] # the epsilons used in the fitting constraint
     performance_metric = 'log_loss'
-    n_trials = 25
+    n_trials = 50
     data_fracs = np.logspace(-3,0,15)
-    # data_fracs = [0.44]
     n_workers = 8
-    results_dir = f'results/loan_{constraint_name}_{performance_metric}_'
-    plot_savename = os.path.join(results_dir,f'{constraint_name}_{performance_metric}.png')
-
     verbose=True
+    results_dir = f'results/loan_{constraint_name}_seldo_log_loss'
+    plot_savename = os.path.join(results_dir,f'{constraint_name}_{performance_metric}.png')
 
 {% endhighlight python %}
 
@@ -451,17 +460,17 @@ Next, we will set up the ground truth dataset on which we will calculate the per
         test_features.insert(0,'offset',1.0) # inserts a column of 1's in place  
 {% endhighlight python %}
 
-We need to define what function we will use to evaluate the performance of the model. In this case we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='highlight'>perf_eval_kwargs</code> which will be passed to the <code class='highlight'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation funciton on the model in each of our experiment trials. 
+We need to define what function <code class='highlight'>perf_eval_fn</code> we will use to evaluate the performance of the model. In this case we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='highlight'>perf_eval_kwargs</code> which will be passed to the <code class='highlight'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation funciton on the model in each of our experiment trials. 
 
 {% highlight python %}
     # Setup performance evaluation function and kwargs 
     # of the performance evaluation function
 
-    # perf_eval_fn = lambda y_pred,y,X: fbeta_score(y,y_pred,beta=2)
     def perf_eval_fn(y_pred,y,**kwargs):
         if performance_metric == 'log_loss':
             return log_loss(y,y_pred)
         elif performance_metric == 'accuracy':
+            print("calculating accuracy")
             return accuracy_score(y,y_pred > 0.5)
 
     perf_eval_kwargs = {
@@ -486,13 +495,13 @@ Now we instantiate the plot generator, passing in the parameters from variables 
         )
 {% endhighlight python %}
 
-We will first run our two baseline experiments , which we can do by calling the <code class='highlight'>run_baseline_experiment()</code> method of the plot generator and passing in the baseline model name of choice. 
+We will first run our two baseline experiments, which we can do by calling the <code class='highlight'>run_baseline_experiment()</code> method of the plot generator and passing in the baseline model name of choice. 
 
 {% highlight python %}
     # Baseline models
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='dummy_classifier',verbose=True)
+            model_name='random_classifier',verbose=True)
 
         plot_generator.run_baseline_experiment(
             model_name='logistic_regression',verbose=True)
@@ -507,12 +516,11 @@ Similarly, to run our Seldonian experiment, we call the corresponding method of 
 
 {% endhighlight python %}
 
-The last experiment we will run is the Fairlearn experiment. Under the hood, we are using the following Fairlearn model. While Fairlearn does not have a disparate impact constraint, disparate impact can be constructed using their demographic parity constraint with a ratio bound. <b>Note that the following code is not part of the experiment script and you do not need to run it. It is simply to illuminate how we are implementing the Fairlearn model in our experiment. </b>:
+The last experiment we will run is the Fairlearn experiment. While Fairlearn does not have a disparate impact constraint, disparate impact can be constructed using their demographic parity constraint with a ratio bound. Under the hood, we are using the following Fairlearn model, where <code class='highlight'>fairlearn_epsilon_constraint</code> is one of the four values in the list we defined above. <b>Note that the following code is not part of the experiment script and you do not need to run it. It is simply to illuminate how we are implementing the Fairlearn model in our experiment. </b>. 
 {% highlight python %}
 from sklearn.linear_model import LogisticRegression
 from fairlearn.reductions import ExponentiatedGradient
 from fairlearn.reductions import DemographicParity
-fairlearn_epsilon_constraint = 0.9
 fairlearn_constraint = DemographicParity(
                 ratio_bound=fairlearn_epsilon_constraint)
 classifier = LogisticRegression()        
@@ -521,7 +529,7 @@ mitigator = ExponentiatedGradient(classifier,
 {% endhighlight python %}
 
 
-The way Fairlearn handles sensitive columns is different than way we handle them in the Seldonian Engine library. In the Engine, we one-hot encode sensitive columns. In Fairlearn, they integer encode. This is why we have two columns, M and F, in the dataset used for the Engine, whereas they would have one for defining the sex. It turns out that our M column encodes both sexes since it is binary (0=female, 1=male), so we can just tell Fairlearn to use the "M" column. We also can drop the "offset" column which is a column of ones that we use in the Engine if the dataset.include_intercept_term parameter is True, which in our case it was. 
+The way Fairlearn handles sensitive columns is different than way we handle them in the Seldonian Engine library. In the Engine, we one-hot encode sensitive columns. In Fairlearn, they integer encode. This is why we have two columns, M and F, in the dataset used for the Engine, whereas they would have one for defining the sex. It turns out that our M column encodes both sexes since it is binary-valued (0=female, 1=male), so we can just tell Fairlearn to use the "M" column. We also can drop the "offset" column which is a column of ones that we use in the Engine if the dataset.include_intercept_term parameter is True, which in our case it was. 
 
 {% highlight python %}
     ######################
@@ -531,40 +539,47 @@ The way Fairlearn handles sensitive columns is different than way we handle them
     fairlearn_sensitive_feature_names=['M']
     
     # Make dict of test set features, labels and sensitive feature vectors
-    
+    if 'offset' in test_features.columns:
+        test_features_fairlearn = test_features.drop(columns=['offset'])
+    else:
+        test_features_fairlearn = test_features
     fairlearn_eval_kwargs = {
-        'X':test_features.drop(columns=['offset']),
+        'X':test_features_fairlearn,
         'y':test_labels,
         'sensitive_features':dataset.df.loc[:,
             fairlearn_sensitive_feature_names]
         }
 
     if run_experiments:
-        plot_generator.run_fairlearn_experiment(
-            verbose=verbose,
-            fairlearn_sensitive_feature_names=fairlearn_sensitive_feature_names,
-            fairlearn_constraint_name=fairlearn_constraint_name,
-            fairlearn_epsilon_constraint=fairlearn_epsilon_constraint,
-            fairlearn_epsilon_eval=fairlearn_epsilon_eval,
-            fairlearn_eval_kwargs=fairlearn_eval_kwargs,
-            )
+        for fairlearn_epsilon_constraint in fairlearn_epsilons_constraint:
+            plot_generator.run_fairlearn_experiment(
+                verbose=verbose,
+                fairlearn_sensitive_feature_names=fairlearn_sensitive_feature_names,
+                fairlearn_constraint_name=fairlearn_constraint_name,
+                fairlearn_epsilon_constraint=fairlearn_epsilon_constraint,
+                fairlearn_epsilon_eval=fairlearn_epsilon_eval,
+                fairlearn_eval_kwargs=fairlearn_eval_kwargs,
+                )
 {% endhighlight python %}
 
 Finally, we make the three plots. When we set our variables at the top of the script, we set <code class='highlight'> save_plot = False</code>, so the plot will be displayed to the screen but not saved. If we want to save the plot and then view it from disk afterwards, set <code class='highlight'> save_plot = True</code> at the top of the script. 
 
 {% highlight python %}        
-    if save_plot:
-        plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-            performance_label=performance_metric,
-            savename=plot_savename)
-    else:
-        plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-            performance_label=performance_metric,)
+    if make_plots:
+        if save_plot:
+            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+                performance_label=performance_metric,
+                savename=plot_savename)
+        else:
+            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+                performance_label=performance_metric)
 {% endhighlight python %}
 </p>
 
-Here is the entire script all together:
-{% highlight python %}        
+<p>
+Here is the entire script all together, which we will call <code>generate_threeplots.py</code>:
+{% highlight python %}      
+# generate_threeplots.py  
 import os
 import numpy as np 
 
@@ -572,28 +587,26 @@ from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
 from sklearn.metrics import log_loss,accuracy_score
 
-
 if __name__ == "__main__":
     # Parameter setup
     run_experiments = True
     make_plots = True
-    save_plot = True
+    save_plot = False
     constraint_name = 'disparate_impact'
     fairlearn_constraint_name = constraint_name
-    fairlearn_epsilon_constraint = 0.9 # the epsilon used in the fitting constraint
-    fairlearn_epsilon_eval = 0.9 # the epsilon used in the evaluation constraint
+    fairlearn_epsilon_eval = 0.9 # the epsilon used to evaluate g, needs to be same as epsilon in our definition
+    fairlearn_eval_method = 'two-groups' # the method for evaluating the Fairlearn model, must match Seldonian constraint definition
+    fairlearn_epsilons_constraint = [0.01,0.1,0.9,1.0] # the epsilons used in the fitting constraint
     performance_metric = 'log_loss'
-    n_trials = 25
+    n_trials = 50
     data_fracs = np.logspace(-3,0,15)
-    # data_fracs = [0.44]
-    n_workers = 8
-    results_dir = f'results/loan_{constraint_name}_{performance_metric}_'
-    os.makedirs(results_dir,exist_ok=True)
-    plot_savename = os.path.join(results_dir,f'{constraint_name}_{performance_metric}.png')
+    n_workers = 7
     verbose=True
+    results_dir = f'results/loan_{constraint_name}_seldo_log_loss'
+    plot_savename = os.path.join(results_dir,f'{constraint_name}_{performance_metric}.png')
 
     # Load spec
-    specfile = '../interface_outputs/loan_disparate_impact_0p9/spec.pkl'
+    specfile = f'../interface_outputs/loan_{constraint_name}_seldodef/spec.pkl'
     spec = load_pickle(specfile)
 
     spec.primary_objective = spec.model_class().sample_logistic_loss
@@ -601,6 +614,8 @@ if __name__ == "__main__":
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
     spec.optimization_hyperparams['num_iters'] = 1500
+
+    os.makedirs(results_dir,exist_ok=True)
 
     # Use entire original dataset as ground truth for test set
     dataset = spec.dataset
@@ -627,6 +642,7 @@ if __name__ == "__main__":
         if performance_metric == 'log_loss':
             return log_loss(y,y_pred)
         elif performance_metric == 'accuracy':
+            print("calculating accuracy")
             return accuracy_score(y,y_pred > 0.5)
 
     perf_eval_kwargs = {
@@ -646,10 +662,10 @@ if __name__ == "__main__":
         perf_eval_kwargs=perf_eval_kwargs,
         )
 
-    # # Baseline models
+    # Baseline models
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='dummy_classifier',verbose=True)
+            model_name='random_classifier',verbose=True)
 
         plot_generator.run_baseline_experiment(
             model_name='logistic_regression',verbose=True)
@@ -665,31 +681,36 @@ if __name__ == "__main__":
     fairlearn_sensitive_feature_names=['M']
     
     # Make dict of test set features, labels and sensitive feature vectors
-    
+    if 'offset' in test_features.columns:
+        test_features_fairlearn = test_features.drop(columns=['offset'])
+    else:
+        test_features_fairlearn = test_features
     fairlearn_eval_kwargs = {
-        'X':test_features.drop(columns=['offset']),
+        'X':test_features_fairlearn,
         'y':test_labels,
         'sensitive_features':dataset.df.loc[:,
             fairlearn_sensitive_feature_names]
         }
 
     if run_experiments:
-        plot_generator.run_fairlearn_experiment(
-            verbose=verbose,
-            fairlearn_sensitive_feature_names=fairlearn_sensitive_feature_names,
-            fairlearn_constraint_name=fairlearn_constraint_name,
-            fairlearn_epsilon_constraint=fairlearn_epsilon_constraint,
-            fairlearn_epsilon_eval=fairlearn_epsilon_eval,
-            fairlearn_eval_kwargs=fairlearn_eval_kwargs,
-            )
+        for fairlearn_epsilon_constraint in fairlearn_epsilons_constraint:
+            plot_generator.run_fairlearn_experiment(
+                verbose=verbose,
+                fairlearn_sensitive_feature_names=fairlearn_sensitive_feature_names,
+                fairlearn_constraint_name=fairlearn_constraint_name,
+                fairlearn_epsilon_constraint=fairlearn_epsilon_constraint,
+                fairlearn_epsilon_eval=fairlearn_epsilon_eval,
+                fairlearn_eval_kwargs=fairlearn_eval_kwargs,
+                )
 
-    if save_plot:
-        plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-            performance_label=performance_metric,
-            savename=plot_savename)
-    else:
-        plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-            performance_label=performance_metric,)
+    if make_plots:
+        if save_plot:
+            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+                performance_label=performance_metric,
+                savename=plot_savename)
+        else:
+            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+                performance_label=performance_metric)
 {% endhighlight python %}
 
 Running the script will produce the following plot (or something very similar depending on your machine's random number generator):
@@ -697,20 +718,93 @@ Running the script will produce the following plot (or something very similar de
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/disparate_impact_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Disparate impact log loss"> 
-        <figcaption> Figure 2 - The three plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the results from four different models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a dummy classifier (red) that predicts the positive class every time and 2) a logistic regression model without any constraints added (green), and the Fairlearn model with an equivalent disparate impact constraint enforced. The left panel shows the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). The middle panel shows the fraction of trials at each data fraction that returned a solution.  The right panel shows the fraction of trials that violated the safety constraint on the ground truth dataset.  </figcaption>
+        <figcaption> Figure 2 - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset.  </figcaption>
     </figure>
 </div>
 
-We can see that the performance for the smallest data fractions (e.g. 0.001) is only shown for the dummy classifier. This is because a data fraction of 0.001 for our dataset with 1000 rows is only 1 point. The dummy classifier does not use input data to make predictsion; it always predicts the positive class. For very small numbers of samples, scikit-learn's logistic regression model which underlies Fairlearn, QSA and the logistic regression baseline are not able to run. This also explains why the solution rate is less than 1.0 for those three models. QSA takes more data to return a solution because it makes a high confidence guarantee that the solution it returns will be safe. Looking at the right panel, that guarantee is validated because the QSA never violates the fairness constraint on the ground truth dataset, whereas the logistic regression model and even the fairness-aware Fairlearn model both violate the constraint quite often. Note that the dummy classifier by construction cannot violate the safety constraint because its positive rate is 100% for all datapoints, regardless of sex.
-
-<h3>Summary</h3>
-<p>In this tutorial, we demonstrated how to:</p>
-<ul>
-    <li>Item1 </li>
-    <li>Item2</li>
-</ul>
-<p>
+The QSA takes more data to return a solution (middle panel) than the other models because it makes a high confidence guarantee that the solution it returns will be safe. Looking at the right panel, that guarantee is validated because the QSA never violates the fairness constraint on the ground truth dataset. The QSA's performance approaches the performance of the logistic regression baseline as the number of training samples approaches 1000, the size of the original dataset. The logistic regression model and even the fairness-aware Fairlearn model return solutions with less data, but both violate the constraint quite often. This is true for all four values of the disparate impact threshold, epsilon, and despite the fact that Fairlearn is using a behavioral constraint akin to disparate impact.  
 </p>
 
+<p>
+Some minor points of these plots are:
+<ul>
+<li> The performance is not plotted for trials that did not return a solution. For the smallest data fractions (e.g. 0.001), only the random classifier returns a solution because it defined to always return the same solution independent of input. </li>
+<li>The failure rate is not plotted for trials that did not return a solution for all models except QSA. The logistic regression baseline and Fairlearn can fail to converge, for example. However, the QSA will always return either a solution or "NSF", even when only one data point (i.e. <code class='highlight'>data_frac=0.001</code>) is provided as input. In cases where it returns "NSF" that solution is considered safe.  </li>
+<li> The random classifier does not violate the safety constraint ever because its positive rate is 0.5 for all datapoints, regardless of sex.</li>
+</ul>
+</p>
+
+<p>
+We mentioned that Fairlearn cannot exactly enforce the disparate impact constraint we defined: $0.9 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$. This is because Fairlearn's <a href="https://fairlearn.org/v0.7.0/user_guide/mitigation.html#fairness-constraints-for-binary-classification">fairness constraints for binary classification</a> only compare statistics like positive rate between a single sensitive group and the mean of the group. The Seldonian Engine is flexible in how its constraints can be defined, and we can tweak our disparate impact constraint definition to match the Fairlearn definition. To match the Fairlearn definition, our constraint must take the form: $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$, where the only thing we have changed is substituting $(PR | [F])$ (positive rate, given female) in our original constraint with $(PR)$, the mean positive rate. 
+</p>
+
+<p> 
+Let us re-run the same experiment above with this new constraint. First, we need to create a new spec file, where the only difference is the constraint definition. This will build a new parse tree from the new constraint. Replace the line in <code>createSpec.py</code> above:
+{% highlight python %}
+# Define behavioral constraints
+constraint_strs = ['0.9 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))']
+{% endhighlight python %}
+with: 
+{% highlight python %}
+# Define behavioral constraints
+constraint_strs = ['0.9 - min((PR | [M])/(PR),(PR)/(PR | [M]))']
+{% endhighlight python %}
+Then change the line where the spec file is saved so it does not overwrite the old spec file from:
+
+{% highlight python %}
+spec_save_name = os.path.join(save_dir,'spec.pkl')
+{% endhighlight python %}
+
+to something like:
+
+{% highlight python %}
+spec_save_name = os.path.join(save_dir,'spec_fairlearndef.pkl')
+{% endhighlight python %}
+</p>
+
+<p> 
+Once that file is saved, you are ready to run the experiments again. There are only a few changes you will need to make to the file <code>generate_threeplots.py</code>. They are:
+<ul>
+<li> Point <code class='highlight'>specfile</code> to the new spec file you just created.
+</li>
+<li> Change <code class='highlight'>fairlearn_eval_method</code> to <code class='highlight'>"native"</code>. </li>
+<li> Change <code class='highlight'>results_dir</code> to a new directory so you do not overwrite the results from the previous experiment. </li>
+</ul>  
+</p>
+
+<p>
+Running the script with these changes will produce a plot that should look very similar to this: 
+
+<div align="center">
+    <figure>
+        <img src="{{ "/assets/img/disparate_impact_log_loss_fairlearndef.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Disparate impact log loss"> 
+        <figcaption> Figure 3 - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e. $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
+    </figure>
+</div>
+
+The results are very similar to the previous experiment. As before, the QSA takes more data than the baselines and Fairlearn to return solutions, but those solutions are safe. The solutions from the logistic regression baseline and the Fairlearn model are frequently unsafe. 
+</p>
+
+<p>
+    We could use the same procedure we just carried out to change the fairness definition entirely. For example, another common definition of fairness is equalized odds, which ensures that the false positive rates and false negative rates simultaneously do not differ to within a certain tolerance. Let's define the constraint string that the Engine can understand: $abs((FPR | [M]) - (FPR | [F])) + abs((FNR | [M]) - (FNR | [F])) - 0.2$. Repeating the same procedure as above to replace the constraint with this one and ensuring:
+{% highlight python %}
+constraint_name = 'equalized_odds'
+fairlearn_constraint_name = constraint_name
+fairlearn_epsilon_eval = 0.2 # the epsilon used to evaluate g, needs to be same as epsilon in our definition
+fairlearn_eval_method = 'two-groups' # the epsilon used to evaluate g, needs to be same as epsilon in our definition
+fairlearn_epsilons_constraint = [0.01,0.1,0.2,1.0] # the epsilons used in the fitting constraint
+{% endhighlight python %}
+We could run the experiment for this constraint, obtaining the following figure: 
+<div align="center">
+    <figure>
+        <img src="{{ "/assets/img/equalized_odds_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Disparate impact log loss"> 
+        <figcaption> Figure 4 - Same as Figure 2, but enforcing equalized odds instead of disparate impact. </figcaption>
+    </figure>
+</div>
+</p>
+<h3>Summary</h3>
+<p>
+In this tutorial, we demonstrated how to use the Seldonian Toolkit to build a predictive model that enforces a variety of fairness constraints on the German Credit dataset. We covered how to format the dataset and metadata so that they can be used in the Seldonian Engine. Using the Engine, we ran a Seldonian algorithm and confirmed that we were able to find a safe solution. We then ran Seldonian Experiments to evaluate the true performance and safety of our quasi-Seldonian algorithm (QSA). We found that the QSA can flexibly satisfy a range of custom-defined fairness constraints, and that the model does not violate the constraints. We compared the QSA to several baselines that do not enforce any behavioral constraints as well as one model, Fairlearn, that does enforce constraints. We found that the performance of the QSA approaches the performance of a logistic regression model that lacks constraints. The logistic regression model, and the fairness-aware Fairlearn model, frequently violate the constraints for some definitions of fairness. 
+</p>
 
 </div>
