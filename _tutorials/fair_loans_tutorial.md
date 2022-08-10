@@ -3,7 +3,7 @@ layout: tutorial
 permalink: /tutorials/fair_loans_tutorial/
 prev_url: /tutorials/simple_engine_tutorial/
 prev_page_name: Simple Engine tutorial
-next_url: /tutorials/custom_base_node_tutorial
+next_url: /tutorials/custom_base_node_tutorial/
 next_page_name: Custom base variables tutorial
 ---
 
