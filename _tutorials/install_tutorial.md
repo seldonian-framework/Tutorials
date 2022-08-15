@@ -147,7 +147,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 
 <p> 
     <code>
-    $ pip install -r requirements
+    $ pip install -r requirements.txt
     </code>  
 </p>
 
@@ -166,8 +166,8 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/gui_screenshot.png" | relative_url}}" class="img-fluid mt-4" style="width: 95%"  alt="GUI screenshot"> 
-        <figcaption> </figcaption>
+        <img src="{{ "/assets/img/gui_screenshot.png" | relative_url}}" class="img-fluid my-2" style="width: 95%"  alt="GUI screenshot"> 
+        <figcaption align="left"> <b>Figure 1</b> - A screenshot of the top of the Seldonian Interface GUI webpage.   </figcaption>
     </figure>
 </div>
 
