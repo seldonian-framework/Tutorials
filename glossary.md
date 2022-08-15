@@ -20,6 +20,9 @@ permalink: /glossary/
 <h5>Interface</h5>
 <p>The system with which the user interacts to provide the behavioral constraints and other inputs to the Seldonian algorithm. Examples include simple command line interfaces, scripts, or more complicated graphical user interfaces (GUIs).</p>
 
+<h5 id="measure_function">Measure function</h5>
+<p>Components of behavioral that, if appearing in a constraint string, will be recognized by the engine as statistical functions with special meaning. Examples are "Mean_Squared_Error", "FPR" (standing for false positive rate), and "J_pi_new" (standing for performance of new policy in the reinforcement learning regime). </p>
+
 <h5>Primary objective function</h5>
 <p>The objective function (also called loss function) that, in the absence of behavioral constraints, wouuld be solely optimized by the machine learning model. The Seldonian machine learning model seeks to simultaneously optimize the primary objective function while satisfying the behavioral constraints. Performance on the objective function is sometimes sacrified to satisfy the behavioral constraints, depending on the problem.</p>
 
