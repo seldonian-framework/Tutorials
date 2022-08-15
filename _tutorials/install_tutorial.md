@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 permalink: /tutorials/install_toolkit_tutorial/
+prev_url: /tutorials
+prev_page_name: Tutorials home
 next_url: /tutorials/simple_engine_tutorial/
 next_page_name: Simple Engine tutorial
 ---

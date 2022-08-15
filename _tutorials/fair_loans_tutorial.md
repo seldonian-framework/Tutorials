@@ -3,8 +3,8 @@ layout: tutorial
 permalink: /tutorials/fair_loans_tutorial/
 prev_url: /tutorials/simple_engine_tutorial/
 prev_page_name: Simple Engine tutorial
-next_url: /tutorials/custom_base_node_tutorial/
-next_page_name: Custom base variables tutorial
+next_url: /tutorials/science_GPA_tutorial/
+next_page_name: Science paper GPA tutorial
 ---
 
 <!-- Main Container -->
@@ -352,7 +352,7 @@ Running this script will generate a figure like this:
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/loan_cs.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Candidate selection"> 
-        <figcaption> Figure 1 - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e. the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e. the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
 
@@ -717,8 +717,8 @@ Running the script will produce the following plot (or something very similar de
 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/disparate_impact_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Disparate impact log loss"> 
-        <figcaption> Figure 2 - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset.  </figcaption>
+        <img src="{{ "/assets/img/disparate_impact_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
+        <figcaption align="left"> <b>Figure 2</b> - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset.  </figcaption>
     </figure>
 </div>
 
@@ -777,8 +777,8 @@ Running the script with these changes will produce a plot that should look very 
 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/disparate_impact_log_loss_fairlearndef.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Disparate impact log loss"> 
-        <figcaption> Figure 3 - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e. $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
+        <img src="{{ "/assets/img/disparate_impact_log_loss_fairlearndef.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
+        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e. $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
     </figure>
 </div>
 
@@ -797,8 +797,8 @@ fairlearn_epsilons_constraint = [0.01,0.1,0.2,1.0] # the epsilons used in the fi
 We could run the experiment for this constraint, obtaining the following figure: 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/equalized_odds_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Disparate impact log loss"> 
-        <figcaption> Figure 4 - Same as Figure 2, but enforcing equalized odds instead of disparate impact. </figcaption>
+        <img src="{{ "/assets/img/equalized_odds_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
+        <figcaption align="left"> <b>Figure 4</b> - Same as Figure 2, but enforcing equalized odds instead of disparate impact. </figcaption>
     </figure>
 </div>
 </p>

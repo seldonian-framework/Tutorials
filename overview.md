@@ -3,7 +3,13 @@ layout: home
 permalink: /overview/
 ---
 
+<div class="container mt-4" align="center">
+    <a href="{{ "/" | relative_url }}" class="btn btn-primary">&laquo; Previous: Home</a>
+    <a href="{{ "/tutorials/" | relative_url }}" class="btn btn-primary">Next: Tutorials &raquo;</a>
+</div>
+
 <!-- Main Container -->
+
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3">Overview</h5>
     <hr class="my-4" />
@@ -149,7 +155,7 @@ permalink: /overview/
     </ul>
 </div>
 
-<div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
+<div class="container p-3 my-4 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3" id="toolkit"><b>What software do we provide?</b></h5>
     <hr class="my-4" />
     <p>
@@ -165,3 +171,7 @@ permalink: /overview/
     </p>
 </div>
 
+<div class="container" align="center">
+    <a href="{{ "/" | relative_url }}" class="btn btn-primary">&laquo; Previous: Home</a>
+    <a href="{{ "/tutorials/" | relative_url }}" class="btn btn-primary">Next: Tutorials &raquo;</a>
+</div>
