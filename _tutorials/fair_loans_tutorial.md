@@ -16,18 +16,19 @@ next_page_name: Science paper GPA tutorial
 
 <h3>Introduction</h3>
 
-<p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair with respect to gender (for this tutorial we consider the simplified binary gender setting). We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. </p>
+<p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair with respect to gender (for this tutorial we consider the simplified binary gender setting). We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. 
+</p>
 
 <h3>Outline</h3>
 
-<p>In this tutorial, you will learn how to:</p>
+<p>In this tutorial, you will learn how to:
 
 <ul>
     <li>Format a supervised learning (classification) dataset so that it can be used in the Seldonian Toolkit.</li>
     <li>Build a Seldonian machine learning model that implements common fairness constraints.</li>
     <li>Run a Seldonian experiment, assessing the performance and safety of the Seldonian ML model relative to baseline models and other Fairness-aware ML models. </li>
 </ul>
-
+</p>
 <h3 id="dataset_prep"> Dataset preparation </h3>
 
 <p>
@@ -53,7 +54,7 @@ next_page_name: Science paper GPA tutorial
 </p>
 
 <p>
-    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $0.9 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$.
+    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) )$.
 Let us enforce this constraint function with a confidence of $0.95$. 
 </p>
 
@@ -65,7 +66,7 @@ Let us enforce this constraint function with a confidence of $0.95$.
     Using gradient descent on a logistic regression model, minimize the logistic loss, subject to the constraint:
 <ul>
     <li>
-        $g_{1} = 0.9 - \mathrm{min}( (PR | [M])/(PR | [F]),(PR | [F)/(PR | [M]) )$, and ${\delta}_1=0.05$.  
+        $g_{1} = 0.9 - \mathrm{min}( (\text{PR} | [\text{M}])/(\text{PR} | [\text{F}]),(\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) )$, and ${\delta}_1=0.05$.  
     </li>
 </ul>
 </p>
@@ -74,8 +75,8 @@ Let us enforce this constraint function with a confidence of $0.95$.
 
 <p>
     To be able to run the Seldonian algorithm using the Seldonian Toolkit libraries, we will need to create a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a> object. We will demonstrate two different ways to create this object for our example problem. 
-
 </p>
+
 <h5> Creating the specification object from a script </h5>
 <p>
 A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set as the directory where you run this script, so change <code class='highlight'>save_dir</code> in the code snippet below to another directory if you want to save it elsewhere. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
@@ -175,6 +176,7 @@ if __name__ == '__main__':
 
 {% endhighlight python %}
 </div>
+
 <p>
 Let's take a close look at the instantiation of <code class='highlight'>SupervisedSpec</code> in the code above so we can understand each of the arguments:
 {% highlight python %}
@@ -204,9 +206,11 @@ spec = SupervisedSpec(
 
 First, the object takes the <code class='highlight'>dataset</code> and <code class='highlight'>model_class</code>. Then, we set <code class='highlight'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='highlight'>primary_objective</code> function and <code class='highlight'>parse_trees</code> list that we defined above in the script. In our case we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. <code class='highlight'>initial_solution_fn</code> specifies the function we will use to provide the initial solution to candidate selection, which we are setting to <code class='highlight'>model_class().fit</code>. Because <code class='highlight'>model_class()</code> refers to our <code class='highlight'>LogisticRegressionModel()</code>, <code class='highlight'>model_class().fit</code> refers to that class' <code class='highlight'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
 </p>
+
 <p>
 The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This is telling the code to use a function that is part of the Engine library already to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = model_class().sample_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the sample logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
 </p>
+
 <p>
 The next argument is <code class='highlight'>optimization_technique='gradient_descent'</code>, which specifies how we will search for a candidate solution during candidate selection. The other option for this argument is "barrier_function", which we will not cover here. The argument <code class='highlight'>optimizer='adam'</code> instructs the code to use the adam optimizer during gradient descent. The final argument <code class='highlight'>optimization_hyperparams</code> is for setting the parameters of gradient descent, which include:
 <ul>
@@ -324,7 +328,7 @@ The exact numbers you see might differ slightly depending on your machine's rand
 Wrote /Users/ahoag/beri/code/engine-repo/examples/logs/candidate_selection_log0.p with candidate 
 {% endhighlight python %}
 This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path displayed here will differ and instead point to somewhere on your computer. As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this file. The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
-
+</p>
 <div>
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
@@ -352,10 +356,10 @@ Running this script will generate a figure like this:
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/loan_cs.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Candidate selection"> 
-        <figcaption> Figure 1 - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e.,  the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e.,  the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
-
+<p>
 Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values.  If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
 
@@ -365,20 +369,24 @@ Visualizing candidate selection can help you tune your optimization hyperparamet
 Seldonian Experiments are a way to thoroughly evaluate the performance and safety of Seldonian algorithms, beyond what can be achieved with a single run of the Engine. A Seldonian Experiment runs a Seldonian algorithm many times using variable amounts of input data and creates three plots: 1) Performance, 2) Solution rate, and 3) Failure rate as a function of the amount of data used. The <a href="https://seldonian-toolkit.github.io/Experiments"> Seldonian Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
 
+<p> In order to calculate performance and failure rate for any given experimental trial, we need a ground truth dataset. To approximate ground truth, we bootstrap resample from our original dataset and assume that the bootstrap data distribution is the ground truth distribution. While this does not tell you what the performance rate or failure rate will be on your actual problem, it does give a reasonable estimate.
+</p>
+
 <p>
     Here is an outline of the experiment we will run: 
     <ul>
-        <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 15 different data fractions, which will be log-spaced between 0.001 and 1.0. This array will make up the horizontal axis of the three plots.</li>
+        <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 15 different data fractions, which will be log-spaced between 0.001 and 1.0. This array times the number of data points in the original dataset (1000) will make up the horizontal axis of the three plots.</li>
         <li>Create 50 resampled datasets (one for each trial) by sampling with replacement from the dataset we used as input to the Engine above. Each resampled dataset will have the same number of rows (1000) as the original dataset. We use 50 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use the original dataset as the ground truth dataset</b> for calculating the performance and safety metrics.</li>
         <li>
-        For each <code>data_frac</code> in the array of data fractions, run 50 trials. In each trial, use only the first <code>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the Engine, where only the <code>dataset</code> parameter to <code>SupervisedSpec</code> will be modified for each trial. This will generate 15x50=750 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters, or "NSF" if no solution was found. </li>
-        <li>For each <code>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g., logistic loss or accuracy) across the 50 trials at this <code>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e., $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
+        For each <code class='highlight'>data_frac</code> in the array of data fractions, run 50 trials. In each trial, use only the first <code class='highlight'>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the Engine, where only the <code class='highlight'>dataset</code> parameter to <code class='highlight'>SupervisedSpec</code> will be modified for each trial. This will generate 15x50=750 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters, or "NSF" if no solution was found. </li>
+        <li>For each <code class='highlight'>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g., logistic loss or accuracy) across the 50 trials at this <code class='highlight'>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e., $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
     </ul>
-
+</p>
+<p>
 We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that always predicts $p=0.5$ for the positive class regardless of input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. We will describe the Fairlearn model used in more detail below. Each model requires its own experiment, but the main parameters of the experiment such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same Three Plots. 
 </p>
 <p>
-    Now we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code>PlotGenerator</code> class, and in our particular example the <code>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
+    Now we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code class='highlight'>PlotGenerator</code> class, and in our particular example the <code class='highlight'>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
 </p>
 
 <p>
@@ -404,7 +412,7 @@ Fairlearn's fairness definitions are rigid and do not exactly match the definiti
 Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set this parameter to however many CPUs you want to use. Note: using 7 CPUs, this entire script takes 5-10 minutes to run on an M1 Macbook Air. The results for each experiment we run will be saved in subdirectories of <code class='highlight'>results_dir</code>. <code class='highlight'>n_workers</code> is how many parallel processes will be used for running the experiments. 
 </p>
 
-
+<p>
 {% highlight python %}
 if __name__ == "__main__":
     # Parameter setup
@@ -425,7 +433,8 @@ if __name__ == "__main__":
     plot_savename = os.path.join(results_dir,f'{constraint_name}_{performance_metric}.png')
 
 {% endhighlight python %}
-
+</p>
+<p>
 Now we will need to load the same spec object that we created for running the Engine. As before, change the path to the where you saved this file.
 {% highlight python %}
    # Load spec
@@ -438,7 +447,8 @@ Now we will need to load the same spec object that we created for running the En
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
     spec.optimization_hyperparams['num_iters'] = 1500
 {% endhighlight python %}
-
+</p>
+<p>
 Next, we will set up the ground truth dataset on which we will calculate the performance and the failure rate. In this case, it is just the original dataset.
 
 {% highlight python %}
@@ -459,7 +469,8 @@ Next, we will set up the ground truth dataset on which we will calculate the per
     if include_intercept_term:
         test_features.insert(0,'offset',1.0) # inserts a column of 1's in place  
 {% endhighlight python %}
-
+</p>
+<p>
 We need to define what function <code class='highlight'>perf_eval_fn</code> we will use to evaluate the performance of the model. In this case we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='highlight'>perf_eval_kwargs</code> which will be passed to the <code class='highlight'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation funciton on the model in each of our experiment trials. 
 
 {% highlight python %}
@@ -478,7 +489,9 @@ We need to define what function <code class='highlight'>perf_eval_fn</code> we w
         'y':test_labels,
         } 
 {% endhighlight python %}
+</p>
 
+<p>
 Now we instantiate the plot generator, passing in the parameters from variables we defined above.
 
 {% highlight python %}
@@ -494,7 +507,9 @@ Now we instantiate the plot generator, passing in the parameters from variables 
         perf_eval_kwargs=perf_eval_kwargs,
         )
 {% endhighlight python %}
+</p>
 
+<p>
 We will first run our two baseline experiments, which we can do by calling the <code class='highlight'>run_baseline_experiment()</code> method of the plot generator and passing in the baseline model name of choice. 
 
 {% highlight python %}
@@ -507,7 +522,9 @@ We will first run our two baseline experiments, which we can do by calling the <
             model_name='logistic_regression',verbose=True)
 
 {% endhighlight python %}
+</p>
 
+<p>
 Similarly, to run our Seldonian experiment, we call the corresponding method of the plot generator:
 
 {% highlight python %}
@@ -515,7 +532,9 @@ Similarly, to run our Seldonian experiment, we call the corresponding method of 
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
 {% endhighlight python %}
+</p>
 
+<p>
 The last experiment we will run is the Fairlearn experiment. While Fairlearn does not have a disparate impact constraint, disparate impact can be constructed using their demographic parity constraint with a ratio bound. Under the hood, we are using the following Fairlearn model, where <code class='highlight'>fairlearn_epsilon_constraint</code> is one of the four values in the list we defined above. <b>Note that the following code is not part of the experiment script and you do not need to run it. It is simply to illuminate how we are implementing the Fairlearn model in our experiment. </b>. 
 {% highlight python %}
 from sklearn.linear_model import LogisticRegression
@@ -527,7 +546,9 @@ classifier = LogisticRegression()
 mitigator = ExponentiatedGradient(classifier, 
             fairlearn_constraint)
 {% endhighlight python %}
+</p>
 
+<p>
 
 The way Fairlearn handles sensitive columns is different than way we handle them in the Seldonian Engine library. In the Engine, we one-hot encode sensitive columns. In Fairlearn, they integer encode. This is why we have two columns, M and F, in the dataset used for the Engine, whereas they would have one for defining the sex. It turns out that our M column encodes both sexes since it is binary-valued (0=female, 1=male), so we can just tell Fairlearn to use the "M" column. We also can drop the "offset" column which is a column of ones that we use in the Engine if the dataset.include_intercept_term parameter is True, which in our case it was. 
 
@@ -561,7 +582,8 @@ The way Fairlearn handles sensitive columns is different than way we handle them
                 fairlearn_eval_kwargs=fairlearn_eval_kwargs,
                 )
 {% endhighlight python %}
-
+</p>
+<p>
 Finally, we make the three plots. When we set our variables at the top of the script, we set <code class='highlight'> save_plot = False</code>, so the plot will be displayed to the screen but not saved. If we want to save the plot and then view it from disk afterwards, set <code class='highlight'> save_plot = True</code> at the top of the script. 
 
 {% highlight python %}        
@@ -712,13 +734,15 @@ if __name__ == "__main__":
             plot_generator.make_plots(fontsize=12,legend_fontsize=8,
                 performance_label=performance_metric)
 {% endhighlight python %}
+</p>
 
+<p>
 Running the script will produce the following plot (or something very similar depending on your machine's random number generator):
 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/disparate_impact_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
-        <figcaption align="left"> <b>Figure 2</b> - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset.  </figcaption>
+        <figcaption align="left"> <b>Figure 2</b> - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset. The black dashed line is set at the $\delta=0.05$ value that we set in our behavioral constraint. </figcaption>
     </figure>
 </div>
 
@@ -735,7 +759,7 @@ Some minor points of these plots are:
 </p>
 
 <p>
-We mentioned that Fairlearn cannot exactly enforce the disparate impact constraint we defined: $0.9 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$. This is because Fairlearn's <a href="https://fairlearn.org/v0.7.0/user_guide/mitigation.html#fairness-constraints-for-binary-classification">fairness constraints for binary classification</a> only compare statistics like positive rate between a single sensitive group and the mean of the group. The Seldonian Engine is flexible in how its constraints can be defined, and we can tweak our disparate impact constraint definition to match the Fairlearn definition. To match the Fairlearn definition, our constraint must take the form: $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$, where the only thing we have changed is substituting $(PR | [F])$ (positive rate, given female) in our original constraint with $(PR)$, the mean positive rate. 
+We mentioned that Fairlearn cannot exactly enforce the disparate impact constraint we defined: $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) )$. This is because Fairlearn's <a href="https://fairlearn.org/v0.7.0/user_guide/mitigation.html#fairness-constraints-for-binary-classification">fairness constraints for binary classification</a> only compare statistics like positive rate between a single sensitive group and the mean of the group. The Seldonian Engine is flexible in how its constraints can be defined, and we can tweak our disparate impact constraint definition to match the Fairlearn definition. To match the Fairlearn definition, our constraint must take the form: $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) )$, where the only thing we have changed is substituting $(\text{PR} | [\text{F}])$ (positive rate, given female) in our original constraint with $(\text{PR})$, the mean positive rate. 
 </p>
 
 <p> 
@@ -778,7 +802,7 @@ Running the script with these changes will produce a plot that should look very 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/disparate_impact_log_loss_fairlearndef.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
-        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e., $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
+        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e., $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
     </figure>
 </div>
 
@@ -786,7 +810,7 @@ The results are very similar to the previous experiment. As before, the QSA take
 </p>
 
 <p>
-    We could use the same procedure we just carried out to change the fairness definition entirely. For example, another common definition of fairness is equalized odds, which ensures that the false positive rates and false negative rates simultaneously do not differ to within a certain tolerance. Let's define the constraint string that the Engine can understand: $abs((FPR | [M]) - (FPR | [F])) + abs((FNR | [M]) - (FNR | [F])) - 0.2$. Repeating the same procedure as above to replace the constraint with this one and ensuring:
+    We could use the same procedure we just carried out to change the fairness definition entirely. For example, another common definition of fairness is equalized odds, which ensures that the false positive rates and false negative rates simultaneously do not differ to within a certain tolerance. Let's define the constraint string that the Engine can understand: $\text{abs}((\text{FPR} | [\text{M}]) - (\text{FPR} | [\text{F}])) + \text{abs}((\text{FNR} | [\text{M}]) - (\text{FNR} | [\text{F}])) - 0.2$. Repeating the same procedure as above to replace the constraint with this one and ensuring:
 {% highlight python %}
 constraint_name = 'equalized_odds'
 fairlearn_constraint_name = constraint_name
