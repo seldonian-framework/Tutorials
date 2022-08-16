@@ -21,7 +21,7 @@ permalink: /tutorials/
             <a href="{{ "/tutorials/simple_engine_tutorial/" | relative_url}}">Getting started with the Seldonian Engine</a>
         </li>
         <li>
-            <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">Fairness in loan decision making</a>
+            <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">Fairness for Automated Loan Approval Systems</a>
         </li>
         <li>
             <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">Reproducing the GPA classification results from Seldonian Science paper</a>
