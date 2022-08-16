@@ -3,6 +3,8 @@ layout: tutorial
 permalink: /tutorials/custom_base_node_tutorial/
 prev_url: /tutorials/fair_loans_tutorial/
 prev_page_name: Fair loans tutorial
+next_url: /tutorials/gridworld_RL_tutorial/
+next_page_name: Reinforcement learning first tutorial - gridworld
 ---
 
 <!-- Main Container -->
