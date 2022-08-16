@@ -9,19 +9,19 @@ permalink: /glossary/
 <hr class="my-4" />
 <p>Here you will find brief definitions of commonly used terms in the Seldonian Framework:</p>
 <h5> Behavioral constraint </h5>
-<p>  Criteria for fairness or safety provided by the user. Consists of a constraint function and a confidence level. The Seldonian algorithm ensures that the behavioral constraints are met probabilistically. </p> 
+<p>  Criteria for fairness or safety provided by the user. Consists of a constraint function and a confidence level. In many cases, the constraint function can be constructed from a constraint string provided the user, such as "" The Seldonian algorithm ensures that the behavioral constraints are met with probability of at least $1-\delta$, where $\delta$ is the confidence level provided by the user. </p> 
 
 <h5>Candidate Selection</h5>
 <p>One of the three major components of a Seldonian algorithm. It is the component that, using a fraction of the dataset (called the candidate dataset), searches for a solution that simultaneously optimizes the primary objective (i.e. loss function) and is predicted to satisfy the behavioral constraints on the Safety dataset, the remaining fraction of the dataset. Analogous to the training set in the standard supervised machine learning paradigm. </p>
 
 <h5>Confidence level</h5>
-<p>Often simply called ${\delta}$. Provided by the user, the confidence level is used to define the maximum probability that is acceptible for the Seldonian algorithm to violate a behavioral constraint.  </p>
+<p>Often called ${\delta}$. Provided by the user, the confidence level is used to define the maximum probability that is acceptible for the Seldonian algorithm to violate a behavioral constraint.  </p>
 
 <h5>Interface</h5>
 <p>The system with which the user interacts to provide the behavioral constraints and other inputs to the Seldonian algorithm. Examples include simple command line interfaces, scripts, or more complicated graphical user interfaces (GUIs).</p>
 
 <h5 id="measure_function">Measure function</h5>
-<p>Components of behavioral that, if appearing in a constraint string, will be recognized by the engine as statistical functions with special meaning. Examples are "Mean_Squared_Error", "FPR" (standing for false positive rate), and "J_pi_new" (standing for performance of new policy in the reinforcement learning regime). </p>
+<p>Components of a behavioral constraint that, if appearing in a constraint string, will be recognized by the engine as statistical functions with special meaning. Examples are "Mean_Squared_Error", used in regression problems, "FPR", standing for false positive rate, used in classification problems, and "J_pi_new", which stands for the performance of the new policy for reinforcement learning problems. </p>
 
 <h5>Primary objective function</h5>
 <p>The objective function (also called loss function) that, in the absence of behavioral constraints, wouuld be solely optimized by the machine learning model. The Seldonian machine learning model seeks to simultaneously optimize the primary objective function while satisfying the behavioral constraints. Performance on the objective function is sometimes sacrified to satisfy the behavioral constraints, depending on the problem.</p>
