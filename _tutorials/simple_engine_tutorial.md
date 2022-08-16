@@ -9,17 +9,17 @@ next_page_name: Fair loans tutorial
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h2 align="center" class="mb-3">Tutorial: Getting started with the Seldonian Engine</h2>
+    <h2 align="center" class="mb-3">Tutorial: Getting Started with the Seldonian Engine</h2>
     <hr class="my-4">
     <h3>Outline</h3>
     <p>In this tutorial, you will learn how to:</p>
     <ul>
-        <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
-        <li>Run the algorithm using the Engine and understand its outputs</li>
+        <li>Use the Engine to set up a Seldonian machine learning algorithm.</li>
+        <li>Run the algorithm using the Engine and understand its output.</li>
     </ul>
     <h3> An example Seldonian machine learning problem </h3>
     <p>
-        Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict label Y using the single feature X. To solve this problem we can use linear regression with an objective function of the mean squared error (MSE). We can find the optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
+        Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict the label Y using the single feature X. To solve this problem we can use linear regression with an objective function of the <i>mean squared error</i> (MSE). We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
     </p>
     <p>
         Now let's suppose we want to add the following two constraints into the problem:
@@ -46,7 +46,10 @@ next_page_name: Fair loans tutorial
         </li>
     </ul>
     <p>
-        First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. If it cannot find a solution that satisfies the constraints, it will return "NSF", i.e. "No solution found". 
+        First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. If it cannot find a solution that satisfies the constraints, it will return "NSF", i.e. "No Solution Found". 
+    </p>
+    <p>
+        Next, notice that here the MSE is <i>not</i> just the average squared error on the available training data. These constraints are much stronger: they are constraints on the MSE when the learned model is applied to <i>new data</i>. This is important because we don't just want machine learning models that appear to be safe or fair on the training data. We want machine learning models that are safe or fair when used to made decisions or predictions in the future.
     </p>
     <p>
         To code up this example using the engine, we need to follow these steps:
@@ -138,8 +141,8 @@ This should print a value around: $1.61$, which satsifies the behavioral constra
     <h3>Summary</h3>
     <p>In this tutorial, we demonstrated how to:</p>
     <ul>
-        <li>Use the Engine to set up a Seldonian machine learning algorithm </li>
-        <li>Run the algorithm using the Engine and understand its outputs</li>
+        <li>Use the Engine to set up a Seldonian machine learning algorithm.</li>
+        <li>Run the algorithm using the Engine and understand its outputs.</li>
     </ul>
 <p>
 </p>

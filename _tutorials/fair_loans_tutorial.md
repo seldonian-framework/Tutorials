@@ -10,21 +10,21 @@ next_page_name: Science paper GPA tutorial
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial: Fairness in loan decision making</h2>
+<h2 align="center" class="mb-3">Tutorial: Fairness for Automated Loan Approval Systems</h2>
 
 <hr class="my-4">
 
 <h3>Introduction</h3>
 
-<p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair between males and females. We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. </p>
+<p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair with respect to gender (for this tutorial we consider the simplified binary gender setting). We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. </p>
 
 <h3>Outline</h3>
 
 <p>In this tutorial, you will learn how to:</p>
 
 <ul>
-    <li>Format a supervised learning (classification) dataset so that it can be used in the Seldonian Toolkit </li>
-    <li>Build a Seldonian machine learning model that implements common fairness constraints </li>
+    <li>Format a supervised learning (classification) dataset so that it can be used in the Seldonian Toolkit.</li>
+    <li>Build a Seldonian machine learning model that implements common fairness constraints.</li>
     <li>Run a Seldonian experiment, assessing the performance and safety of the Seldonian ML model relative to baseline models and other Fairness-aware ML models. </li>
 </ul>
 
@@ -39,7 +39,7 @@ next_page_name: Science paper GPA tutorial
 </p>
 
 <p> 
-    Next, we one-hot encoded all thirteen categorical features, including the sex feature that we created in the previous step. We applied a standard scaler to the remaining numerical 7 features. The one-hot encoding step created an additional 39 columns, resulting in 59 total features. The final column in the dataset is the label, which we will refer to as "credit_rating" from here on out. We mapped the values of this column as such: (1,2) -> (0,1) so that they would behave well in our binary classification models. We combined the 59 features and the single label column into a single pandas dataframe and saved the file as a CSV file, which can be found <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">here</a>.
+    Next, we one-hot encoded all thirteen categorical features, including the sex feature that we created in the previous step. We applied a standard scaler to the remaining numerical 7 features. The one-hot encoding step created an additional 39 columns, resulting in 59 total features. The final column in the dataset is the label, which we will refer to as "credit_rating" hereafter. We mapped the values of this column as such: (1,2) -> (0,1) so that they would behave well in our binary classification models. We combined the 59 features and the single label column into a single pandas dataframe and saved the file as a CSV file, which can be found <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">here</a>.
 </p>
 
 <p> 
@@ -53,8 +53,8 @@ next_page_name: Science paper GPA tutorial
 </p>
 
 <p>
-    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called disparate impact, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ more than some threshold fraction. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $0.9 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$.
-Let us enforce this constraint function with a probability of $0.95$. 
+    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $0.9 - \mathrm{min}( (PR | [M]) / (PR | [F]), (PR | [F]) / (PR | [M]) )$.
+Let us enforce this constraint function with a confidence of $0.95$. 
 </p>
 
 <p>
@@ -323,7 +323,7 @@ The exact numbers you see might differ slightly depending on your machine's rand
 {% highlight python %}
 Wrote /Users/ahoag/beri/code/engine-repo/examples/logs/candidate_selection_log0.p with candidate 
 {% endhighlight python %}
-This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path will displayed here will differ and instead point to somewhere on your computer. As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this file. The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
+This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path displayed here will differ and instead point to somewhere on your computer. As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this file. The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
 
 <div>
 
@@ -352,11 +352,11 @@ Running this script will generate a figure like this:
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/loan_cs.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Candidate selection"> 
-        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e. the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
+        <figcaption> Figure 1 - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e.,  the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
 
-Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e. "No solution found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values.  If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
+Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values.  If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
 
 <h3> Running a Seldonian Experiment </h3>
@@ -372,7 +372,7 @@ Seldonian Experiments are a way to thoroughly evaluate the performance and safet
         <li>Create 50 resampled datasets (one for each trial) by sampling with replacement from the dataset we used as input to the Engine above. Each resampled dataset will have the same number of rows (1000) as the original dataset. We use 50 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use the original dataset as the ground truth dataset</b> for calculating the performance and safety metrics.</li>
         <li>
         For each <code>data_frac</code> in the array of data fractions, run 50 trials. In each trial, use only the first <code>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the Engine, where only the <code>dataset</code> parameter to <code>SupervisedSpec</code> will be modified for each trial. This will generate 15x50=750 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters, or "NSF" if no solution was found. </li>
-        <li>For each <code>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g. logistic loss or accuracy) across the 50 trials at this <code>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e. $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
+        <li>For each <code>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g., logistic loss or accuracy) across the 50 trials at this <code>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e., $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
     </ul>
 
 We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that always predicts $p=0.5$ for the positive class regardless of input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. We will describe the Fairlearn model used in more detail below. Each model requires its own experiment, but the main parameters of the experiment such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same Three Plots. 
@@ -728,8 +728,8 @@ The QSA takes more data to return a solution (middle panel) than the other model
 <p>
 Some minor points of these plots are:
 <ul>
-<li> The performance is not plotted for trials that did not return a solution. For the smallest data fractions (e.g. 0.001), only the random classifier returns a solution because it defined to always return the same solution independent of input. </li>
-<li>The failure rate is not plotted for trials that did not return a solution for all models except QSA. The logistic regression baseline and Fairlearn can fail to converge, for example. However, the QSA will always return either a solution or "NSF", even when only one data point (i.e. <code class='highlight'>data_frac=0.001</code>) is provided as input. In cases where it returns "NSF" that solution is considered safe.  </li>
+<li> The performance is not plotted for trials that did not return a solution. For the smallest data fractions (e.g., 0.001), only the random classifier returns a solution because it defined to always return the same solution independent of input. </li>
+<li>The failure rate is not plotted for trials that did not return a solution for all models except QSA. The logistic regression baseline and Fairlearn can fail to converge, for example. However, the QSA will always return either a solution or "NSF", even when only one data point (i.e., <code class='highlight'>data_frac=0.001</code>) is provided as input. In cases where it returns "NSF" that solution is considered safe.  </li>
 <li> The random classifier does not violate the safety constraint ever because its positive rate is 0.5 for all datapoints, regardless of sex.</li>
 </ul>
 </p>
@@ -778,7 +778,7 @@ Running the script with these changes will produce a plot that should look very 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/disparate_impact_log_loss_fairlearndef.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
-        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e. $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
+        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e., $0.9 - \mathrm{min}( (PR | [M]) / (PR), (PR) / (PR | [M]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
     </figure>
 </div>
 
