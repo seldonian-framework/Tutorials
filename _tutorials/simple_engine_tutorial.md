@@ -39,10 +39,10 @@ next_page_name: Fair loans tutorial
     </p>
     <ul>
         <li>
-            $g_{1} = \mathrm{Mean\_Squared\_Error} - 2.0$, and ${\delta}_1=0.1$.  
+            $g_{1}: \mathrm{Mean\_Squared\_Error} \leq 2.0$, and ${\delta}_1=0.1$.  
         </li>
         <li>
-            $g_{2} = 1.25 - \mathrm{Mean\_Squared\_Error}$, and ${\delta}_2=0.1$.
+            $g_{2}: \mathrm{Mean\_Squared\_Error} \geq 1.25$, and ${\delta}_2=0.1$.
         </li>
     </ul>
     <p>
@@ -52,16 +52,16 @@ next_page_name: Fair loans tutorial
         Next, notice that here the MSE is <i>not</i> just the average squared error on the available training data. These constraints are much stronger: they are constraints on the MSE when the learned model is applied to <i>new data</i>. This is important because we don't just want machine learning models that appear to be safe or fair on the training data. We want machine learning models that are safe or fair when used to made decisions or predictions in the future.
     </p>
     <p>
-        To code up this example using the engine, we need to follow these steps:
+        To code up this example using the engine, we need to follow these steps.
     </p>
     <ol>
         <li> Define the data - we will generate some synthetic data for X and Y in this case.</li>
-        <li> Create parse trees from the behavioral constraints (constraint strings and confidence levels), which we defined above.</li>
+        <li> Create parse trees from the behavioral constraints</li>
         <li> Define the underlying machine learning model </li>
         <li> Create a spec object containing all of this information and some hyperparameters - we can ignore many of these in this example. For a full list of parameters and their defaults see the API docs for <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a>.</li>
         <li> Run the Seldonian algorithm using the spec object. </li>
     </ol>
-    Let's write out the code to do this. Each step above is enumerated in comments in the code below:
+    Let's write out the code to do this. Each step above is enumerated in comments in the code below. We will make heavy use of helper functions with many hidden defaults. In the tutorials that follow, we will explore how to customize running the Engine.
         
 
 {% highlight python %}
@@ -71,7 +71,9 @@ from seldonian.models.models import LinearRegressionModel
 from seldonian.spec import SupervisedSpec
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
 from seldonian.utils.tutorial_utils import (
-    make_synthetic_regression_dataset,make_parse_trees_from_constraints)
+    make_synthetic_regression_dataset)
+from seldonian.parse_tree.parse_tree import (
+    make_parse_trees_from_constraints)
 
 if __name__ == "__main__":
     np.random.seed(0)
@@ -81,7 +83,7 @@ if __name__ == "__main__":
     
     # 2. Create parse trees from the behavioral constraints 
     # constraint strings:
-    constraint_strs = ['1.25 - Mean_Squared_Error','Mean_Squared_Error - 2.0']
+    constraint_strs = ['Mean_Squared_Error >= 1.25','Mean_Squared_Error <= 2.0']
     # confidence levels: 
     deltas = [0.1,0.1] 
     parse_trees = make_parse_trees_from_constraints(
@@ -125,7 +127,7 @@ True [0.16911355 0.1738146 ]
 {% endhighlight %}
     </p>
     <p>
-    Notice in the last few lines of the script that <code class="highlight"> SA.run() </code> returns two values. <code class="highlight">passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF" </code>, i.e. "No Solution Found". If <code class="highlight"> passed_safety==True </code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight"> passed_safety=True </code> and a candidate solution of something like: <code class="highlight"> [0.16911355 0.1738146] </code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+    Notice in the last few lines of the script that <code class="highlight">SA.run()</code> returns two values. <code class="highlight">passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
 </p>
 <p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information:
 
