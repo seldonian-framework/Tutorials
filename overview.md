@@ -11,7 +11,7 @@ permalink: /overview/
 <!-- Main Container -->
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3">Overview</h5>
+    <h5 class="mb-3"><b>Overview</b></h5>
     <hr class="my-4" />
     <p>Here you will find an overview of Seldonian algorithms, the Seldonian framework, and this software library. If you are new to these topics, we recommend reading from the top down, but you are welcome to jump ahead using the links below. The content below is organized into the following topics:</p>
     <ol>
