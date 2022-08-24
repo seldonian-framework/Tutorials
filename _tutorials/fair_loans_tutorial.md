@@ -16,7 +16,7 @@ next_page_name: Science paper GPA tutorial
 
 <h3>Introduction</h3>
 
-<p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair with respect to gender (for this tutorial we consider the simplified binary gender setting). We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. 
+<p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair with respect to gender (for this tutorial we consider the simplified binary gender setting). We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. Note that due to the choice of confidence bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
 </p>
 
 <h3>Outline</h3>
@@ -54,7 +54,7 @@ next_page_name: Science paper GPA tutorial
 </p>
 
 <p>
-    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) )$.
+    Now let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) ) \geq 0.9$.
 Let us enforce this constraint function with a confidence of $0.95$. 
 </p>
 
@@ -66,7 +66,7 @@ Let us enforce this constraint function with a confidence of $0.95$.
     Using gradient descent on a logistic regression model, minimize the logistic loss, subject to the constraint:
 <ul>
     <li>
-        $g_{1} = 0.9 - \mathrm{min}( (\text{PR} | [\text{M}])/(\text{PR} | [\text{F}]),(\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) )$, and ${\delta}_1=0.05$.  
+        $g_{1}: \mathrm{min}( (\text{PR} | [\text{M}])/(\text{PR} | [\text{F}]),(\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) ) \geq 0.9$, and ${\delta}_1=0.05$.  
     </li>
 </ul>
 </p>
@@ -126,7 +126,7 @@ if __name__ == '__main__':
         file_type='csv')
     
     # Define behavioral constraints
-    constraint_strs = ['0.9 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))'] 
+    constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.9'] 
     deltas = [0.05]
 
     # For each constraint (in this case only one), make a parse tree
@@ -163,7 +163,7 @@ if __name__ == '__main__':
             'alpha_lamb'    : 0.01,
             'beta_velocity' : 0.9,
             'beta_rmsprop'  : 0.95,
-            'num_iters'     : 1000,
+            'num_iters'     : 1500,
             'gradient_library': "autograd",
             'hyper_search'  : None,
             'verbose'       : True,
@@ -196,7 +196,7 @@ spec = SupervisedSpec(
             'alpha_lamb'    : 0.01,
             'beta_velocity' : 0.9,
             'beta_rmsprop'  : 0.95,
-            'num_iters'     : 1000,
+            'num_iters'     : 1500,
             'gradient_library': "autograd",
             'hyper_search'  : None,
             'verbose'       : True,
@@ -208,7 +208,7 @@ First, the object takes the <code class='highlight'>dataset</code> and <code cla
 </p>
 
 <p>
-The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This is telling the code to use a function that is part of the Engine library already to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = model_class().sample_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the sample logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
+The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This instructs the Engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = model_class().sample_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the sample logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient will likely speed up the code. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
 </p>
 
 <p>
@@ -268,10 +268,6 @@ if __name__ == '__main__':
     specfile = './spec.pkl'
     spec = load_pickle(specfile)
     
-    spec.use_builtin_primary_gradient_fn = False
-    spec.optimization_hyperparams['alpha_theta'] = 0.01
-    spec.optimization_hyperparams['alpha_lamb'] = 0.01
-    spec.optimization_hyperparams['num_iters'] = 1000
     SA = SeldonianAlgorithm(spec)
     passed_safety,solution = SA.run(write_cs_logfile=True)
     if passed_safety:
@@ -318,7 +314,7 @@ Wrote /Users/ahoag/beri/code/engine-repo/examples/logs/candidate_selection_log0.
 Passed safety test!
 
 Primary objective (log loss) evaluated on safety dataset:
-0.5582021704446299
+0.5670094210447091
 {% endhighlight %}
 The exact numbers you see might differ slightly depending on your machine's random number generator. However, the safety test should pass and the log loss on the safety dataset should be very similar. 
 </p>
@@ -442,7 +438,6 @@ Now we will need to load the same spec object that we created for running the En
     spec = load_pickle(specfile)
 
     spec.primary_objective = spec.model_class().sample_logistic_loss
-    spec.use_builtin_primary_gradient_fn = False
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
     spec.optimization_hyperparams['num_iters'] = 1500
@@ -742,7 +737,7 @@ Running the script will produce the following plot (or something very similar de
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/disparate_impact_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
-        <figcaption align="left"> <b>Figure 2</b> - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset. The black dashed line is set at the $\delta=0.05$ value that we set in our behavioral constraint. </figcaption>
+        <figcaption align="left"> <b>Figure 2</b> - The Three Plots of a Seldonian Experiment shown for the UCI German Credit dataset, enforcing a disparate impact fairness constraint with a threshold of 0.9. The constraint, $g$, at the top of the figure is written such that $g\leq0$ to conform with the <a href="{{ "/overview/#algorithm" | relative_url}}">Seldonian algorithm formalism</a>, and it is equivalent to the constraint that we used. Each panel shows the mean (point) and standard error (shaded region) of a quantity for several models: the Quasi-Seldonian model (QSA, blue), the two baseline models: 1) a random classifier (pink) that predicts the positive class with $p=0.5$ every time and 2) a logistic regression model without any constraints added (brown), and the Fairlearn model with four different values of epsilon, the ratio bound. (Left) the logistic loss of the models as a function of the number of training samples (determined from the data fraction array). (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset. The black dashed line is set at the $\delta=0.05$ value that we set in our behavioral constraint. </figcaption>
     </figure>
 </div>
 
@@ -759,19 +754,19 @@ Some minor points of these plots are:
 </p>
 
 <p>
-We mentioned that Fairlearn cannot exactly enforce the disparate impact constraint we defined: $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) )$. This is because Fairlearn's <a href="https://fairlearn.org/v0.7.0/user_guide/mitigation.html#fairness-constraints-for-binary-classification">fairness constraints for binary classification</a> only compare statistics like positive rate between a single sensitive group and the mean of the group. The Seldonian Engine is flexible in how its constraints can be defined, and we can tweak our disparate impact constraint definition to match the Fairlearn definition. To match the Fairlearn definition, our constraint must take the form: $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) )$, where the only thing we have changed is substituting $(\text{PR} | [\text{F}])$ (positive rate, given female) in our original constraint with $(\text{PR})$, the mean positive rate. 
+We mentioned that Fairlearn cannot exactly enforce the disparate impact constraint we defined: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) ) \geq 0.9$. This is because Fairlearn's <a href="https://fairlearn.org/v0.7.0/user_guide/mitigation.html#fairness-constraints-for-binary-classification">fairness constraints for binary classification</a> only compare statistics like positive rate between a single sensitive group and the mean of the group. The Seldonian Engine is flexible in how its constraints can be defined, and we can tweak our disparate impact constraint definition to match the Fairlearn definition. To match the Fairlearn definition, our constraint must take the form: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) ) \geq 0.9$, where the only thing we have changed is substituting $(\text{PR} | [\text{F}])$ (positive rate, given female) in our original constraint with $(\text{PR})$, the mean positive rate. 
 </p>
 
 <p> 
 Let us re-run the same experiment above with this new constraint. First, we need to create a new spec file, where the only difference is the constraint definition. This will build a new parse tree from the new constraint. Replace the line in <code>createSpec.py</code> above:
 {% highlight python %}
 # Define behavioral constraints
-constraint_strs = ['0.9 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))']
+constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.9']
 {% endhighlight python %}
 with: 
 {% highlight python %}
 # Define behavioral constraints
-constraint_strs = ['0.9 - min((PR | [M])/(PR),(PR)/(PR | [M]))']
+constraint_strs = ['min((PR | [M])/(PR),(PR)/(PR | [M])) >= 0.9']
 {% endhighlight python %}
 Then change the line where the spec file is saved so it does not overwrite the old spec file from:
 
@@ -802,7 +797,7 @@ Running the script with these changes will produce a plot that should look very 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/disparate_impact_log_loss_fairlearndef.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
-        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e., $0.9 - \text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) )$. In this experiment, we only used a single Fairlearn model (with $\epsilon=0.9$), because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
+        <figcaption align="left"> <b>Figure 3</b> - Same as Figure 2, but with the definition of disparate impact that Fairlearn uses, i.e., $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) ) \geq 0.9$. In this experiment, we used a single Fairlearn model with $\epsilon=0.9$, because the constraint was identical to the constraint used in the QSA model, which was not true in the previous experiment. </figcaption>
     </figure>
 </div>
 
@@ -810,7 +805,7 @@ The results are very similar to the previous experiment. As before, the QSA take
 </p>
 
 <p>
-    We could use the same procedure we just carried out to change the fairness definition entirely. For example, another common definition of fairness is equalized odds, which ensures that the false positive rates and false negative rates simultaneously do not differ to within a certain tolerance. Let's define the constraint string that the Engine can understand: $\text{abs}((\text{FPR} | [\text{M}]) - (\text{FPR} | [\text{F}])) + \text{abs}((\text{FNR} | [\text{M}]) - (\text{FNR} | [\text{F}])) - 0.2$. Repeating the same procedure as above to replace the constraint with this one and ensuring:
+    We could use the same procedure we just carried out to change the fairness definition entirely. For example, another common definition of fairness is equalized odds, which ensures that the false positive rates and false negative rates simultaneously do not differ to within a certain tolerance. Let's define the constraint string that the Engine can understand: $\text{abs}((\text{FPR} | [\text{M}]) - (\text{FPR} | [\text{F}])) + \text{abs}((\text{FNR} | [\text{M}]) - (\text{FNR} | [\text{F}])) \leq 0.2$. Repeating the same procedure as above to replace the constraint with this one, the only changes we need to make are:
 {% highlight python %}
 constraint_name = 'equalized_odds'
 fairlearn_constraint_name = constraint_name
@@ -818,7 +813,7 @@ fairlearn_epsilon_eval = 0.2 # the epsilon used to evaluate g, needs to be same 
 fairlearn_eval_method = 'two-groups' # the epsilon used to evaluate g, needs to be same as epsilon in our definition
 fairlearn_epsilons_constraint = [0.01,0.1,0.2,1.0] # the epsilons used in the fitting constraint
 {% endhighlight python %}
-We could run the experiment for this constraint, obtaining the following figure: 
+Running the experiment for this constraint, we obtain the following figure: 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/equalized_odds_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 

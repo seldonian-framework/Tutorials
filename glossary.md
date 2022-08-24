@@ -8,8 +8,8 @@ permalink: /glossary/
 <h3 class="mb-3">Glossary</h3>
 <hr class="my-4" />
 <p>Here you will find brief definitions of commonly used terms in the Seldonian Framework:</p>
-<h5> Behavioral constraint </h5>
-<p>  Criteria for fairness or safety provided by the user. Consists of a constraint function and a confidence level. In many cases, the constraint function can be constructed from a constraint string provided the user, such as "" The Seldonian algorithm ensures that the behavioral constraints are met with probability of at least $1-\delta$, where $\delta$ is the confidence level provided by the user. </p> 
+<h5 id="behavioral_constraint"> Behavioral constraints </h5>
+<p>  Criteria for fairness or safety provided by the user. Each behavioral constraint consists of a constraint function and a confidence level. In many cases, the constraint function can be constructed from a constraint string provided the user. The Seldonian algorithm ensures that the behavioral constraints are met with probability of at least $1-\delta$, where $\delta$ is the confidence level provided by the user. </p> 
 
 <h5>Candidate Selection</h5>
 <p>One of the three major components of a Seldonian algorithm. It is the component that, using a fraction of the dataset (called the candidate dataset), searches for a solution that simultaneously optimizes the primary objective (i.e. loss function) and is predicted to satisfy the behavioral constraints on the Safety dataset, the remaining fraction of the dataset. Analogous to the training set in the standard supervised machine learning paradigm. </p>
@@ -26,7 +26,7 @@ permalink: /glossary/
 <h5>Primary objective function</h5>
 <p>The objective function (also called loss function) that, in the absence of behavioral constraints, wouuld be solely optimized by the machine learning model. The Seldonian machine learning model seeks to simultaneously optimize the primary objective function while satisfying the behavioral constraints. Performance on the objective function is sometimes sacrified to satisfy the behavioral constraints, depending on the problem.</p>
 
-<h5>Regime</h5>
+<h5 id="regime">Regime</h5>
 <p>The broad category of machine learning problem, e.g. supervised learning or reinforcement learning. </p>
 
 <h5>Safety test</h5>
@@ -35,7 +35,7 @@ permalink: /glossary/
 <h5>Seldonian algorithm</h5>
 <p>An algorithm designed to enforce high probability constraints in a machine learning problem</p>
 
-<h5>Sensitive attribute</h5>
+<h5 id="sensitive_attributes">Sensitive attribute</h5>
 <p>In a fairness constraint, a sensitive attribute is one against which the model should not discriminate. Gender and race are common examples. Also sometimes called the protected attribute. It only pertains to supervised learning. </p>
 
 <h5>Sub-regime</h5>

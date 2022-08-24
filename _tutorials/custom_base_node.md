@@ -18,7 +18,7 @@ next_page_name: Reinforcement learning first tutorial - gridworld
 <h3 class="my-4">Introduction</h3>
 
 <p>
-In cases where behavioral constraints can be expressed a mathematical equations or inequalities, which is often the case for fairness constraints (for example, see <a href="https://fairware.cs.umass.edu/papers/Verma.pdf">Verma et al. 2018</a>), the constraints can be passed to the Seldonian Engine as strings with specific syntax. Specifically, these strings can contain five types of things:
+In cases where behavioral constraints can be expressed a mathematical equations or inequalities, which is often the case for fairness constraints (for example, see <a href="https://fairware.cs.umass.edu/papers/Verma.pdf">Verma et al., 2018</a>), the constraints can be passed to the Seldonian Engine as strings with specific syntax. Specifically, these strings can contain five types of things:
 <ol>
 <li>Mathematical operators <code>(+,-,*,/)</code> </li>
 <li>The native Python math functions: <code>min(),max(),abs(),exp()</code> </li>
@@ -109,7 +109,7 @@ abs((PREC | [M]) - (PREC | [F])) - 0.1
 <h3 class="my-4" id="custom_base_node"> Adding a custom base node </h3>
 
 <p>
-If the answer to the question: "Can the functionality I need can be achieved using a new measure function?" is "No", then you may need to implement a new base node class. For example, consider the Seldonian regression algorithm in the <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. 2019 Science paper</a> (see Figure 2), designed to enforce fairness in GPA prediction between male and female applicants based on SAT test scores. The specific fairness constraint enforced in that paper was: the mean prediction error between male and female students should not differ by more 0.05 GPA points. This constraint is actually expressible using existing syntax: <code>abs((Mean_Error | [M]) - (Mean_Error | [F])) - epsilon</code>, where <code>Mean_Error</code> is an existing built-in measure function.
+If the answer to the question: "Can the functionality I need can be achieved using a new measure function?" is "No", then you may need to implement a new base node class. For example, consider the Seldonian regression algorithm presented by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a> (see Figure 2), designed to enforce fairness in GPA prediction between male and female applicants based on their scores on nine entrance examinations. The specific fairness constraint enforced in that paper was: the mean prediction error between male and female students should not differ by more 0.05 GPA points. This constraint is actually expressible using existing syntax: <code>abs((Mean_Error | [M]) - (Mean_Error | [F])) - epsilon</code>, where <code>Mean_Error</code> is an existing built-in measure function.
 </p>
 
 <p>

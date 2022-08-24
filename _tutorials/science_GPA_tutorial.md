@@ -15,32 +15,327 @@ next_page_name: Custom base variables tutorial
 <hr class="my-4">
 
 <h3>Introduction</h3>
-
-<p> </p>
+<p>
+One of the examples presented by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a> explores enforcing five popular definitions of fairness on a classification problem. The classification problem involves predicting whether students have high ($\geq3.0$) or low ($<3.0$) grade point averages (GPAs) based on their scores on nine entrance examinations. Thomas et al. (2019) used custom code that predates the Seldonian Toolkit to run their Seldonian algorithms. In this tutorial, we will demonstrate how to use the Seldonian Toolkit to apply the same fairness definitions to the same dataset. Specifically, we will run Seldonian Experiments, recreating the plots in Figure 3 of their paper.  
+</p>
+<h5>Caveats</h5>
+<p> 
+<ul>
+<li> The Seldonian Toolkit currently only supports quasi-Seldonian algorithms, so we will not recreate the curves labeled "Seldonian classification" by Thomas et al. (2019) in their Figure 3.</li>
+<li> The version of Fairlearn, 0.2.0, the first publicly released version, used by Thomas et al. (2019) is not compatible with Python 3.8, the minimum version of Python supported by the Seldonian Toolkit. Instead, we used the most recent stable version of Fairlearn (0.7.0) to run the code in this tutorial. The Fairlearn API has evolved considerably since 0.2.0, and it now supports more of the fairness constraints considered by Thomas et al. (2019). </li>
+<li> In candidate selection, we used gradient descent with a logistic regression model, whereas Thomas et al. (2019) used black box optimization with a linear classifier model to find the candidate solution. This may change how much data it takes for the performance and solution rate of the quasi-Seldonian models to achieve the optimum values, but the overall trends should not be affected.  </li>
+<li> We used 50 trials per data fraction in our experiments, compared to Thomas et al. (2019) who used 250 trials per data fraction. This only has the effect of increasing our uncertainty ranges compared to theirs. The overall trends are not affected. </li>
+</ul>
+For all of these reasons, we seek to reproduce the general trends found by Thomas et al. (2019), rather than the identical results. 
+</p>
 
 <h3>Outline</h3>
 
 <p>In this tutorial, you will learn how to:</p>
 
 <ul>
-    <li>Item 1 </li>
-    <li>Item 2 </li>
+    <li>Format the GPA classification dataset used by Thomas et al. (2019) for use in the Seldonian Toolkit </li>
+    <li>Create the Three Plots of a Seldonian Experiment for the five different fairness definitions considered by Thomas et al. (2019) </li>
 </ul>
 
 <h3 id="dataset_prep"> Dataset preparation </h3>
+<p>
+    We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/GPA/gpa_data_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of the notebook here: <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/GPA">https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/GPA</a>. 
+</p>
+
+<p> We downloaded the GPA dataset file called <code>data.csv</code> from the <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/O35FW8">Harvard dataverse link</a> listed by Thomas et al. (2019). Specifically, we followed that link and then clicked the "Access Dataset" dropdown and downloaded the "Original Format ZIP (3.0 MB)" file. At the link, there is a description of the columns. We used the <a href="https://pandas.pydata.org/">pandas</a> library to load the CSV file into a dataframe. We scaled the columns representing the nine entrance exam scores using a standard scaler. We then created a new column called <code class='highlight'>GPA_class</code> to which we assigned a value of 1 if the existing GPA column had a value $\geq3$ and assigned a value of 0 otherwise. While the dataset already has a gender column, the Seldonian Toolkit requires each group in a sensitive attribute to have its own binary-valued column. As a result, we created two new columns: "M" (male) and "F" (female) based off of the values of the gender column. We set the values of the "M" column to be 1 if the gender was male and 0 if female. For the "F" column, we set the values to be 1 if the gender was female and 0 if male. Finally, we dropped the original gender and GPA columns, reordered the columns so that the sensitive attributes were first, followed by the scaled test scores, followed by the <code class='highlight'>GPA_class</code> label column and saved the file in CSV format. This file can be found <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/GPA/gpa_classification_dataset.csv">here</a>. We also created a JSON file containing the metadata that we will provide to the Seldonian Engine library <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/GPA/metadata_classification.json">here</a>.
+</p>
 
 <h3>Formulate the Seldonian ML problem</h3>
 
+Thomas et al. (2019) considered five different definitions of fairness to apply to the problem of predicting whether students would have high or low GPA based on nine entrance examination scores. The five definitions, and their constraint strings are:
+<ol>
+<li>Disparate impact: 'min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) <= 0.8'</li>
+<li>Demographic parity: 'abs((PR | [M]) - (PR | [F])) <= 0.2'</li>
+<li>Equalized odds: 'abs((FNR | [M]) - (FNR | [F])) + abs((FPR | [M]) - (FPR | [F])) <= 0.35'</li>
+<li>Equal opportunity: 'abs((FNR | [M]) - (FNR | [F])) <= 0.2'</li>
+<li>Predictive equality: 'abs((FPR | [M]) - (FPR | [F])) <= 0.2'</li>
+</ol>
+
+They applied each of these constraints independently, each with $\delta=0.05$. 
+
 <h3>Creating the specification object</h3>
+<p>
+We need to create a different spec object for each constraint because we will be running five different experiments. However, every other input to the spec object is the same, so we can make five spec objects using a for loop. In the script below, set <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to where you saved the data and metadata files from above. <code class='highlight'>save_base_dir</code> is the parent directory to where five directories will be created, one holding each spec object. Change it to somewhere convenient on your machine.
+</p>
 
+<p>
+<div>
 
-<h3> Running the Seldonian Engine </h3>
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
+
+{% highlight python %}
+# createSpec.py
+import os
+from seldonian.parse_tree.parse_tree import make_parse_trees_from_constraints
+from seldonian.dataset import DataSetLoader
+from seldonian.utils.io_utils import load_json,save_pickle
+from seldonian.spec import SupervisedSpec
+from seldonian.models.models import LogisticRegressionModel
+
+if __name__ == '__main__':
+    data_pth = "../../static/datasets/supervised/GPA/gpa_classification_dataset.csv"
+    metadata_pth = "../../static/datasets/supervised/GPA/metadata_classification.json"
+    save_base_dir = '../../../interface_outputs'
+    # Load metadata
+    metadata_dict = load_json(metadata_pth)
+
+    regime = metadata_dict['regime']
+    columns = metadata_dict['columns']
+    sensitive_columns = metadata_dict['sensitive_columns']
+    sub_regime = metadata_dict['sub_regime']
+    
+    # Use logistic regression model
+    model_class = LogisticRegressionModel
+    
+    # Set the primary objective to be log loss
+    primary_objective = model_class().sample_logistic_loss
+
+    # Load dataset from file
+    loader = DataSetLoader(
+        regime=regime)
+
+    dataset = loader.load_supervised_dataset(
+        filename=data_pth,
+        metadata_filename=metadata_pth,
+        file_type='csv')
+    
+    # Behavioral constraints
+    deltas = [0.05]
+    for constraint_name in ["disparate_impact",
+        "demographic_parity","equalized_odds",
+        "equal_opportunity","predictive_equality"]:
+        save_dir = os.path.join(save_base_dir,f'gpa_{constraint_name}')
+        os.makedirs(save_dir,exist_ok=True)
+        # Define behavioral constraints
+        if constraint_name == 'disparate_impact':
+            constraint_strs = ['0.8 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))'] 
+        elif constraint_name == 'demographic_parity':
+            constraint_strs = ['abs((PR | [M]) - (PR | [F])) <= 0.2']
+        elif constraint_name == 'equalized_odds':
+            constraint_strs = ['abs((FNR | [M]) - (FNR | [F])) + abs((FPR | [M]) - (FPR | [F])) <= 0.35']
+        elif constraint_name == 'equal_opportunity':
+            constraint_strs = ['abs((FNR | [M]) - (FNR | [F])) <= 0.2']
+        elif constraint_name == 'predictive_equality':
+            constraint_strs = ['abs((FPR | [M]) - (FPR | [F])) <= 0.2']
+
+        parse_trees = make_parse_trees_from_constraints(
+            constraint_strs,
+            deltas,
+            regime='supervised_learning',
+            sub_regime='classification',
+            columns=columns)
+        
+        # Save spec object, using defaults where necessary
+        spec = SupervisedSpec(
+            dataset=dataset,
+            model_class=model_class,
+            frac_data_in_safety=0.6,
+            primary_objective=primary_objective,
+            parse_trees=parse_trees,
+            initial_solution_fn=model_class().fit,
+            use_builtin_primary_gradient_fn=True,
+            optimization_technique='gradient_descent',
+            optimizer='adam',
+            optimization_hyperparams={
+                'lambda_init'   : 0.5,
+                'alpha_theta'   : 0.01,
+                'alpha_lamb'    : 0.01,
+                'beta_velocity' : 0.9,
+                'beta_rmsprop'  : 0.95,
+                'num_iters'     : 1000,
+                'gradient_library': "autograd",
+                'hyper_search'  : None,
+                'verbose'       : True,
+            }
+        )
+
+        spec_save_name = os.path.join(save_dir,'spec.pkl')
+        save_pickle(spec_save_name,spec,verbose=True)
+{% endhighlight python %}
+</div>
+Running this code should print out that the five spec files have been created.
+</p>
 
 <h3> Running a Seldonian Experiment </h3>
+<p>
+To produce the Three Plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) for the constraint to match Thomas et al. (2019). As a sanity check, we also included a random classifier baseline model in our experiment. The performance metric is accuracy. Here is the code we used to produce the plot for disparate impact: 
+</p>
+
+<div>
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
+{% highlight python %}
+# generate_gpa_plots.py
+import os
+import numpy as np 
+
+from experiments.generate_plots import SupervisedPlotGenerator
+from seldonian.utils.io_utils import load_pickle
+from sklearn.metrics import log_loss,accuracy_score
+
+if __name__ == "__main__":
+    # Parameter setup
+    run_experiments = True
+    make_plots = True
+    save_plot = True
+    include_legend = True
+    constraint_name = 'disparate_impact'
+    fairlearn_constraint_name = constraint_name
+    fairlearn_epsilon_eval = 0.8 # the epsilon used to evaluate g, needs to be same as epsilon in our definition
+    fairlearn_eval_method = 'two-groups' # the epsilon used to evaluate g, needs to be same as epsilon in our definition
+    fairlearn_epsilons_constraint = [0.01,0.1,1.0] # the epsilons used in the fitting constraint
+    performance_metric = 'accuracy'
+    n_trials = 50
+    data_fracs = np.logspace(-4,0,15)
+    n_workers = 8
+    results_dir = f'results/gpa_{constraint_name}_{performance_metric}'
+    plot_savename = os.path.join(results_dir,f'gpa_{constraint_name}_{performance_metric}.png')
+
+    verbose=True
+
+    # Load spec
+    specfile = f'../interface_outputs/gpa_{constraint_name}/spec.pkl'
+    spec = load_pickle(specfile)
+
+    os.makedirs(results_dir,exist_ok=True)
+
+    # Use entire original dataset as ground truth for test set
+    dataset = spec.dataset
+    label_column = dataset.label_column
+    include_sensitive_columns = dataset.include_sensitive_columns
+    include_intercept_term = dataset.include_intercept_term
+
+    test_features = dataset.df.loc[:,
+        dataset.df.columns != label_column]
+    test_labels = dataset.df[label_column]
+
+    if not include_sensitive_columns:
+        test_features = test_features.drop(
+            columns=dataset.sensitive_column_names) 
+
+    if include_intercept_term:
+        test_features.insert(0,'offset',1.0) # inserts a column of 1's in place
+
+    # Setup performance evaluation function and kwargs 
+    # of the performance evaluation function
+
+    # perf_eval_fn = lambda y_pred,y,X: fbeta_score(y,y_pred,beta=2)
+    def perf_eval_fn(y_pred,y,**kwargs):
+        if performance_metric == 'log_loss':
+            return log_loss(y,y_pred)
+        elif performance_metric == 'accuracy':
+            return accuracy_score(y,y_pred > 0.5)
+
+    perf_eval_kwargs = {
+        'X':test_features,
+        'y':test_labels,
+        }
+
+    plot_generator = SupervisedPlotGenerator(
+        spec=spec,
+        n_trials=n_trials,
+        data_fracs=data_fracs,
+        n_workers=n_workers,
+        datagen_method='resample',
+        perf_eval_fn=perf_eval_fn,
+        constraint_eval_fns=[],
+        results_dir=results_dir,
+        perf_eval_kwargs=perf_eval_kwargs,
+        )
+
+    # # Baseline models
+    if run_experiments:
+        plot_generator.run_baseline_experiment(
+            model_name='random_classifier',verbose=True)
+
+        plot_generator.run_baseline_experiment(
+            model_name='logistic_regression',verbose=True)
+
+        # Seldonian experiment
+        plot_generator.run_seldonian_experiment(verbose=verbose)
+
+
+    ######################
+    # Fairlearn experiment 
+    ######################
+
+    fairlearn_sensitive_feature_names=['M']
+    
+    # Make dict of test set features, labels and sensitive feature vectors
+    
+    # Make dict of test set features, labels and sensitive feature vectors
+    if 'offset' in test_features.columns:
+        test_features_fairlearn = test_features.drop(columns=['offset'])
+    else:
+        test_features_fairlearn = test_features
+    fairlearn_eval_kwargs = {
+        'X':test_features_fairlearn,
+        'y':test_labels,
+        'sensitive_features':dataset.df.loc[:,
+            fairlearn_sensitive_feature_names],
+        'eval_method':fairlearn_eval_method,
+        }
+
+    if run_experiments:
+        for fairlearn_epsilon_constraint in fairlearn_epsilons_constraint:
+            plot_generator.run_fairlearn_experiment(
+                verbose=verbose,
+                fairlearn_sensitive_feature_names=fairlearn_sensitive_feature_names,
+                fairlearn_constraint_name=fairlearn_constraint_name,
+                fairlearn_epsilon_constraint=fairlearn_epsilon_constraint,
+                fairlearn_epsilon_eval=fairlearn_epsilon_eval,
+                fairlearn_eval_kwargs=fairlearn_eval_kwargs,
+                )
+
+    if make_plots:
+        if save_plot:
+            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+                performance_label=performance_metric,
+                include_legend=include_legend,
+                savename=plot_savename)
+        else:
+            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+                include_legend=include_legend,
+                performance_label=performance_metric)
+{% endhighlight python %}
+</div>
+<p>
+Save the code above as a file called: <code>generate_gpa_plots.py</code> and run the script from the command line like: 
+{% highlight bash %}
+$ python generate_gpa_plots.py
+{% endhighlight bash %}
+
+To run the experiment for the other constraints, at the top of the file change <code class="highlight">constraint_name</code> to the other constraint names: <code class="highlight">demographic_parity</code>, <code class="highlight">equalized_odds</code>, <code class="highlight">equal_opportunity</code>, and <code class="highlight">predictive_equality</code>. For each constraint, make sure <code class="highlight">fairlearn_constraint_eval</code> is set correctly. This value needs to be the threshold value in the corresponding constraint string. It is 0.35 for equalized odds and 0.2 for the three other remaining constraints. Re-run the script for each constraint.
+</p>
+<p>
+Running the script for each constraint will produce the following plots:  
+</p>
+<div align="center">
+    <figure>
+        <img src="{{ "/assets/img/gpa_disparate_impact_accuracy.png" | relative_url}}" class="img-fluid mt-4" style="width: 55%"  alt="Disparate impact"> 
+        <img src="{{ "/assets/img/gpa_demographic_parity_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 55%"  alt="Demograhpic parity"> 
+        <img src="{{ "/assets/img/gpa_equalized_odds_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 55%"  alt="Equalized odds"> 
+        <img src="{{ "/assets/img/gpa_equal_opportunity_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 55%"  alt="Equal opportunity"> 
+        <img src="{{ "/assets/img/gpa_predictive_equality_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 55%"  alt="Predictive equality"> 
+        <figcaption align="left"> <b>Figure 1</b> - The Three Plots of a Seldonian Experiment: accuracy (left), solution rate (middle) and failure rate (right) for five different fairness constraints enforced independently on the GPA classification dataset considered by Thomas et al. (2019). The colored points and bands in each panel show the mean standard error over 50 trials. Each row of plots is an experiment for a different fairness constraint. From top to bottom: disparate impact, demographic parity, equalized odds, equal opportunity, predictive equality. The legend in the bottom panel applies to all five panels. A quasi-Seldonian algorithm (qsa, blue) is compared to a logistic regression baseline (magenta) and a random classifier (brown), as well as a Fairlearn model enforcing the constraints above with three different values of the group disparity threshold, $\epsilon$: 0.01 (orange), 0.1 (green) and 1.0 (red). Note that the vertical axis range is [0,1] for failure rate on all subplots, whereas Thomas et al. (2019), Figure 3 shows a smaller range that varies across the different constraints. </figcaption>
+    </figure>
+</div>  
+<p>
+While the QSA requires the most samples to return a solution and to achieve optimal accuracy, it is the only model that always satisfies the fairness constraints regardless of the number of samples. We observe the same general trends for the QSA here that Thomas et al. (2019) saw for all five fairness constraints. Our QSA models require slightly fewer data points than theirs to achieve optimal performance and a solution rate of 1.0. This is likely due to the difference in candidate selection. We used gradient descent, whereas Thomas et al. (2019) used black box optimization. Both methods are equally valid. In fact, any algorithm is valid in candidate selection as long as it does not use any of the safety data. 
+</p>
+<p>
+The largest differences between our experiments and those done by Thomas et al. are in the Fairlearn results. The newer Fairlearn models that we ran achieve near-optimal accuracy with almost any amount of data. The older Fairlearn models never reached optimal accuracy in the experiments performed by Thomas et al. The Fairlearn API has changed considerably since Thomas et al. used it, and more fairness constraints are able to be included in their models. That being said, their models continue to violate the fairness constraints. In particularly, the disparate impact constraint is violated over the entire range of sample sizes considered. This is not surprising given that the Fairlearn models do not have a safety test; their models make no guarantee that they will not violate the constraints on unseen data. 
+</p>
+
 
 <h3>Summary</h3>
 <p>
-In this tutorial, we demonstrated ...
+In this tutorial, we demonstrated how to use the Seldonian Toolkit to recreate the analysis performed by Thomas et al. (2019) using the GPA classification dataset. In particular, we sought to recreate their Figure 3. We showed how to format the dataset so that it can be used in the Seldonian Toolkit. Using the same five fairness constraints that Thomas et al. (2019) considered, we ran a Seldonian Experiment for each constraint. We produced the Three Plots: accuracy, solution rate and failure rate, finding similar overall trends as Thomas et al. The quasi-Seldonian algorithms we ran slightly outperformed those run by Thomas et al. (2019), but in general were very similar. The main differences we found were in the Fairlearn models. The differences we observed are easily explained by updates to the Fairlearn API that took place since 2019. Due to compatibility issues, we were unable to use the same Fairlearn API version as Thomas et al. with the newer Python versions required by the Seldonian Toolkit.  
 </p>
 
 </div>

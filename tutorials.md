@@ -5,7 +5,7 @@ permalink: /tutorials/
 
 <div class="container mt-4" align="center">
     <a href="{{ "/overview/" | relative_url }}" class="btn btn-primary">&laquo; Previous: Overview</a>
-    <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url }}" class="btn btn-primary">Next: Installing the Seldonian Toolkit &raquo;</a>
+    <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url }}" class="btn btn-primary">Next: Seldonian Algorithm Details &raquo;</a>
 </div>
 
 <!-- Main Container -->
@@ -14,6 +14,9 @@ permalink: /tutorials/
     <hr class="my-4">
     <p>Here you will find tutorials on how to install and use the software in the Seldonian Toolkit. If you are new these libraries, we recommend reading the first few tutorials in order. The content below is organized into the following topics:</p>
     <ol>
+        <li>
+            <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url}}">Seldonian Algorithm Details</a>
+        </li>
         <li>
             <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">Installing the Seldonian Toolkit</a>
         </li>

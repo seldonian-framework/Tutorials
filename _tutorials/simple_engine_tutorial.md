@@ -12,11 +12,13 @@ next_page_name: Fair loans tutorial
     <h2 align="center" class="mb-3">Tutorial: Getting Started with the Seldonian Engine</h2>
     <hr class="my-4">
     <h3>Outline</h3>
-    <p>In this tutorial, you will learn how to:</p>
+    <p>In this tutorial, you will learn how to:
     <ul>
-        <li>Use the Engine to set up a Seldonian machine learning algorithm.</li>
+        <li>Use the Engine to set up a (quasi)-Seldonian machine learning algorithm (QSA).</li>
         <li>Run the algorithm using the Engine and understand its output.</li>
     </ul>
+    Note that due to the choice of confidence bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs). See <a href="{{ "/overview/#algorithm" | relative_url}}">the overview</a> for more details.
+    </p>
     <h3> An example Seldonian machine learning problem </h3>
     <p>
         Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict the label Y using the single feature X. To solve this problem we can use linear regression with an objective function of the <i>mean squared error</i> (MSE). We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
@@ -101,7 +103,7 @@ if __name__ == "__main__":
 
     # 5. Run seldonian algorithm using the spec object
     SA = SeldonianAlgorithm(spec)
-    passed_safety,solution = SA.run()
+    passed_safety,solution = SA.run(store_cs_values=True)
     print(passed_safety,solution)
 {% endhighlight %}
 <p>
@@ -139,6 +141,27 @@ print(st_primary_objective)
 {% endhighlight %}
 
 This should print a value around: $1.61$, which satsifies the behavioral constraints. 
+</p>
+
+<p>
+We might also wonder what the values of the primary objective and the behavioral constraint function were during the candidate selection process. All of this information and more is stored in a dictionary which is retrievable via the <code class="highlight">SA.get_cs_result()</code> method:
+{% highlight python %}
+cs_dict = SA.get_cs_result() # returns a dictionary with a lot of quantities evaluated at each step of gradient descent
+print(cs_dict.keys())
+{% endhighlight %}
+This will print all of the keys of this dictionary:
+{% highlight python %}
+['candidate_solution', 'best_index', 'best_feasible_g', 'best_feasible_f', 'solution_found', 'theta_vals', 'f_vals', 'g_vals', 'lamb_vals', 'L_vals']
+{% endhighlight %}
+So, to get the primary objective values we would do:
+{% highlight python %}
+print(cs_dict['f_vals'])
+{% endhighlight %}
+and to get the values of the constraint functions, $g_1$ and $g_2$, we would do:
+{% highlight python %}
+print(cs_dict['g_vals'])
+{% endhighlight %}
+Even if candidate selection returned "NSF", the <code class="highlight">cs_dict</code> will still store these values.
 </p>
     <h3>Summary</h3>
     <p>In this tutorial, we demonstrated how to:</p>
