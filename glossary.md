@@ -11,7 +11,7 @@ permalink: /glossary/
 <h5 id="behavioral_constraint"> Behavioral constraints </h5>
 <p>  Criteria for fairness or safety provided by the user. Each behavioral constraint consists of a constraint function and a confidence level. In many cases, the constraint function can be constructed from a constraint string provided the user. The Seldonian algorithm ensures that the behavioral constraints are met with probability of at least $1-\delta$, where $\delta$ is the confidence level provided by the user. </p> 
 
-<h5>Candidate Selection</h5>
+<h5 id="candidate_selection">Candidate Selection</h5>
 <p>One of the three major components of a Seldonian algorithm. It is the component that, using a fraction of the dataset (called the candidate dataset), searches for a solution that simultaneously optimizes the primary objective (i.e. loss function) and is predicted to satisfy the behavioral constraints on the Safety dataset, the remaining fraction of the dataset. Analogous to the training set in the standard supervised machine learning paradigm. </p>
 
 <h5>Confidence level</h5>
