@@ -14,9 +14,9 @@ next_page_name: Install Toolkit tutorial
     <h3>Outline</h3>
     <p>In this tutorial, you will learn:</p>
     <ul>
-        <li>How the toolkit breaks a Seldonian algorithm into <code>candidate selection</code> and <code>safety test</code> components</li>
-        <li>What the <code>safety test</code> does and how it works</li>
-        <li>What <code>candidate selection</code> does and how it works</li>
+        <li>How the toolkit breaks a Seldonian algorithm into <a class='glossary-term' href="{{ "/glossary/#candidate_selection" | relative_url}}">candidate selection</a> and <a class='glossary-term' href="{{ "/glossary/#safety_test" | relative_url}}">safety test</a> components</li>
+        <li>What the <code class='glossary-term'>safety test</code> does and how it works</li>
+        <li>What <code class='glossary-term'>candidate selection</code> does and how it works</li>
         <li>How a parse tree enables users to specify complex behavioral constraints</li>
     </ul>
     Understanding these concepts will help you to understand how the toolkit works and how you can modify and improve it. <b>However, detailed understanding of these concepts is <i>not</i> required to use the toolkit.</b>
@@ -34,23 +34,23 @@ next_page_name: Install Toolkit tutorial
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                <img src="S15.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" alt="Simple Seldonian Algorithm">
+                <img src="{{ "/assets/img/S15.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" alt="Simple Seldonian Algorithm">
                 <figcaption class="figure-caption"><p align="justify">Figure S15 (supplemental materials) P. S. Thomas, B. Castro da Silva, A. G. Barto, S. Giguere, Y. Brun, and E. Brunskill. Preventing undesirable behavior of intelligent machines. <em>Science</em>, 366:999&ndash;1004, 2019. Reprinted with permission from AAAS. A common misconception is that this algorithm is <i>the</i> Seldonian algorithm. There is no such thing, just as there is no one algorithm that is <i>the</i> reinforcement learning algorithm. This is one example of a Seldonian algorithm.</p></figcaption>
             </div>
             <div class="col-md-2"></div>
         </div>
     </div>
     <p>
-        At a high level, Seldonian algorithms of this structure operate as follows. First, the available data \(D\) is partitioned into two sets, \(D_1\) and \(D_2\). After the publication of this figure in the original paper, we realized that it is not easy for people to remember which data set is \(D_1\) and which is \(D_2\). So, we have begun calling these the <i>safety data</i> \(D_\text{safety}=D_2\) and the <i>candidate data</i> \(D_\text{cand}=D_1\). The candidate data \(D_\text{cand}=D_1\) is provided as input to a component called <code>candidate selection</code> that selects a single solution that the algorithm plans to return. This solution is called the <i>candidate solution</i> \(\theta_c\). For now, you can imagine that <code>candidate selection</code> is your favorite off the shelf machine learning algorithm with no safety or fairness guarantees.
+        At a high level, Seldonian algorithms of this structure operate as follows. First, the available data \(D\) is partitioned into two sets, \(D_1\) and \(D_2\). After the publication of this figure in the original paper, we realized that it is not easy for people to remember which data set is \(D_1\) and which is \(D_2\). So, we have begun calling these the <i>candidate data</i> \(D_\text{cand}=D_1\) and the <i>safety data</i> \(D_\text{safety}=D_2\). The candidate data \(D_\text{cand}=D_1\) is provided as input to a component called <code class='glossary-term'>candidate selection</code> that selects a single solution that the algorithm plans to return. This solution is called the <i>candidate solution</i> \(\theta_c\). For now, you can imagine that <code class='glossary-term'>candidate selection</code> is your favorite off the shelf machine learning algorithm with no safety or fairness guarantees.
     </p>
     <p>
-        Next, the candidate solution is provided as input to a component called <code>safety test</code> (or sometimes the <code>fairness test</code> for algorithms designed specifically for fairness applications). The <code>safety test</code> mechanism uses the safety data \(D_\text{safety}=D_2\) to determine whether the algorithm is sufficiently confident that \(\theta_c\) would be safe to return. If the safety test is sufficiently confident that \(\theta_c\) is safe, then it returns the candidate solution \(\theta_c\). Otherwise, it returns No Solution Found (NSF). The <code>safety test</code> component is responsible for ensuring that the algorithm is Seldonian.
+        Next, the candidate solution is provided as input to a component called <code class='glossary-term'>safety test</code> (or sometimes the <code class='glossary-term'>fairness test</code> for algorithms designed specifically for fairness applications). The <code class='glossary-term'>safety test</code> mechanism uses the safety data \(D_\text{safety}=D_2\) to determine whether the algorithm is sufficiently confident that \(\theta_c\) would be safe to return. If the <code class='glossary-term'>safety test</code> is sufficiently confident that \(\theta_c\) is safe, then it returns the candidate solution \(\theta_c\). Otherwise, it returns No Solution Found (NSF). The <code class='glossary-term'>safety test</code> component is responsible for ensuring that the algorithm is Seldonian.
     </p>
     <p>
-        This algorithm structure should be natural, as it is what most data scientists would do if tasked with finding a machine learning model that is safe with high confidence. That is, they would train their model using some of the data (candidate selection), and would then use held-out data to verify that the model performs safely on unseen data (safety test). So, Seldonian algorithms essentially automate the exact process that a data scientist would follow.
+        This algorithm structure should be natural, as it is what most data scientists would do if tasked with finding a machine learning model that is safe with high confidence. That is, they would train their model using some of the data (<code class='glossary-term'>candidate selection</code>), and would then use held-out data to verify that the model performs safely on unseen data (<code class='glossary-term'>safety test</code>). So, Seldonian algorithms essentially automate the exact process that a data scientist would follow.
     </p>
     <p>
-        This toolkit implements Seldonian algorithms with this general structure. In the following sections we describe the safety test and candidate selection components in more detail. However, first we remind the reader that this algorithm structure is just one way that a Seldonian algorithm could be implemented. For example, the reinforcement learning algorithm presented in the <i>Science</i> paper performs the safety test <i>before</i> candidate selection.
+        This toolkit implements Seldonian algorithms with this general structure. In the following sections we describe the <code class='glossary-term'>safety test</code> and <code class='glossary-term'>candidate selection</code> components in more detail. However, first we remind the reader that this algorithm structure is just one way that a Seldonian algorithm could be implemented. For example, the reinforcement learning algorithm presented in the <i>Science</i> paper performs the <code class='glossary-term'>safety test</code> <i>before</i> <code class='glossary-term'>candidate selection</code>.
     </p>
 </div>
 
@@ -61,25 +61,25 @@ next_page_name: Install Toolkit tutorial
     </p>
     <ul>
         <li>The data \(D\) consists of \(m\) <i>independent and identically distributed</i> (i.i.d.) data points. In the supervised learning setting each data point is an input-label pair \((X_j,Y_j)\), while in the reinforcement learning setting each data point corresponds to an entire episode of data. Furthermore, let \(m_c\) and \(m_s\) be the sizes of the candidate and safety data sets respectively, so that \(m_c + m_s = m\). This assumption is not removed later.</li>
-        <li>There is only a single behavioral constraint. That is, \(n=1\). We can therefore drop the \(i\) subscript and write \(\Pr(g(a(D))\leq 0)\geq 1-\delta\) rather than \(\Pr(g_i(a(D))\leq 0)\geq 1-\delta_i\).Later we describe the simple extension to enable multiple constraints.</li>
+        <li>There is only a single behavioral constraint. That is, \(n=1\). We can therefore drop the \(i\) subscript and write \(\Pr(g(a(D))\leq 0)\geq 1-\delta\) rather than \(\Pr(g_i(a(D))\leq 0)\geq 1-\delta_i\). Later we describe the simple extension to enable multiple constraints.</li>
         <li>The user specifies the desired definition of \(g\) by providing a function \(\hat g\) that uses data to construct unbiased estimates of \(g(\theta)\). That is, \(g(\theta)=\mathbf{E}[\hat g(\theta,D)]\), where here \(D\) could be any subset of the available data (it could be \(D\), \(D_c\), \(D_s\), or any other set of i.i.d. data points). This is the key limiting assumption that is removed in the "parse tree" section below. However, many definitions of \(g\) do satisfy this constraint.</li>
     </ul>
     <p>
-        The third assumption can be difficult to understand in this abstract form. To make it more concrete, consider an example: a regression problem where \(D=(X_j,Y_j)_{j=1}^m\), and where the goal is to minimize the mean squared error \(\operatorname{MSE}(\theta)=\mathbf{E}[(Y_j-\hat y(X_j,\theta))^2]\), where \(\hat y(X_j,\theta)\) is the regression model's prediction of \(Y_j\) based on the input \(X_j\) and using model paramters (weights) \(\theta\). Now imagine that the user of the algorithm wants to add in the safety constraint that \(\operatorname{MSE}(\theta) \leq 2.0\), i.e., that the model is sufficiently accurate when applied to future points not seen during training. This constraint corresponds to \(g(\theta) = \operatorname{MSE}(\theta) - 2.0\), since \(\theta\) is considered safe if and only if \(g(\theta) \leq 0\). In this case, the user could provide the function \(\hat g\) that returns one unbiased estimate of \(g(\theta)\) from each data point \((X_j,Y_j)\). This function would simply return the squared residual for the \(j^\text{th}\) point minus 2.0: \(\hat g(\theta,(X_j,Y_j)) = (Y_i - \hat y(X_j,\theta))^2 -2.0 \). If \(\hat g\) is provided with more than one point, it can return one unbiased estimate of \(g(\theta)\) for each provided point. 
+        The third assumption can be difficult to understand in this abstract form. To make it more concrete, consider an example: a regression problem where \(D=(X_j,Y_j)_{j=1}^m\), and where the goal is to minimize the mean squared error \(\operatorname{MSE}(\theta)=\mathbf{E}[(Y_j-\hat y(X_j,\theta))^2]\), where \(\hat y(X_j,\theta)\) is the regression model's prediction of \(Y_j\) based on the input \(X_j\) and using model paramters (weights) \(\theta\). Now imagine that the user of the algorithm wants to add in the safety constraint that \(\operatorname{MSE}(\theta) \leq 2.0\), i.e., that the model is sufficiently accurate when applied to future points not seen during training. This constraint corresponds to \(g(\theta) = \operatorname{MSE}(\theta) - 2.0\), because \(\theta\) is considered safe if and only if \(g(\theta) \leq 0\). In this case, the user could provide the function \(\hat g\) that returns one unbiased estimate of \(g(\theta)\) from each data point \((X_j,Y_j)\). This function would simply return the squared residual for the \(j^\text{th}\) point minus 2.0: \(\hat g(\theta,(X_j,Y_j)) = (Y_i - \hat y(X_j,\theta))^2 -2.0 \). If \(\hat g\) is provided with more than one point, it can return one unbiased estimate of \(g(\theta)\) for each provided point. 
     </p>
     <p>
-        With these assumptions, it is relatively easy to create the <code>safety test</code> mechanism. First, the safety test passes the candidate solution \(\theta_c\) and the safety data \(D_\text{safety}=D_2\) to \(\hat g\). The result is an array of unbiased estimates of \(g(\theta_c)\). Let \(Z_1,\dotsc,Z_{m_s}\) be these unbiased estimates of \(g(\theta)\). Recall that since these estimates are i.i.d. and unbiased, we know that for any \(j\), \(\mathbf{E}[Z_j] = g(\theta)\). Next, the safety test constructs a \(1-\delta\) confidence upper bound on the expected value of \(Z_j\) using standard statistical tools like Hoeffding's inequality or Student's \(t\)-test. If this \(1-\delta\) confidence upper bound is at most zero, then the algorithm can conclude with confidence at least \(1-\delta\) that \(\theta_c\) is safe, and so it is returned. if the \(1-\delta\) confidence upper bound is greater than zero, the algorithm cannot conclude with sufficient confidence that \(\theta_c\) is safe, and so it returns No Solution Found (NSF) instead.
+        With these assumptions, it is relatively easy to create the <code class='glossary-term'>safety test</code> mechanism. In the the <code class='glossary-term'>safety test</code>, \(\hat g\) is calculated from the the candidate solution \(\theta_c\) and the safety data \(D_\text{safety}=D_2\). The result is an array of unbiased estimates of \(g(\theta_c)\). Let \(Z_1,\dotsc,Z_{m_s}\) be these unbiased estimates of \(g(\theta)\). Recall that since these estimates are i.i.d. and unbiased, we know that for any \(j\), \(\mathbf{E}[Z_j] = g(\theta)\). Next, the <code class='glossary-term'>safety test</code> constructs a \(1-\delta\) confidence upper bound on the expected value of \(Z_j\) using standard statistical tools like Hoeffding's inequality or Student's \(t\)-test. If this \(1-\delta\) confidence upper bound is at most zero, then the algorithm can conclude with confidence at least \(1-\delta\) that \(\theta_c\) is safe, and so it is returned. if the \(1-\delta\) confidence upper bound is greater than zero, the algorithm cannot conclude with sufficient confidence that \(\theta_c\) is safe, and so it returns No Solution Found (NSF) instead.
     </p>
     <p>
-        In order to convert this English description into a precise mathematical statmenet for what the safety test does, we first review Student's \(t\)-test. 
+        In order to convert this English description of the <code class='glossary-term'>safety test</code> into a precise mathematical statement, we first review Student's \(t\)-test. 
     </p>
-    <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
+    <div class="container inset-box border border-dark border-2 p-3 my-2">
         <h2>Student's \(t\)-test</h2>
         <p>
             Let \(Z_1,\dotsc,Z_m\) be \(m\) i.i.d. random variables and let \(\bar Z = \frac{1}{m}\sum_{i=1}^m Z_i\). If \(\bar Z\) is normally distributed, then for any \(\delta \in (0,1)\):
             $$\Pr\left (\mathbf{E}[Z_1] \leq \bar Z + \frac{\hat \sigma}{\sqrt{m}}t_{1-\delta,m-1}\right ) \geq 1-\delta,$$
             where \(\hat \sigma\) is the sample standard deviation including Bessel's correction:
-            $$\hat \sigma = \sqrt{\frac{1}{m-1}\sum_{i=1}^m \left ( Z_i - \bar Z\right )^2},$$
+            $$\hat \sigma = \sqrt{\frac{1}{m-1}\sum_{i=1}^m{ \left( Z_i - \bar Z\right )^2}},$$
             and where \(t_{1-\delta, \nu}\) is the \(100(1-\delta)\) percentile of the Student \(t\)-distribution with \(\nu\) degrees of freedom, i.e., <kbd>tinv\((1-\delta,\nu)\)</kbd> in <a href="https://www.mathworks.com/help/stats/tinv.html">Matlab</a>.
         </p>
         <p>
@@ -91,7 +91,7 @@ next_page_name: Install Toolkit tutorial
         </p>
     </div>
     <p>
-        Recall that in the safety we use apply Student's \(t\)-test to the outputs of \(\hat g(\theta_c, D_\text{safety})\) to obtain a \(1-\delta\)-confidence upper bound on \(g(\theta_c)\). Bringing together all the pieces, the safety test executes the following steps:
+        Recall that in the <code class='glossary-term'>safety test</code> we use apply Student's \(t\)-test to the outputs of \(\hat g(\theta_c, D_\text{safety})\) to obtain a \(1-\delta\)-confidence upper bound on \(g(\theta_c)\). Bringing together all the pieces, the <code class='glossary-term'>safety test</code> executes the following steps:
         <ol>
             <li>Compute \(\hat g(\theta_c, D_\text{safety})\), which produces as output unbiased estimates \(Z_1,\dotsc,Z_{m_s}\). Note: In general \(\hat g\) might output any number of unbiased estimates of \(g(\theta_c)\). In our example \(\hat g\) returns one estimate per data point, so here we use \(m_s\) (the number of points in the safety set) to denote the number of unbiased estimates produced by \(\hat g\). Also, recall that for our grounding example, \(Z_j\) corresponds to the squared residuals on the \(j^\text{th}\) data point minus \(2.0\).</li>
             <li>Compute the sample mean \(\bar Z = \frac{1}{m_s}\sum_{j=1}^{m_s}Z_j\).</li>
@@ -103,40 +103,99 @@ next_page_name: Install Toolkit tutorial
         </ol>
     </p>
     <p>
-        One nice property of the safety test is that it operates properly regardless of how \(\theta_c\) is chosen. This means that in theory <i>any</i> off the shelf machine learning algorithm could be used for the candidate selection component. However, in practice this would not be very effective if the candidate selection mechanism often returns solutions that are not safe (the algorithm would often return NSF). In the next section we discuss how the candidate selection mechanism can be designed to enable the algorithm to return NSF infrequently. 
+        One nice property of the <code class='glossary-term'>safety test</code> is that it operates properly regardless of how \(\theta_c\) is chosen. This means that in theory <i>any</i> off the shelf machine learning algorithm could be used for the <code class='glossary-term'>candidate selection</code> component. However, in practice this would not be very effective if the <code class='glossary-term'>candidate selection</code> mechanism often returns solutions that are not safe (the algorithm would often return NSF). In the next section we discuss how the <code class='glossary-term'>candidate selection</code> mechanism can be designed to enable the algorithm to return NSF infrequently. 
     </p>
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3>Candidate selection</h3>
     <p>
-        As discussed at the end of the previous section, any off the shelf machine learning algorithm could be used for the candidate selection component. However, most will tend to be ineffective. There are two issues. First, standard machine learning algorithms may not consider safety at all, and if they frequently return unsafe solutions the subsequent safety test will frequently return NSF. Second, even when standard machine learning algorithms do consider safety, they do not account for the details of the safety test that will be run. A more sophisticated candidate selection mechanism should consider the exact form of the subsequent safety test, and it should return candidate solutions that are likely to pass the safety test.
+        As discussed at the end of the previous section, any off the shelf machine learning algorithm could be used for the <code class='glossary-term'>candidate selection</code> component. However, most will tend to be ineffective. There are two issues. First, standard machine learning algorithms may not consider safety at all, and if they frequently return unsafe solutions the subsequent <code class='glossary-term'>safety test</code> will frequently return NSF. Second, even when standard machine learning algorithms do consider safety, they do not account for the details of the <code class='glossary-term'>safety test</code> that will be run. A more sophisticated <code class='glossary-term'>candidate selection</code> mechanism should consider the exact form of the subsequent <code class='glossary-term'>safety test</code>, and it should return candidate solutions that are likely to pass the <code class='glossary-term'>safety test</code>.
     </p>
     <p>
-        In this toolkit, we provide a candidate selection mechanism that searches for the candidate solution \(\theta_c\) that optimizes a typical primary objective function (e.g., minimize classification loss, or maximize off-policy estimates of the expected return in the reinforcement learning setting) subject to the constraint that candidate selection <i>predicts</i> that the solution will pass the subsequent safety test. Candidate selection cannot actually compute whether or not the safety test will be passed because it does not have access to \(D_\text{safety}\). Using \(\hat f(\theta,D_\text{cand})\) to denote a primary objective function that should be maximized, we can then write an expression for the candidate solution:
-        $$\theta_c \in \arg\max_{\theta \in \Theta}\hat f(\theta,D_\text{cand})\\\text{s.t. $\theta_c$ predicted to pass safety test}.$$ 
+        In this toolkit, we provide a <code class='glossary-term'>candidate selection</code> mechanism that searches for the candidate solution \(\theta_c\) that optimizes a typical primary objective function (e.g., minimize classification loss, or maximize off-policy estimates of the expected return in the reinforcement learning setting) subject to the constraint that <code class='glossary-term'>candidate selection</code> <i>predicts</i> that the solution will pass the subsequent <code class='glossary-term'>safety test</code>. <code class='glossary-term'>Candidate selection</code> cannot actually compute whether or not the <code class='glossary-term'>safety test</code> will be passed because it does not have access to \(D_\text{safety}\). Using \(\hat f(\theta,D_\text{cand})\) to denote a primary objective function that should be maximized, we can then write an expression for the candidate solution:
+
+        $$
+        \theta_c \in \arg\max_{\theta \in \Theta}\hat f(\theta,D_\text{cand})\\\text{s.t. $\theta_c$ predicted to pass safety test}.
+        $$ 
     </p>
     <p>
-        This raises the question: how exactly should the safety test be predicted? This depends on the statistical tool used to compute the high-confidence upper bound on \(g(\theta_c)\). We use the following heuristic when using Student's \(t\)-test:
-        $$\theta_c \in \arg\max_{\theta \in \Theta}\hat f(\theta,D_\text{cand})\\\text{s.t. }\forall i \in \{1,2,\dotsc,n\},\quad \bar Z + 2\frac{\hat \sigma}{\sqrt{|D_\text{safety}|}}t_{1-\delta_i,|D_\text{safety}|-1}\leq 0,$$
-        where \(\bar Z\) and \(\hat \sigma\) are the sample mean and standard deviation of the unbiased estimates computed from the candidate data, i.e., the sample mean and standard deviation of \(g(\theta,D_\text{cand})\).
+        This raises the question: how exactly should the <code class='glossary-term'>safety test</code> be predicted? This depends on the statistical tool used to compute the high-confidence upper bound on \(g(\theta_c)\). We use the following heuristic when using Student's \(t\)-test:
+        $$\theta_c \in \arg\max_{\theta \in \Theta}\hat f(\theta,D_\text{cand})\\\text{s.t. }\forall i \in \{1,2,\dotsc,n\},\quad \bar Z_i + 2\frac{\hat \sigma_i}{\sqrt{|D_\text{safety}|}}t_{1-\delta_i,|D_\text{safety}|-1}\leq 0,$$
+        where \(\bar Z_i\) and \(\hat \sigma_i\) are the sample mean and standard deviation of the unbiased estimate of the $i$th constraint computed from the candidate data, i.e., the sample mean and standard deviation of \(g_i(\theta,D_\text{cand})\). Notice that only $|D_\text{safety}|$, the size of the safety dataset, appears in this term. No actual safety data are used in this prediction, as that would consistute data leakage from safety test to candidate selection.
     </p>
     <p>
-        We reiterate that this prediction of the safety test is a <i>heuristic</i> (one that we have found to be quite effective), not the result of a principled derivation. In particular, the constant \(2\) scaling the confidence interval from Student's \(t\)-test is chosen arbitrarily, and often other values work better in practice (in one case we found that a factor of \(3\) was more effective). We expect that this is one aspect of Seldonian algorithms that could be improved.
+        We reiterate that this prediction of the <code class='glossary-term'>safety test</code> is a <i>heuristic</i> (one that we have found to be quite effective), not the result of a principled derivation. In particular, the constant \(2\) scaling the confidence interval from Student's \(t\)-test is chosen arbitrarily, and often other values work better in practice (in one case we found that a factor of \(3\) was more effective). We expect that this is one aspect of Seldonian algorithms that could be improved.
     </p>
     <p>
-        The expression above describes the desired value of \(\theta_c\) as the solution to a constrained optimization problem. This raises the question: How should candidate selection compute or approximate the solution to this optimization problem? The Seldonian toolkit allows the user to select an optimizer. As a starting point, it includes the <a href="https://en.wikipedia.org/wiki/CMA-ES">CMA-ES</a> algorithm using a boundary function to incorporate the constraint. This is the gradient-free black-box optimizer that was used in several papers presenting Seldonian algorithms. Though it can be effective for small problems, it tends to be too slow for larger problems. To overcome this limitation, we also include a gradient-based optimizer.
+        The expression above describes the desired value of \(\theta_c\) as the solution to a constrained optimization problem. This raises the question: How should <code class='glossary-term'>candidate selection</code> compute or approximate the solution to this optimization problem? The Seldonian toolkit allows the user to select an optimizer. As a starting point, it includes the <a href="https://en.wikipedia.org/wiki/CMA-ES">CMA-ES</a> algorithm using a boundary function to incorporate the constraint. This is the gradient-free black-box optimizer that was used in several papers presenting Seldonian algorithms. Though it can be effective for small problems, it tends to be too slow for larger problems. To overcome this limitation, we also include a gradient-based optimizer.
     </p>
     <p>
-        The gradient based optimizer uses gradient descent with adaptive step size schedules (<a href="https://arxiv.org/pdf/1412.6980.pdf">Adam</a> by default). However, notice that we cannot directly use gradient ascent (or descent), because the problem is constrained. This can be overcome using the KKT conditions (a generalization of Lagrange Multipliers).
+        The gradient based optimizer uses gradient descent with adaptive step size schedules (<a href="https://arxiv.org/pdf/1412.6980.pdf">Adam</a> by default). However, notice that we cannot directly use gradient ascent (or descent), because the problem is constrained. This can be overcome using the <a href="https://en.wikipedia.org/wiki/Karush%E2%80%93Kuhn%E2%80%93Tucker_conditions">KKT conditions</a> (a generalization of Lagrange Multipliers). We describe our approach below:
     </p>
-    TODO - add box like t-test describing KKT.
-    TODO - add conclusion giving the lagrangian in as much detail as we can (perhaps not much?) and saying that we use automatic differentiation to get the necessary derivatives.
+    <div class="container inset-box border border-dark border-2 p-3 my-2">
+        <h2>Optimization using the KKT conditions</h2>
+        <p>
+            The KKT Theorem states that solutions to the constrainted optimization problem:
+
+            $$\text{Optimize $f({\theta})$ subject to:}\\
+            h_i({\theta}){\leq}0, {\quad} i \in \{1,2,\dotsc,n\}$$
+
+            are the saddle points of the following Lagrangian function:
+
+            $${\mathcal{L(\mathbf{\theta,\lambda})}} = f(\mathbf{\theta}) + {\sum}_{i=1}^{n} {\lambda_i} h_i(\theta),$$
+
+            where $\lambda_i$ are constants called the Lagrange multipliers.  
+
+            In our case, $f(\theta)$ is the primary objective function, and $h_i(\theta)$ is the upper bound on the $i$th constraint function: $$h_i({\theta}) = U(g_i(\mathbf{\theta}))$$
+
+            To find the saddle points of ${\mathcal{L(\theta,\lambda)}}$ we use gradient descent to obtain the global minimum over ${\theta}$ and simultaneous gradient <i>ascent</i> to obtain the global maximum over the multipliers, ${\lambda_i}$. In order to perform gradient descent, we need to be able to compute the gradients:
+
+            $$ \frac{\partial \mathcal{L}}{\partial \theta} = \frac{\partial f(\theta)}{\partial \theta} + {\sum}_{i=1}^{n} {\lambda_i} \frac{\partial \left( U(g_i(\theta)) \right)}{\partial \theta}\\
+            {\text{and}}\\
+            \frac{\partial \mathcal{L}}{\partial \lambda} = {\sum}_{i=1}^{n} {U(g_i(\theta))} 
+            $$
+
+            Sometimes these gradients are known, but in particular in the case of calculating $\frac{\partial \left( U(g_i(\theta)) \right)}{\partial \theta}$, where the constraint function (or the upper bound function) could take on a wide range of forms, we use <a href="https://en.wikipedia.org/wiki/Automatic_differentiation">automatic differentiation</a> to compute the gradients. Once these gradients are calculated, we can perform the update rules of gradient descent (ascent). By default, we use the Adam optimizer to define the update rules.  
+        </p>
+    </div>
+
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3>Parse tree</h3>
     <p>
-            TODO
+    In the <code class='glossary-term'>safety test</code> section above, we considered a simplified setting where the user could provide a function, $\hat{g}(\theta)$, that constructs an unbiased estimate of the real constraint function $g(\theta)$. In reality, this is rarely practical and sometimes impossible. One of the core principles of the Seldonian framework is that the users who are determining what "unsafe" or "unfair" means for the system are often not machine learning practitioners or even programmers. They should therefore not be expected to define a $\hat{g_i}(\theta)$ for each of their $i \in 1,2,\dotsc,n$ constraints and then to program that definition. While we could provide some hardcoded $\hat{g_i}(\theta)$ functions as part of the Seldonian Toolkit, this would severely limit the definitions of undesirable behavior that the user could specify.
     </p>
+    <p>
+    The parse tree provides a bridge between users and the algorithm that allows users to define behavioral constraints using simple mathematical statements. The parse tree replaces the function ${\hat {g}}$ with a binary tree containing multiple functions, ${\hat{z}_1},{\hat{z}_2},\dotsc,{\hat{z}_k}$, for some integer k. Each of these functions is like ${\hat{g}}$, but instead of providing unbiased estimates of $g(\theta)$, the parse tree splits the constraint into other parameters $z_1,z_2,\dotsc,z_k$, called base variables. More formally, for all $i \in {1,2,\dotsc,n}$ and all $j\in{1,2,\dotsc,k}$, $z_i(\theta) = \mathbf{E}[\hat{z}_{i,j}(\theta,D)]$. 
+    </p>
+    <p>
+    These other parameters $z_1,z_2,\dotsc,z_k$ consist of statistical functions, referred to as <a href="{{ "/glossary/#measure_function" | relative_url}}">measure functions</a> in the Seldonian Toolkit, for which we have preprogrammed definitions of their unbiased estimates. Confidence intervals are calculated on the base variables (it is possible to automatically determine whether a one or two-sided interval is necessary for each base variable), which are then propagated through the tree back to the root using <a href="https://en.wikipedia.org/wiki/Interval_arithmetic">interval arithmetic</a> rules. The upper bound on the root node is $U(\hat(g(\theta)))$, which is a high confidence upper bound on the original constraint function, $g(\theta)$. This provides a modular framework allowing users to build a wide array of constraints that is much more flexible than forcing users to select from a list of preprogrammed definitions of $\hat{g}(\theta)$. 
+    </p>
+    <p>
+    To make the idea of parse trees more concrete, let's consider the fairness constraint considered for the GPA regression example studied by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a>. The goal of the problem is to accurately predict the GPAs of students from their scores on nine entrance examinations, subject to a fairness constraint. The fairness constraint that Thomas et al. considered is that the mean squared error of men and the mean squared error of women should not differ by more than 0.05. One way to write this constraint as a mathematical statement is: 
+
+    $$g(\theta) = \operatorname{abs}((\text{Mean_Squared_Error} \,|\, [\text{Male}]) - (\text{Mean_Squared_Error} \,|\, [\text{Female}])) - 0.05,$$
+    where $\operatorname{abs}$ is the absolute value function, and  $\text{Mean_Squared_Error} \,|\, [\text{Male}]$ means "Mean squared error given male." The parse tree for this expression can be visualized as:
+</p>
+<div align="center">
+
+    <figure>
+        <img src="{{ "/assets/img/example_graph.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 35%"  alt="graph"> 
+    </figure> 
+</div>
+<p>
+    In this example, the base variables are the two nodes at the bottom of the tree: $\text{Mean_Squared_Error} \,|\, [\text{Male}]$ and $\text{Mean_Squared_Error} \,|\, [\text{Female}]$. To calculate the high confidence upper bound for this constraint, the high confidence lower and upper bounds are first calculated on the two base variables using the $t$-test method described above. Then, these confidence bounds are propagated through the "-" node, representing the subtraction operator, just above those nodes. Next, the resulting confidence bound is propagated through the absolute value function. Finally, the confidence bound on the root node is calculated by propagating the resulting confidence bound and the bound from the constant node [0.05,0.05] through another subtraction operator, "-". The upper bound from the root node. For example, let's say we calculated the confidence bounds on the base varaibles to be $[3.0,4.0]$ (male) and $[2.0,3.0]$ (female). The resulting confidence bounds on each node as they are propagated through the tree are shown in the following figure:
+</p>
+<div align="center">
+    <figure>
+        <img src="{{ "/assets/img/example_graph_withbounds.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 35%"  alt="graph"> 
+    </figure> 
+</div>
+<p>
+The resulting upper bound on the root node is 1.95 in this example. Since this is $>0$, the constraint would be violated in this case. This makes sense given that the intervals on the MSE's were $[3.0,4.0]$ (male) and $[2.0,3.0]$ (female), and the constraint is that the MSEs must not differ by more than 0.05.
+
+</p>
+
 </div>

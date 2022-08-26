@@ -30,3 +30,12 @@
     background-color: #ffffff;
     border-color: #000000; /*set the color you want here*/
 }
+
+.glossary-term {
+    color: #fc6203;
+}
+
+.inset-box {
+    /*background-color: #cfcfcf;*/
+    background-color: #dbdbdb;
+}
