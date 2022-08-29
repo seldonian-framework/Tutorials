@@ -13,26 +13,35 @@ next_page_name: Reinforcement learning first tutorial - gridworld
 <h2 align="center" class="mb-3">Tutorial: Creating your own constraint base nodes</h2>
 
 <hr class="my-4">
-<p> The purpose of this tutorial is to help you understand how to extend the functionality of string-based behavioral constraints to suit your custom constraints.
+<p> The purpose of this tutorial is to help you understand how to extend the functionality of string-based behavioral constraints to suit your custom constraints. If the answer to any of these questions is "yes" or "maybe" then keep reading:
+<ul>
+    <li>Does your constraint involve a function or operator that is not currently supported by the Engine? </li>
+    <li>Do you have an alternative method for bounding your constraint that is not supported by the Engine? </li>
+</ul>
 </p>
 <h3 class="my-4">Introduction</h3>
 
 <p>
-In cases where behavioral constraints can be expressed a mathematical equations or inequalities, which is often the case for fairness constraints (for example, see <a href="https://fairware.cs.umass.edu/papers/Verma.pdf">Verma et al., 2018</a>), the constraints can be passed to the Seldonian Engine as strings with specific syntax. Specifically, these strings can contain five types of things:
+In cases where behavioral constraints can be expressed as mathematical inequalities, as is the case for some popular definitions of fairness (for example, see <a href="https://fairware.cs.umass.edu/papers/Verma.pdf">Verma et al., 2018</a>), the constraints can be passed to the Seldonian Engine as strings with specific syntax. Specifically, these strings can contain five types of things:
 <ol>
-<li>Mathematical operators <code>(+,-,*,/)</code> </li>
+<li>The mathematical operators: <code>(+,-,*,/)</code> </li>
 <li>The native Python math functions: <code>min(),max(),abs(),exp()</code> </li>
-<li>Constant numbers, such as 0.5</li>
-<li>Measure functions, such as "PR" (positive rate) which represent statistical functions that have been specifically implemented in the library </li>
-<li>Custom strings that represent a custom base node, which are the subject of this tutorial</li>
+<li>Constant numbers, such as -0.5 or 7</li>
+<li>The inequality strings "<=" or ">="</li>
+<li>Special strings that trigger a call to a function, such as "FPR" (standing for false positive rate)</li>
 </ol> 
-For more details on the rules for providing behavioral constraint strings to the Engine, see <a href="https://seldonian-toolkit.github.io/Engine/build/html/overview.html#behavioral-constraints">the Engine docs</a>. 
+An example constraint string that uses all five of these types is: "max(FPR/TPR,FNR/TNR) <= 0.5", which translates to "ensure that whatever is larger out of false positive rate divided by true positive rate vs. false negative rate divided by true negative rate is less than 0.5."
 </p>
 <p>
-While the Engine supports a wide range of mathematical expressions, it is possible that you will require more custom functionality in your base nodes. First, ask yourself: "can the functionality I need be achieved using a new measure function?" If the answer is "Yes" or "Not sure", then proceed to the next section. If not, then skip to the <a href="#custom_base_node">Adding a custom base node</a> section.
-
-<h3 class="my-4"> Adding a new measure function </h3>
+In this tutorial, we will focus on #5. Specifically, we will demonstrate how to define custom strings that map to your own functions. This will allow you to customize your constraints beyond what the Engine already supports. 
 </p>
+<p>
+The Engine supports several built-in strings that trigger a call to a function. These are referred to as <a href="{{ "/glossary/#measure_function" | relative_url}}">measure functions</a> and include strings like "Mean_Squared_Error", "FPR" (standing for "false positive rate") and "J_pi_new" (the performance of the new policy in the reinforcement learning setting). These are the base nodes in the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a>. We designed the Engine to make it straightfoward for developers to add new measure functions. The complete list of existing built-in measure functions is <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.parse_tree.operators.html#seldonian.parse_tree.operators.measure_functions_dict">here</a>, separated by regime and sub-regime (e.g., classification vs. regression). If your desired constraint involves a statistical function not listed there, for example <a href="https://en.wikipedia.org/wiki/Precision_and_recall#Definition_(classification_context)">precision</a>, then the section <a href="#new_measure_function">Adding a new measure function</a> will help you create it.
+</p>
+<p> 
+However, it is possible that creating a new measure function will not be sufficient for your use case. This can be true for many reasons. Recall from the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a> discussion that confidence bounds are calculated on base nodes and then propagated to the root of the tree to get the upper bound on the overall constraint, $\hat{g(\theta)}$. The confidence bounds are calculated on the mean of the base node. For every measure function, there is Python function that defines how to get unbiased estimates of that function. If the base node is the mean squared error (MSE), then the unbiased estimates are the squared errors on each data point. If your desired constraint involves bounding something other than the mean of something, then you will not be able to define your constraint in terms of measure functions. In that case, you will need to create a new type of base node, which we call a "custom base node." In the <a href="#custom_base_node">Creating a custom base node</a> section below, we demonstrate how to do this for a constraint involving the <a href="https://en.wikipedia.org/wiki/Expected_shortfall">conditional value at risk (CVaR)</a> statistic. 
+</p>
+<h3 class="my-4" id="new_measure_function"> Adding a new measure function </h3>
 <p>
      The currently programmed measure functions are listed <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.parse_tree.operators.html#seldonian.parse_tree.operators.measure_functions_dict">here</a> by regime and sub-regime. If your desired constraint involves a statistical function not listed there, for example <a href="https://en.wikipedia.org/wiki/Precision_and_recall#Definition_(classification_context)">precision</a>, you could add that functionality by doing the following:
 <ol>
@@ -106,7 +115,7 @@ At this point, you can now use the "PREC" in your constraint string that you pro
 abs((PREC | [M]) - (PREC | [F])) - 0.1
 {% endhighlight python %}
 </p>
-<h3 class="my-4" id="custom_base_node"> Adding a custom base node </h3>
+<h3 class="my-4" id="custom_base_node"> Creating a custom base node </h3>
 
 <p>
 If the answer to the question: "Can the functionality I need can be achieved using a new measure function?" is "No", then you may need to implement a new base node class. For example, consider the Seldonian regression algorithm presented by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a> (see Figure 2), designed to enforce fairness in GPA prediction between male and female applicants based on their scores on nine entrance examinations. The specific fairness constraint enforced in that paper was: the mean prediction error between male and female students should not differ by more 0.05 GPA points. This constraint is actually expressible using existing syntax: <code>abs((Mean_Error | [M]) - (Mean_Error | [F])) - epsilon</code>, where <code>Mean_Error</code> is an existing built-in measure function.

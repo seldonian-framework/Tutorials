@@ -30,15 +30,11 @@ next_page_name: Install Toolkit tutorial
     <p>
         Though there are many different ways that a Seldonian algorithm can be designed, we have found one general algorithm structure that is often effective. This algorithm structure is depicted in the figure below.
     </p>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <img src="{{ "/assets/img/S15.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" alt="Simple Seldonian Algorithm">
-                <figcaption class="figure-caption"><p align="justify">Figure S15 (supplemental materials) P. S. Thomas, B. Castro da Silva, A. G. Barto, S. Giguere, Y. Brun, and E. Brunskill. Preventing undesirable behavior of intelligent machines. <em>Science</em>, 366:999&ndash;1004, 2019. Reprinted with permission from AAAS. A common misconception is that this algorithm is <i>the</i> Seldonian algorithm. There is no such thing, just as there is no one algorithm that is <i>the</i> reinforcement learning algorithm. This is one example of a Seldonian algorithm.</p></figcaption>
-            </div>
-            <div class="col-md-2"></div>
-        </div>
+    <div align="center">
+        <figure class='mt-4'>
+            <img src="{{ "/assets/img/S15.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 50%" alt="Simple Seldonian Algorithm">
+            <figcaption class="figure-caption"><b>Figure 1</b> - Figure S15 (supplemental materials) P. S. Thomas, B. Castro da Silva, A. G. Barto, S. Giguere, Y. Brun, and E. Brunskill. Preventing undesirable behavior of intelligent machines. <em>Science</em>, 366:999&ndash;1004, 2019. Reprinted with permission from AAAS. A common misconception is that this algorithm is <i>the</i> Seldonian algorithm. There is no such thing, just as there is no one algorithm that is <i>the</i> reinforcement learning algorithm. This is one example of a Seldonian algorithm.</figcaption>
+        </figure>
     </div>
     <p>
         At a high level, Seldonian algorithms of this structure operate as follows. First, the available data \(D\) is partitioned into two sets, \(D_1\) and \(D_2\). After the publication of this figure in the original paper, we realized that it is not easy for people to remember which data set is \(D_1\) and which is \(D_2\). So, we have begun calling these the <i>candidate data</i> \(D_\text{cand}=D_1\) and the <i>safety data</i> \(D_\text{safety}=D_2\). $D_\text{cand}$ is provided as input to a component called <code class='glossary-term'>candidate selection</code> that selects a single solution that the algorithm plans to return. This solution is called the <i>candidate solution</i> \(\theta_c\). For now, you can imagine that <code class='glossary-term'>candidate selection</code> is your favorite off the shelf machine learning algorithm with no safety or fairness guarantees.
@@ -163,38 +159,39 @@ next_page_name: Install Toolkit tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Parse tree</h3>
+    <h3 id="parse_tree">Parse tree</h3>
     <p>
-    In the <code class='glossary-term'>safety test</code> section above, we considered a simplified setting where the user could provide a function, $\hat{g}(\theta)$, that constructs an unbiased estimate of the real constraint function $g(\theta)$. In reality, this is rarely practical and sometimes impossible. One of the core principles of the Seldonian framework is that the users who are determining what "unsafe" or "unfair" means for the system are often not machine learning practitioners or even programmers. They should therefore not be expected to define a $\hat{g_i}(\theta)$ for each of their $i \in 1,2,\dotsc,n$ constraints and then to program that definition. While we could provide some hardcoded $\hat{g_i}(\theta)$ functions as part of the Seldonian Toolkit, this would severely limit the definitions of undesirable behavior that the user could specify.
+    In the <code class='glossary-term'>safety test</code> section above, we considered a simplified setting where the user could provide a function, $\hat{g}$, that constructs an unbiased estimate of the real constraint function $g(\theta)$. In reality, this is rarely practical and sometimes impossible. One of the core principles of the Seldonian framework is that the users who are determining what "unsafe" or "unfair" means for the system are often not machine learning practitioners or even programmers. They should therefore not be expected to define a $\hat{g_i}$ for each of their $i \in 1,2,\dotsc,n$ constraints and then to program that definition. While we could provide some hardcoded $\hat{g_i}$ functions as part of the Seldonian Toolkit, this would severely limit the definitions of undesirable behavior that the user could specify.
     </p>
     <p>
-    The parse tree provides a bridge between users and the algorithm that allows users to define behavioral constraints using simple mathematical statements. The parse tree replaces the function ${\hat {g}}$ with a binary tree containing multiple functions, ${\hat{z}_1},{\hat{z}_2},\dotsc,{\hat{z}_k}$, for some integer k. Each of these functions is like ${\hat{g}}$, but instead of providing unbiased estimates of $g(\theta)$, the parse tree splits the constraint into other parameters $z_1,z_2,\dotsc,z_k$, called base variables. More formally, for all $i \in {1,2,\dotsc,n}$ and all $j\in{1,2,\dotsc,k}$, $z_i(\theta) = \mathbf{E}[\hat{z}_{i,j}(\theta,D)]$. 
+    The parse tree provides a bridge between users and the algorithm by allowing users to define behavioral constraints using mathematical statements. The parse tree breaks the mathematical statement down into a (often) binary tree, where each node in the tree is a single mathematical unit of the statement. In doing so, it replaces the function ${\hat {g}}$ with multiple functions, ${\hat{z}_1},{\hat{z}_2},\dotsc,{\hat{z}_k}$, for some integer k. Each of these functions is like ${\hat{g}}$, but instead of providing unbiased estimates of $g(\theta)$, the parse tree splits the constraint into other parameters $z_1,z_2,\dotsc,z_k$, called base variables. More formally, for all $i \in {1,2,\dotsc,n}$ and all $j\in{1,2,\dotsc,k}$, $z_i(\theta) = \mathbf{E}[\hat{z}_{i,j}(\theta,D)]$. 
     </p>
     <p>
-    These other parameters $z_1,z_2,\dotsc,z_k$ consist of statistical functions, referred to as <a href="{{ "/glossary/#measure_function" | relative_url}}">measure functions</a> in the Seldonian Toolkit, for which we have preprogrammed definitions of their unbiased estimates. Confidence intervals are calculated on the base variables (it is possible to automatically determine whether a one or two-sided interval is necessary for each base variable), which are then propagated through the tree back to the root using <a href="https://en.wikipedia.org/wiki/Interval_arithmetic">interval arithmetic</a> rules. The upper bound on the root node is $U(\hat(g(\theta)))$, which is a high confidence upper bound on the original constraint function, $g(\theta)$. This provides a modular framework allowing users to build a wide array of constraints that is much more flexible than forcing users to select from a list of preprogrammed definitions of $\hat{g}(\theta)$. 
+    These other parameters $z_1,z_2,\dotsc,z_k$ consist of statistical functions, referred to as <a href="{{ "/glossary/#measure_function" | relative_url}}">measure functions</a> in the Seldonian Toolkit, for which we have preprogrammed definitions of their unbiased estimates. Confidence intervals are calculated on the base variables (it is possible to automatically determine whether a one or two-sided interval is necessary for each base variable), which are then propagated through the tree back to the root using <a href="https://en.wikipedia.org/wiki/Interval_arithmetic">interval arithmetic</a> rules. The upper bound on the root node is equivalent to $U(\hat{g})$, which is a high confidence upper bound on the original constraint function, $g(\theta)$. This provides a modular framework allowing users to build a wide array of constraints that is much more flexible than forcing users to select from a list of preprogrammed definitions of $\hat{g}$. 
     </p>
     <p>
-    To make the idea of parse trees more concrete, let's consider the fairness constraint considered for the GPA regression example studied by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a>. The goal of the problem is to accurately predict the GPAs of students from their scores on nine entrance examinations, subject to a fairness constraint. The fairness constraint that Thomas et al. considered is that the mean squared error of men and the mean squared error of women should not differ by more than 0.05. One way to write this constraint as a mathematical statement is: 
+    To make the idea of parse trees more concrete, let's consider the fairness constraint used in the GPA regression example presented by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a>. The goal of the problem is to accurately predict the GPAs of students from their scores on nine entrance examinations, subject to a fairness constraint. The fairness constraint that the authors considered is, in plain English: "the mean squared error of male GPAs and the mean squared error of female GPAs should not differ by more than 0.05." One way to write this constraint as a mathematical statement is: 
 
     $$g(\theta) = \operatorname{abs}((\text{Mean_Squared_Error} \,|\, [\text{Male}]) - (\text{Mean_Squared_Error} \,|\, [\text{Female}])) - 0.05,$$
     where $\operatorname{abs}$ is the absolute value function, and  $\text{Mean_Squared_Error} \,|\, [\text{Male}]$ means "Mean squared error given male." The parse tree for this expression can be visualized as:
 </p>
-<div align="center">
 
-    <figure>
-        <img src="{{ "/assets/img/example_graph.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 35%"  alt="graph"> 
+<div align="center">
+    <figure class='mt-4'>
+        <img src="{{ "/assets/img/parse_tree.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 40%"  alt="parse tree"> 
+        <figcaption class="figure-caption"><b>Figure 2</b> - Parse tree for the constraint: $g(\theta) = \operatorname{abs}((\text{Mean_Squared_Error} \,|\, [\text{Male}]) - (\text{Mean_Squared_Error} \,|\, [\text{Female}])) - 0.05$</figcaption>
     </figure> 
 </div>
 <p>
-    In this example, the base variables are the two nodes at the bottom of the tree: $\text{Mean_Squared_Error} \,|\, [\text{Male}]$ and $\text{Mean_Squared_Error} \,|\, [\text{Female}]$. To calculate the high confidence upper bound for this constraint, the high confidence lower and upper bounds are first calculated on the two base variables using the $t$-test method described above. Then, these confidence bounds are propagated through the "-" node, representing the subtraction operator, just above those nodes. Next, the resulting confidence bound is propagated through the absolute value function. Finally, the confidence bound on the root node is calculated by propagating the resulting confidence bound and the bound from the constant node [0.05,0.05] through another subtraction operator, "-". The upper bound from the root node. For example, let's say we calculated the confidence bounds on the base varaibles to be $[3.0,4.0]$ (male) and $[2.0,3.0]$ (female). The resulting confidence bounds on each node as they are propagated through the tree are shown in the following figure:
+    In this example, the base variables are the two nodes at the bottom of the tree: $\text{Mean_Squared_Error} \,|\, [\text{Male}]$ and $\text{Mean_Squared_Error} \,|\, [\text{Female}]$. To calculate the high confidence upper bound for this constraint, the high confidence lower and upper bounds are first calculated on the two base variables using the $t$-test method described above. Then, these confidence bounds are propagated through the "-" node, representing the subtraction operator, just above those nodes. Next, the resulting confidence bound is propagated through the absolute value function. Finally, the confidence bound on the root node is calculated by propagating the resulting confidence bound and the bound from the constant node [0.05,0.05] through another subtraction operator, "-". The upper bound from the root node. For example, let's say we calculated the confidence bounds on the base varaibles to be $[3.0,4.0]$ (male) and $[2.0,3.0]$ (female). The resulting confidence bounds on each node as they are propagated through the tree are shown in the following animation:
 </p>
 <div align="center">
-    <figure>
-        <img src="{{ "/assets/img/example_graph_withbounds.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 35%"  alt="graph"> 
+    <figure class='mt-4'>
+        <img src="{{ "/assets/img/parse_tree_gif.gif" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 40%"  alt="parse tree GIF"> 
     </figure> 
 </div>
 <p>
-The resulting upper bound on the root node is 1.95 in this example. Since this is $>0$, the constraint would be violated in this case. This makes sense given that the intervals on the MSE's were $[3.0,4.0]$ (male) and $[2.0,3.0]$ (female), and the constraint is that the MSEs must not differ by more than 0.05.
+The resulting upper bound on the root node is 1.95 in this example. Because this is $1.95>0$, the constraint would be violated in this case. This makes sense given that the intervals on the MSE's were $[3.0,4.0]$ (male) and $[2.0,3.0]$ (female), and the constraint is that the MSEs must not differ by more than 0.05.
 
 </p>
 
