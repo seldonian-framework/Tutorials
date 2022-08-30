@@ -104,7 +104,7 @@ next_page_name: Install Toolkit tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Candidate selection</h3>
+    <h3 id="candidate_selection">Candidate selection</h3>
     <p>
         As discussed at the end of the previous section, any off the shelf machine learning algorithm could be used for the <code class='glossary-term'>candidate selection</code> component. However, most will tend to be ineffective. There are two issues. First, standard machine learning algorithms may not consider safety at all, and if they frequently return unsafe solutions the subsequent <code class='glossary-term'>safety test</code> will frequently return NSF. Second, even when standard machine learning algorithms do consider safety, they do not account for the details of the <code class='glossary-term'>safety test</code> that will be run. A more sophisticated <code class='glossary-term'>candidate selection</code> mechanism should consider the exact form of the subsequent <code class='glossary-term'>safety test</code>, and it should return candidate solutions that are likely to pass the <code class='glossary-term'>safety test</code>.
     </p>

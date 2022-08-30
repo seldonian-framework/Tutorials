@@ -1,7 +1,7 @@
 ---
 layout: tutorial
 permalink: /tutorials/gridworld_RL_tutorial/
-prev_url: /tutorials/custom_base_node_tutorial/
+prev_url: /tutorials/custom_base_variable_tutorial/
 prev_page_name: Custom base variables tutorial
 ---
 

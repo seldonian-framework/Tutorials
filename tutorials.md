@@ -30,7 +30,7 @@ permalink: /tutorials/
             <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">Reproducing the GPA classification results from Seldonian Science paper</a>
         </li>
         <li>
-            <a href="{{ "/tutorials/custom_base_node_tutorial/" | relative_url}}">Defining your own custom base variables</a>
+            <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}">Creating custom base variables</a>
         </li>
         <li>
             <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">Reinforcement learning first tutorial: gridworld</a>
