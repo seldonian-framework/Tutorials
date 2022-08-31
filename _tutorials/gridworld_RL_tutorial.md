@@ -14,12 +14,12 @@ prev_page_name: Custom base variables tutorial
 
 <h3>Introduction</h3>
 <p>
-The Seldonian Toolkit supports offline (batch) reinforcement learning (RL) Seldonian algorithms. In the RL setting, the user must provide data, a model, and behavioral constraints that they want enforced. The RL model is composed of the agent and the environment, each of which must be provided by the user. The agent contains a policy which dictates how to choose actions in any given state. Seldonian algorithms implemented via the Engine search for a new policy of the agent that simultaneously optimizes a primary objective function and satisfies the behavioral constraints with high confidence. In this tutorial, we will use an environment and agent that are built into the Engine library. They serve as examples to help you to build your own RL Seldonian algorithms. Note that due to the choice of confidence bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
+The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL) Seldonian algorithms. In the RL setting, the user must provide data (the observations, actions, and rewards from past episodes), a policy parameterization (similar to a <i>model</i> in the supervised learning regime), and the desired behavioral constraints. Seldonian algorithms implemented via the Engine search for a new policy that simultaneously optimizes a primary objective function (expected discounted return) and satisfies the behavioral constraints with high confidence. In this tutorial, we will use an environment and agent that are built into the Engine library. They serve as examples to help you to build your own RL Seldonian algorithms. Note that due to the choice of confidence bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
 </p>
 
 <h3>Outline</h3>
 
-<p>In this tutorial, you will learn how to:</p>
+<p>In this tutorial, after reviewing RL notation and fundamentals, you will learn how to:</p>
 
 <ul>
     <li>Define a RL Seldonian algorithm using a simple gridworld environment with a tabular softmax agent </li>
@@ -27,47 +27,77 @@ The Seldonian Toolkit supports offline (batch) reinforcement learning (RL) Seldo
     <li>Run a RL Seldonian Experiment</li>
 </ul>
 
-<h3 id="dataset_prep"> Define the environment and agent </h3>
+<h3 id="background">RL background</h3>
+<p>
+    In the RL regime, an <i>agent</i> interacts sequentially with an <i>environment</i>. Time is discretized into integer time steps $t \in \{0,1,2,\dotsc\}$. At each time, the agent makes an observation $O_t$ about the current state $S_t$ of the environment. This observation can be noisy and incomplete. The agent then selects an action $A_t$, which causes the environment to transition to the next state $S_{t+1}$ and emit a scalar (real-valued) reward $R_t$. The agent's goal is to determine which actions will cause it to obtain as much reward as possible (we formalize this statement with math below).
+</p>
+<p>
+    Before continuing, we establish our notation for the RL regime:
+    <ul>
+        <li>$t$: The current time step, starting at $t=0$.</li>
+        <li>$S_t$: The state of the environment at time $t$.</li>
+        <li>$O_t$: The agent's observation at time $t$. For many problems, the agent observes the entire state $S_t$. This can be accomplished by simply defining $O_t=S_t$.</li>
+        <li>$A_t$: The action chosen by the agent at time $t$ (the agent selects $A_t$ after observing $O_t$).</li>
+        <li>$R_t$: The reward received by the agent at time $t$ (the agent receives $R_t$ after the environment transitions to state $S_{t+1}$ due to action $A_t$).</li>
+        <li>$\pi$: A <i>policy</i>, where $\pi(o,a)=\Pr(A_t=a|O_t=o)$ for all actions $a$ and observations $o$.</li>
+        <li>$\pi_\theta$: A <i>parameterized policy</i>, which is simply a policy with a weight vector $\theta$ that changes the conditional distribution over $A_t$ given $O_t$. That is, for all actions $a$, observations $o$, and weight vectors $\theta$, $\pi_\theta(o,a) = \Pr(A_t=a|O_t=o ; \theta)$, where $;\theta$ indicates "given that the agent uses policy parameters $\theta$". This is not quite the same as a conditional probability because $\theta$ is not an event (one should not apply Bayes' Theorem to this expression thinking that $\theta$ is an event).</li>
+        <li>$\gamma$: The reward discount parameter. This is a problem-specific contant in $[0,1]$ that is used in the objective function, defined next.</li>
+        <li>$J$: The objective function. The default in the toolkit is the expected discounted return: $J(\pi)=\mathbf{E}\left [ \sum_{t=0}^\infty \gamma^t R_t\right ]$. The agent's goal is to find a policy that maximizes this objective function.</li>
+        <li>The agent's experiences can be broken into statistically independent <i>episodes</i>. Each episode begins at time $t=0$. When an episode ends, the agent no longer needs to select actions and no longer receives rewards (this can be modeled using a <i>terminal absorbing state</i> as defined on page 18 <a href="https://people.cs.umass.edu/~pthomas/courses/CMPSCI_687_Fall2020/687_F20.pdf">here</a>.</li>
+    </ul>
+</p>
+<p>
+    At this time, this toolkit is only compatible with <i>batch</i> or <i>offline</i> RL. This means that some current policy (typically called the <i>behavior policy</i> $\pi_b$) is already in use to select actions. The available data corresponds to the observations, actions, and rewards from previous episodes wherein the current policy was used. To make this more formal, we will define a <i>history</i> $H$ to be the available historical information from one episode:
+    $$ H = (O_0, A_0, R_0, O_1, A_1, R_1, \dotsc).$$
+    All of the available data can then be expressed as $D = (H_i)_{i=1}^m$, where $m$ is the number of episodes for which data is available. 
+</p>
+<p>
+    For generality, the toolkit does not require there to be just one current policy. Instead, the available data could have been generated by several different (past) policies. However, the default Seldonian RL algorithms in the toolkit require some knowledge about what the past policies were. Specifically, they require each action $A_t$ in the historical data to also come with the probability that the behavior policy (the policy that selected the action) would select that action: $\pi_b(O_t,A_t)$. Hence, we ammend the definition of a history $H$ to include this information:
+    $$ H = (O_0, A_0, \pi_b(O_0,A_0), R_0, O_1, A_1, \pi_b(O_1,A_1) R_1, \dotsc).$$
+    Notice that in this batch setting, Seldonian RL algorithms can be used to improve upon current and past policies. However, they can't be used to construct the first policy for an application. 
+</p>
+
+<h3 id="dataset_prep"> Define the environment and policy </h3>
 <p> 
-The first step in setting up an RL Seldonian algorithm is to identify the environment and agent. 
+The first steps in setting up an RL Seldonian algorithm are the select an environment of interest and then to specify the policy parameterization the agent should use. That is, how does $\theta$ change the policy $\pi_\theta$? For example, when using a neural network, this corresponds to determining the network architecture and how the network's outputs specify the probability of each possible action.
 </p>
 
 <h5> Defining the environment </h5>
 <p>
-In this tutorial, we will consider a 3x3 gridworld environment as shown in the figure below:
+In this tutorial, we will consider a 3x3 gridworld environment as shown in the figure below.
 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/gridworld_img.png" | relative_url}}" class="img-fluid my-2" style="width: 20%"  alt="Candidate selection"> 
-        <figcaption align="left"> <b>Figure 1</b> - 3x3 gridworld where the initial state is the upper left cell and the terminal state is in the bottom right cell. The possible actions are up, down, left, right. Hitting a wall, e.g., action=left in the initial state, is a valid action and returns the agent to the same state. The reward is 0 in all cells except a -1 reward in the bottom middle cell and a +1 reward when reaching the terminal state. We will use a discount factor of $\gamma=0.9$ for this environment when calculating the expected return of a policy.  </figcaption>
+        <img src="/Tutorials/assets/img/gridworld_img.png" class="img-fluid my-2" style="width: 20%" alt="Gridworld Sketch" /> 
+        <figcaption align="left"> <b>Figure 1</b> - 3x3 gridworld where the initial state ($S_0$) is the upper left cell. Episodes end when the agent reaches the bottom right cell, which we refer to as the "terminal state". This problem is fully observable, meaning that the agent observes the entire state: $O_t=S_t$ always. The possible actions are up, down, left, right, which cause the agent to move one cell in the specified direction. Hitting a wall, e.g., action=left in the initial state, is a valid action and returns the agent to the same state. Each cell is labeled with the reward that the agent receives when that state is $S_{t+1}$. For example, if the agent transitions from the middle state ($S_t$) to the bottom middle state ($S_{t+1}$) then the reward would be $R_t=-1$. Notice that the reward is $0$ in all cells except for a $-1$ reward in the bottom middle cell and a $+1$ reward when reaching the terminal state. We will use a discount factor of $\gamma=0.9$ for this environment when calculating the expected return of a policy.  </figcaption>
     </figure>
 </div>
 </p>
 
-<h5> Defining the agent </h5>
+<h5> Defining the policy </h5>
 <p>
-The agent will employ a parametrized softmax policy:
-$$ \pi(s,a) = \frac{e^{p(s,a)}}{\sum_{a'}{e^{p(s,a')}}}$$
-where $p(s,a)$ is a matrix of transition probabilities for a given state, $s$, and action, $a$. At each state, the agent chooses an action by drawing from a discrete probability distribution where the probabilities of each action are given by the above softmax function.
+The toolkit is compatible with a wide range of possible policy parameterizations, and even allows you to introduce your own environment-specific policy representation. For this example, we will use a tabular softmax policy. This policy stores one policy parameter (weight) for every possible observation-action pair. Let $\theta_{o,a}$ be the parameter for observation $o$ and action $a$. A tabular softmax policy can then be expressed as:
+$$ \pi_\theta(o,a) = \frac{e^{\theta_{o,a}}}{\sum_{a'}{e^{\theta_{o,a'}}}}.$$
+So, given the current observation $O_t$, the agent chooses an action by drawing from a discrete probability distribution where the probability of each action $a$ is $\pi(O_t,a)$.
 </p>
 
 <h3>Formulate the Seldonian ML problem</h3>
 <p>
-Consider the offline RL problem where we want to find an optimal policy for the 3x3 gridworld environment using the agent. We could generate some episodes of data using a behavioral policy and then search for new policies using an optimizer and the importance sampling (IS) estimate as our primary objective function for evaluating the relative performance of new policies compared to the behavioral policy. In principle, this will give us a better policy, but there is no guarantee that it will. 
+    Consider the offline RL problem of finding a policy for the 3x3 gridworld that has the largest expected return possible (primary objective) subject to the safety constraint that the expected return is at least $-0.25$ (this might be the performance of the current policy). In this tutorial we simulate this process, generating many episodes of data using a behavior policy (current policy) and then feeding this data to our Seldonian algorithm with the tabular softmax policy parameterization. We include a behavioral constraint that requires the performance of the new policy to be at least $-0.25$ with probability at least $0.95$. In later tutorials we show how safety constraints can be defined in terms of additional reward functions (as in constrained MDPs).
 </p>
 <p>
-Let's suppose we want to enforce a constraint such that the performance of the new policy we obtain via importance sampling <i>must be</i> at least as good as the behavioral policy, with a probability of at least 0.95. Before we can write the constraint out formally, we need to define the behavioral policy and calculate what its performance is on this environment. In this tutorial, we will use a uniform random policy as the behavioral policy. We ran 10000 episodes using the softmax agent with equal transition probabilities (i.e uniform random action probabilities) on the 3x3 gridworld environment and found a mean discounted ($\gamma=0.9$) sum of rewards of $J(\pi_b)=-0.25$.
-
-  We can now write out the Seldonian ML problem:
+    For those familiar with <i>off-policy evaluation</i> (OPE), our algorithms use off-policy estimates of the expected return based on the per-decision importance sampling estimator. These estimates are used both in the primary objective (maximize the expected discounted return) and sometimes in safety constraints (like in this example, where the safety constraint requires the performance of the new policy to be at least $-0.25$). The per-decision importance sampling estimator provides unbiased estimates of $J(\pi_\theta)$, for any $\theta$, which are used like the unbiased estimates $\hat g$ and $\hat z$ described in the tutorials for the supervised learning regime.
+</p>
+<p>
+    In summary, we will apply a Seldonian RL algorithm to ensure that the performance of the new policy is at least the performance of the behavior policy $(-0.25)$, with probability at least $0.95$. The algorithm will use 10,000 epsiodes of data generated using the behavior policy (which selects each action with equal probability). We selected the performance threshold of $-0.25$ by running 10,000 additional episodes using the behavior policy and computing the average discounted return, giving $J(\pi_b)\approx -0.25$. We can now write out the Seldonian ML problem:
 </p>    
 <p>
-    Find a new policy using gradient descent with a primary objective of the unweighted IS estimate subject to the constraint:
+    Find a new policy subject to the constraint:
     <ul>
         <li>$g1: J\_{\text{pi_new}} \geq -0.25$, and $\delta=0.05$</li>
     </ul>
-    where $J\_{\text{pi_new}}$ is an RL-specific <a href="{{ "/glossary/#measure_function" | relative_url }}">measure function</a>. The Engine is programmed to know that $J\_{\text{pi_new}}$ means the performance of the new policy. The performance is calculated using the unweighted IS estimate. 
+    where $J\_{\text{pi_new}}$ is an RL-specific <a href="/Tutorials/glossary/#measure_function">measure function</a>. The Engine is programmed to know that $J\_{\text{pi_new}}$ means the performance of the new policy. The performance is calculated using an importance sampling estimate. 
 </p>
-
 
 <h3>Creating the specification object</h3>
 <p>
