@@ -30,7 +30,7 @@ In cases where behavioral constraints can be expressed as mathematical inequalit
 <li>The inequality strings "<=" or ">=" (optional)</li>
 <li>Special strings that trigger a call to a function, such as "FPR" (standing for false positive rate)</li>
 </ol> 
-An example constraint string that uses all five of these types is: "max(FPR/TPR,FNR/TNR) <= 0.5", which translates to "ensure that whatever is larger out of false positive rate divided by true positive rate vs. false negative rate divided by true negative rate is less than 0.5."
+An example constraint string that uses all five of these types is: "max(FPR/TPR,FNR/TNR) <= 0.5", which translates to "ensure that whatever is larger out of false positive rate divided by true positive rate vs. false negative rate divided by true negative rate is less than or equal to 0.5."
 </p>
 <p>
 In this tutorial, we will focus on #5 in the list. Specifically, we will demonstrate how to define custom strings that map to your own functions. This will allow you to customize your constraints beyond what the Engine already supports. 
@@ -55,7 +55,7 @@ if statistic_name == 'PREC':
     return Precision(
         theta,data_dict['features'],data_dict['labels'])
 {% endhighlight python %}
-This points to a function <code class='highlight'>Precision()</code> which we will implement shortly to calculate a the mean precision value over a set of points, returning a float.
+This points to a function <code class='highlight'>Precision()</code> which we will implement shortly to calculate the mean precision value over a set of points, returning a float.
  </li>
 
  <li>Add the following block of code to the <code class='highlight'>sample_from_statistic()</code> function in the same file:
@@ -70,7 +70,7 @@ This points to a function <code class='highlight'>vector_Precision()</code> whic
  <li>Add a new function <code class='highlight'>Precision()</code> to the same file that calculates the precision on a set of points and returns a float. Note that we will use the existing functions in this file called <code class='highlight'>True_Positive_Rate()</code> and <code class='highlight'>False_Positive_Rate()</code> in our implementation.
 
 {% highlight python %}
-def sample_Precision(model,theta,X,Y):
+def Precision(model,theta,X,Y):
     """ Calculate the precision 
     on whole sample
 
@@ -90,7 +90,7 @@ def sample_Precision(model,theta,X,Y):
     return res
 {% endhighlight python %}
  </li>
- <li>Likewise, add a new function <code class='highlight'>vector_Precision()</code> to the same file that calculates the precision on each point in a set of points and returns a vector of floats. As before, we will use existing function of the same file in our implementation of the vector precision.
+ <li>Likewise, add a new function <code class='highlight'>vector_Precision()</code> to the same file that calculates the precision on each point in a set of points and returns a vector of floats. As before, we will use existing functions of the same file in our implementation of the vector precision.
 
 {% highlight python %}
 def vector_Precision(model,theta,X,Y):
@@ -126,7 +126,7 @@ where "M" and "F" refer to the male and female columns of your dataset.
 If the functionality you need cannot be achieved by creating a new measure function, you may be able to achieve it by implementing a new base variable class. Let's consider an example where we have a regression problem with a single constraint: we want to ensure that the <a href="https://en.wikipedia.org/wiki/Expected_shortfall">conditional value at risk (CVaR)</a> of the squared error is below some value. In order to provide a high confidence guarantee of this constraint, the Seldonian algorithm will need to put a bound on the CVaR of the squared error (CVaRSQE). Measure functions are used when we want to bound the mean of a quantity, which is not what we want to do here. Creating a new measure function will not work for this example. Instead, we will need to write our own bounding function for the CVaRSQE. To do this, we will have to create a new base variable class.
 </p>
 <p>
-We will use the concentration inequalities derived by Thomas and Learned-Miller (2019), Theorems 3 and 4, to define the bounds on the CVaR statistic. In the safety test, we will use the exact form of the inequalities. Adopting variables from the Seldonian formalism, the upper bound we will implement for the safety test is:
+We will use the concentration inequalities derived by Thomas and Learned-Miller (2019), Theorems 3 and 4, to define the bounds on the CVaR statistic. In the <code class='glossary-term'>safety test</code>, we will use the exact form of the inequalities. Adopting variables from the Seldonian formalism, the upper bound we will implement for the <code class='glossary-term'>safety test</code> is:
 
 $$
 \begin{equation} 
@@ -135,7 +135,7 @@ Z_{N_{\text{safety}}+1} - \frac{1}{\alpha} \sum_{i=1}^{N_{\text{safety}}} (Z_{i+
 \end{equation}
 $$ 
 
-where $Z_1,\dotsc,Z_n$ are the sorted squared errors, $Z_{n+1}=b$ is a theoretical upper bound on the squared error which we will define below, $x^{+}:= \operatorname{max}(0,x)$, $\alpha$ is the confidence level above which the CVaR is calculated, $\delta$ is the confidence level for the safety constraint, and $N_{\text{safety}}$ is the size of the safety datset. The lower bound for the safety test is:
+where $Z_1,\dotsc,Z_n$ are the sorted squared errors, $Z_{n+1}=b$ is a theoretical upper bound on the squared error which we will define below, $x^{+}:= \operatorname{max}(0,x)$, $\alpha$ is the confidence level above which the CVaR is calculated, $\delta$ is the confidence level for the safety constraint, and $N_{\text{safety}}$ is the size of the safety datset. The lower bound for the <code class='glossary-term'>safety test</code> is:
 
 $$ 
 \begin{equation}
@@ -146,7 +146,7 @@ $$
 
 where $Z_1,\dotsc,Z_n$ are again the sorted squared errors and $Z_0=a$ is a theoretical lower bound on the squared error, which is 0.
 
-As discussed in the <a href="{{"/tutorials/alg_details_tutorial/#candidate_selection" | relative_url}}">candidate selection section of the algorithm details tutorial</a>, in candidate selection we want to search for a solution that optimizes the primary objective and is predicted to pass the safety test. In the $t$-test confidence bound, we inflated the confidence interval with a factor of 2 and used $N_{\text{safety}}$ instead of $N_{\text{cand}}$ to make a good prediction the safety test will pass. Here, we will do something similar. The upper bound we will implement for candidate selection is:
+As discussed in the <a href="{{"/tutorials/alg_details_tutorial/#candidate_selection" | relative_url}}">candidate selection section of the algorithm details tutorial</a>, in <code class='glossary-term'>candidate selection</code> we want to search for a solution that optimizes the primary objective and is predicted to pass the <code class='glossary-term'>safety test</code>. In the $t$-test confidence bound, we inflated the confidence interval with a factor of 2 and used $N_{\text{safety}}$ instead of $N_{\text{cand}}$ to make a good prediction the <code class='glossary-term'>safety test</code> will pass. Here, we will do something similar. The upper bound we will implement for <code class='glossary-term'>candidate selection</code> is:
 
 $$ 
 \begin{equation}
@@ -155,7 +155,7 @@ Z_{N_{\text{cand}}+1} - \frac{1}{\alpha} \sum_{i=1}^{N_{\text{cand}}} (Z_{i+1}-Z
 \end{equation}
 $$ 
 
-where $N_{\text{cand}}$ is the size of the candidate dataset, $N_{\text{safety}}$ is the size of the safety dataset, and all of the other terms have the same meaning as above. Notice the factor of $2$ that now appears before the square root term in equation \eqref{cs_upper}. Similarly, the lower bound we will implement for candidate selection is:
+where $N_{\text{cand}}$ is the size of the candidate dataset, $N_{\text{safety}}$ is the size of the safety dataset, and all of the other terms have the same meaning as above. Notice the factor of $2$ that now appears before the square root term in equation \eqref{cs_upper}. Similarly, the lower bound we will implement for <code class='glossary-term'>candidate selection</code> is:
 
 $$ 
 \begin{equation}
@@ -182,7 +182,7 @@ where $N(\mu,\sigma)$ is a normal distribution with mean $\mu$ and standard devi
     </figure> 
 </div>
 
-  For the underlying machine learning model, we will adopt a linear regression model. Linear regression on this data could predict the exact value of the label for any given value of $X$, so the theoretical lower bound on the squared error, $a$, is 0. However, the theoretical upper bound, $b$, is infinite because the predicted value from the model is not bounded. Plugging in $Z_{N_{\text{safety}}+1}=b=\infty$ into equation \eqref{st_upper} or $Z_{N_{\text{cand}}+1}=b=\infty$ into equation \eqref{cs_upper} would result in an infinite upper bound on the CVaR statistic, which would mean that our safety constraint would never pass. In order to provide some finite upper bound on the squared error, we need to bound the outputs of the linear regression model as well. Clipping is not an option because it would render our model's predict function undifferentiable, making us unable to use gradient descent during candidate selection. Instead, we can bound the model predictions by applying a sigmoid function to the model outputs, like:  
+  For the underlying machine learning model, we will adopt a linear regression model. Linear regression on this data could predict the exact value of the label for any given value of $X$, so the theoretical lower bound on the squared error, $a$, is 0. However, the theoretical upper bound, $b$, is infinite because the predicted value from the model is not bounded. Plugging in $Z_{N_{\text{safety}}+1}=b=\infty$ into equation \eqref{st_upper} or $Z_{N_{\text{cand}}+1}=b=\infty$ into equation \eqref{cs_upper} would result in an infinite upper bound on the CVaR statistic, which would mean that our safety constraint would never pass. In order to provide some finite upper bound on the squared error, we need to bound the outputs of the linear regression model as well. Clipping is not an option because it would render our model's predict function undifferentiable, making us unable to use gradient descent during <code class='glossary-term'>candidate selection</code>. Instead, we can bound the model predictions by applying a sigmoid function to the model outputs, like:  
 
 $$
 \begin{equation}
@@ -310,7 +310,7 @@ def calculate_bounds(self,
 </li>
 
 <li> 
-    Implement equations (\ref{st_upper}-\ref{cs_lower}) as the methods: <code class='highlight'>compute_HC_upper_bound()</code>, <code class='highlight'>compute_HC_lower_bound()</code>, <code class='highlight'>predict_HC_upper_bound()</code> and <code class='highlight'>predict_HC_upper_bound()</code>, respectively. The convention we use in this library is that the <code class='highlight'>compute_*</code> methods calculate the bounds for the safety test and the <code class='highlight'>predict_*</code> methods calculate the bounds for candidate selection. Here are the implementations of these four methods:
+    Implement equations (\ref{st_upper}-\ref{cs_lower}) as the methods: <code class='highlight'>compute_HC_upper_bound()</code>, <code class='highlight'>compute_HC_lower_bound()</code>, <code class='highlight'>predict_HC_upper_bound()</code> and <code class='highlight'>predict_HC_upper_bound()</code>, respectively. The convention we use in this library is that the <code class='highlight'>compute_*</code> methods calculate the bounds for the <code class='glossary-term'>safety test</code> and the <code class='highlight'>predict_*</code> methods calculate the bounds for <code class='glossary-term'>candidate selection</code>. Here are the implementations of these four methods:
 {% highlight python %}
 def predict_HC_lowerbound(self,
     Z,
@@ -554,7 +554,7 @@ At this point, you will be able to use your custom base node in a constraint str
 
 <ul>
     <li>To generate the data as described in equation \eqref{data_distribution}, we are using a function called <code class='highlight'>make_synthetic_regression_dataset</code>, which is part of the Engine library but is not shown in this tutorial. The function can be found in this file: https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/utils/tutorial_utils.py </li>
-    <li>The number of points, $N = N_{\text{cand}} + N_{\text{safety}}$, that we use when generating the data is important. That is because the concentration bounds in equations (\ref{st_upper}-\ref{cs_lower}) depend on $N$ (either through $N_{\text{cand}}$ or $N_{\text{safety}}$ or both). It turns out that these bounds require a relatively large amount of data to provide be informative. The exact amount of data needed of course depends on the other variables $\delta$, $\alpha$, and the upper bound of the squared error, $b$. For the values of those variables that we chose, we found that we needed $N\gtrsim50,000$ points in our synthetic dataset in order to pass the safety test for the constraint be defined. In the end, we chose $N=75,000$ to be conservative. </li>
+    <li>The number of points, $N = N_{\text{cand}} + N_{\text{safety}}$, that we use when generating the data is important. That is because the concentration bounds in equations (\ref{st_upper}-\ref{cs_lower}) depend on $N$ (either through $N_{\text{cand}}$ or $N_{\text{safety}}$ or both). It turns out that these bounds require a relatively large amount of data to provide be informative. The exact amount of data needed of course depends on the other variables $\delta$, $\alpha$, and the upper bound of the squared error, $b$. For the values of those variables that we chose, we found that we needed $N\gtrsim50,000$ points in our synthetic dataset in order to pass the <code class='glossary-term'>safety test</code> for the constraint be defined. In the end, we chose $N=75,000$ to be conservative. </li>
     <li>We are only fitting the slope of the line. Because we do not provide a custom initial solution, the default (slope=zero) is used.</li>
     <li>Besides for using our custom base variable string, <code class='highlight'>CVaRSQE</code>, and our custom model class: <code class='highlight'>BoundedLinearRegressionModel</code>, the rest of the script is boilerplate code for running the Seldonian Engine.</li>
 </ul>
@@ -658,7 +658,7 @@ Passed safety test!
 solution=[0.34152296]
 {% endhighlight bash %}
 <p>
-The exact solution might differ slightly due to your machine's random number generator, but the safety test should pass. The solution found is the final weights of the model, which in our case is just the slope of the line. If we plot this line on top of data generated using the synthetic data generator, we see that it is indeed an optimal fit to the data: 
+The exact solution might differ slightly due to your machine's random number generator, but the <code class='glossary-term'>safety test</code> should pass. The solution found is the final weights of the model, which in our case is just the slope of the line. If we plot this line on top of data generated using the synthetic data generator, we see that it is indeed an optimal fit to the data: 
 </p>
 
 <div align="center">
@@ -668,7 +668,7 @@ The exact solution might differ slightly due to your machine's random number gen
     </figure> 
 </div>
 <p>
-Finally, we can plot the contents of the candidate selection log file using the plotting utility module:
+Finally, we can plot the contents of the <code class='glossary-term'>candidate selection</code> log file using the plotting utility module:
 {% highlight python %}
 from seldonian.utils.plot_utils import plot_gradient_descent
 from seldonian.utils.io_utils import load_pickle
@@ -690,7 +690,7 @@ which will produce a plot like this:
 <div align="center">
     <figure class='mt-4'>
         <img src="{{ "/assets/img/custom_base_node_candidate_selection.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" style="width: 90%"  alt="parse tree"> 
-        <figcaption class="figure-caption"><b>Figure 4</b> - The evolution of the primary objective function, $f$, the single lagrange multiplier, $\lambda_1$, the single constraint function $g_1$, and the Lagrangian, $\mathcal{L}$ during each step of gradient descent. The red region of the $g_1$ plot indicates where the safety test is predicted to be violated, i.e., the infeasible set. </figcaption>
+        <figcaption class="figure-caption"><b>Figure 4</b> - The evolution of the primary objective function, $f$, the single lagrange multiplier, $\lambda_1$, the single constraint function $g_1$, and the Lagrangian, $\mathcal{L}$ during each step of gradient descent. The red region of the $g_1$ plot indicates where the <code class='glossary-term'>safety test</code> is predicted to be violated, i.e., the infeasible set. </figcaption>
     </figure> 
 </div>
 <p>
