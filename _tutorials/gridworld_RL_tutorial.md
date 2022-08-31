@@ -99,6 +99,15 @@ So, given the current observation $O_t$, the agent chooses an action by drawing 
     where $J\_{\text{pi_new}}$ is an RL-specific <a href="/Tutorials/glossary/#measure_function">measure function</a>. The Engine is programmed to know that $J\_{\text{pi_new}}$ means the performance of the new policy. The performance is calculated using an importance sampling estimate. 
 </p>
 
+<h5> From supervised to reinforcemnt learning</h5>
+<p>
+    From the toolkit's perspective, there are few differences between the supervised learning and reinforcement learning regimes. The algorithm overview remains unchanged: the Seldonian algorithm still has candidate selection and safety test modules. It still uses gradient descent using the KKT conditions to find the candidate solutions, and uses statistical tools like Student's $t$-test to compute confidence intervals. Though there are some differences in the code (as shown in the example below), the core conceptual differences are:
+    <ul>
+        <li>The parameterized "model" is replaced with a parameterized "policy". However, this is mostly just a terminology change (both take an input and provide a distribution over possible outputs).</li>
+        <li>Though both still use a parse tree to represent the behavioral constraints, the base variables (leaf nodes of the parse tree that are not constants) use <i>importance sampling</i> variants to estimate what would happen if a new policy were to be used. More precisely, they provides unbiased estimates of the expected discounted return of the new policy, and this expected discounted return can use additional rewards defined to capture the safety of the new policy. The importance sampling estimates correspond to the $\hat z$ functions described in the first tutorial.</li>
+    </ul>
+</p>
+
 <h3>Creating the specification object</h3>
 <p>
 Our goal is to create an <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.RLSpec.html?highlight=rlspec#seldonian.spec.RLSpec">RLSpec</a> object, which will consist of everything we will need to run a Seldonian algorithm using the Engine. Creating this object involves defining the RL environment, agent, the dataset and the behavioral constraints. 
