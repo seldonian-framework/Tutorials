@@ -16,7 +16,7 @@ next_page_name: Reinforcement learning first tutorial - gridworld
 <p> The purpose of this tutorial is to help you understand how to extend the functionality of string-based behavioral constraints to suit your custom constraints. If the answer to any of these questions is "yes" or "maybe" then keep reading:
 <ul>
     <li>Does your constraint involve a statistical function (such as "precision") that is not currently supported by the Engine? </li>
-    <li>Do you have an alternative method for bounding your constraint that is not currently supported by the Engine? </li>
+    <li>Do you have an alternative method for bounding a base variable in the constraint that is not currently supported by the Engine? </li>
 </ul>
 </p>
 <h3 class="my-4">Introduction</h3>
@@ -26,7 +26,7 @@ In cases where behavioral constraints can be expressed as mathematical inequalit
 <ol>
 <li>The mathematical operators: <code class='highlight'>(+,-,*,/)</code> </li>
 <li>The native Python math functions: <code class='highlight'>min(),max(),abs(),exp()</code> </li>
-<li>Constant numbers, such as -0.5 or 7</li>
+<li>Constant numbers, such as $-0.5$ or 7</li>
 <li>The inequality strings "<=" or ">=" (optional)</li>
 <li>Special strings that trigger a call to a function, such as "FPR" (standing for false positive rate)</li>
 </ol> 
@@ -39,11 +39,17 @@ In this tutorial, we will focus on #5 in the list. Specifically, we will demonst
 The Engine supports several built-in strings that trigger a call to a function. These are referred to as <a href="{{ "/glossary/#measure_function" | relative_url}}">measure functions</a> and include strings like "Mean_Squared_Error", "FPR" (standing for "false positive rate") and "J_pi_new" (the performance of the new policy in the reinforcement learning setting). These are the base variables in the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a>. The complete list of existing built-in measure functions is <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.parse_tree.operators.html#seldonian.parse_tree.operators.measure_functions_dict">here</a>, separated by regime and sub-regime (e.g., classification vs. regression). We designed the Engine to make it straightfoward for developers to add new measure functions. If your desired constraint involves a statistical function not listed there, for example <a href="https://en.wikipedia.org/wiki/Precision_and_recall#Definition_(classification_context)">precision</a>, then the section <a href="#new_measure_function">Adding a new measure function</a> will help you create it.
 </p>
 <p> 
-However, it is possible that creating a new measure function will not be sufficient for your use case. Recall from the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a> discussion that confidence bounds are calculated on base variables and then propagated to the root of the tree to get the upper bound on the overall constraint, $\hat{g}$. The confidence bounds are first calculated on the mean of the base variable. If your desired constraint involves bounding something other than the mean of one of these base variables, then you will not be able to define your constraint in terms of measure functions. In that case, you will need to create a new type of base variable, which we call a "custom base variable." In the <a href="#custom_base_variable">Creating a custom base variable</a> section below, we demonstrate how to do this for a constraint involving the <a href="https://en.wikipedia.org/wiki/Expected_shortfall">conditional value at risk (CVaR)</a> statistic. 
+However, it is possible that creating a new measure function will not be sufficient for your use case. Recall from the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a> discussion that confidence bounds are calculated on base variables and then propagated to the root of the tree to get the upper bound on the overall constraint, $g(\theta)$. The confidence bounds are first calculated on the mean of the base variable. If your desired constraint involves bounding something other than the mean of one of these base variables, then you will not be able to define your constraint in terms of measure functions. In that case, you will need to create a new type of base variable, which we call a "custom base variable." In the <a href="#custom_base_variable">Creating a custom base variable</a> section below, we demonstrate how to do this for a constraint involving the <a href="https://en.wikipedia.org/wiki/Expected_shortfall">conditional value at risk (CVaR)</a> statistic. 
 </p>
 <h3 class="my-4" id="new_measure_function"> Adding a new measure function </h3>
 <p>
-     The currently programmed measure functions are listed <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.parse_tree.operators.html#seldonian.parse_tree.operators.measure_functions_dict">here</a> by regime and sub-regime. If your desired constraint involves a statistical function not listed there, for example <a href="https://en.wikipedia.org/wiki/Precision_and_recall#Definition_(classification_context)">precision</a>, you could add that functionality by doing the following:
+ The currently programmed measure functions are listed <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.parse_tree.operators.html#seldonian.parse_tree.operators.measure_functions_dict">here</a> by regime and sub-regime. Let's say your desired constraint involves precision, which is not an existing measure function already, and the string you want to use to represent it is "PREC". And say that the constraint you are considering is that you want the precision of the model to differ by no more than 10% between males and females in the dataset.  This constraint could be expressed to the Engine as: 
+
+{% highlight python %}
+abs((PREC | [M]) - (PREC | [F])) - 0.1,
+{% endhighlight python %}
+
+where  "M" and "F" refer to the male and female columns of your dataset, respectively. Here we will go through the steps for adding the functionality to allow this constraint string in the Engine. This is just one example, showing how you can add the functionality for the Engine to work with other variables/strings. 
 <ol>
 <li>Fork the Engine repository: https://github.com/seldonian-toolkit/Engine </li>
 <li>Define a string to represent the precision operator that you will type into your constraint. In this example, we will call it "PREC" </li>
@@ -90,7 +96,7 @@ def Precision(model,theta,X,Y):
     return res
 {% endhighlight python %}
  </li>
- <li>Likewise, add a new function <code class='highlight'>vector_Precision()</code> to the same file that calculates the precision on each point in a set of points and returns a vector of floats. As before, we will use existing functions of the same file in our implementation of the vector precision.
+ <li>Likewise, add a new function <code class='highlight'>vector_Precision()</code> to the same file that calculates the precision on each point in a set of points and returns a vector of floats. The outputs of this function are the \hat z(\theta,D) used to obtain the bound on the base variable in the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a>. As before, we will use existing functions of the same file in our implementation of the vector precision.
 
 {% highlight python %}
 def vector_Precision(model,theta,X,Y):
@@ -114,11 +120,12 @@ def vector_Precision(model,theta,X,Y):
 {% endhighlight python %}
  </li>
 </ol>
-At this point, you can now use the "PREC" in your constraint string that you provide to the Engine. It will have all of the same abilities as other measure functions, such as filtering by sensitive attributes. Let's say your constraint is that you want the precision of the model to differ by no more than 10% between males and females in the dataset. This constraint could be expressed to the Engine as: 
+At this point, you can now use the "PREC" in your constraint strings that you provide to the Engine. The example constraint we considered at the beginning of this section: 
 {% highlight python %}
 abs((PREC | [M]) - (PREC | [F])) - 0.1,
 {% endhighlight python %}
-where "M" and "F" refer to the male and female columns of your dataset.
+will now be correctly interpreted as: "ensure that the precision of the model should differ by no more than 10% between males (M) and females (F) in the dataset." The probability that this constraint will be upheld is controlled by what you set $\delta$ to, as in all other constraints. 
+
 </p>
 <h3 class="my-4" id="custom_base_variable"> Creating a custom base variable </h3>
 
@@ -135,7 +142,7 @@ Z_{N_{\text{safety}}+1} - \frac{1}{\alpha} \sum_{i=1}^{N_{\text{safety}}} (Z_{i+
 \end{equation}
 $$ 
 
-where $Z_1,\dotsc,Z_n$ are the sorted squared errors, $Z_{n+1}=b$ is a theoretical upper bound on the squared error which we will define below, $x^{+}:= \operatorname{max}(0,x)$, $\alpha$ is the confidence level above which the CVaR is calculated, $\delta$ is the confidence level for the safety constraint, and $N_{\text{safety}}$ is the size of the safety datset. The lower bound for the <code class='glossary-term'>safety test</code> is:
+where $Z_1,\dotsc,Z_{N_{\text{safety}}}$ are the sorted squared errors, $Z_{N_{\text{safety}}+1}=b$ is a theoretical upper bound on the squared error which we will define below, $x^{+}:= \operatorname{max}(0,x)$, $\alpha$ is the confidence level above which the CVaR is calculated, $\delta$ is the confidence level for the safety constraint, and $N_{\text{safety}}$ is the size of the safety datset. The lower bound for the <code class='glossary-term'>safety test</code> is:
 
 $$ 
 \begin{equation}
@@ -144,7 +151,7 @@ Z_{N_{\text{safety}}} - \frac{1}{\alpha} \sum_{i=0}^{N_{\text{safety}}-1} (Z_{i+
 \end{equation}
 $$ 
 
-where $Z_1,\dotsc,Z_n$ are again the sorted squared errors and $Z_0=a$ is a theoretical lower bound on the squared error, which is 0.
+where $Z_1,\dotsc,Z_{N_{\text{safety}}}$ are again the sorted squared errors and $Z_0=a$ is a theoretical lower bound on the squared error, which is 0.
 
 As discussed in the <a href="{{"/tutorials/alg_details_tutorial/#candidate_selection" | relative_url}}">candidate selection section of the algorithm details tutorial</a>, in <code class='glossary-term'>candidate selection</code> we want to search for a solution that optimizes the primary objective and is predicted to pass the <code class='glossary-term'>safety test</code>. In the $t$-test confidence bound, we inflated the confidence interval with a factor of 2 and used $N_{\text{safety}}$ instead of $N_{\text{cand}}$ to make a good prediction the <code class='glossary-term'>safety test</code> will pass. Here, we will do something similar. The upper bound we will implement for <code class='glossary-term'>candidate selection</code> is:
 
@@ -216,7 +223,7 @@ We now have everything we need to implement this custom base node, the CVaR stat
 
 <ol>
 
-<li>Fork the Engine repository: https://github.com/seldonian-toolkit/Engine </li>
+<li>Fork the Engine repository: <a href="https://github.com/seldonian-toolkit/Engine">https://github.com/seldonian-toolkit/Engine</a> </li>
 
 <li> Define a class in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/nodes.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/nodes.py</a> that inherits from the <code class='highlight'>BaseNode</code> class, ideally conforming to <a href="https://en.wikipedia.org/wiki/Camel_case">upper camel case</a> and named something that uniquely identifies your custom base node. The name must not already be an existing class in that file. We chose <code class='highlight'>CVaRSQeBaseNode(BaseNode)</code>.</li>
 
