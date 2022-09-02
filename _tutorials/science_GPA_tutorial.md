@@ -74,32 +74,29 @@ We need to create a different spec object for each constraint because we will be
 import os
 from seldonian.parse_tree.parse_tree import make_parse_trees_from_constraints
 from seldonian.dataset import DataSetLoader
-from seldonian.utils.io_utils import load_json,save_pickle
-from seldonian.spec import SupervisedSpec
+from seldonian.utils.io_utils import (load_json,
+    load_supervised_metadata,save_pickle)
+from seldonian.spec import createSupervisedSpec
 from seldonian.models.models import LogisticRegressionModel
+from seldonian.models import objectives
 
 if __name__ == '__main__':
     data_pth = "../../static/datasets/supervised/GPA/gpa_classification_dataset.csv"
     metadata_pth = "../../static/datasets/supervised/GPA/metadata_classification.json"
     save_base_dir = '../../../interface_outputs'
     # Load metadata
-    metadata_dict = load_json(metadata_pth)
-
-    regime = metadata_dict['regime']
-    columns = metadata_dict['columns']
-    sensitive_columns = metadata_dict['sensitive_columns']
-    sub_regime = metadata_dict['sub_regime']
+    (regime, sub_regime, columns,
+        sensitive_columns) = load_supervised_metadata(metadata_pth)
     
     # Use logistic regression model
     model_class = LogisticRegressionModel
     
-    # Set the primary objective to be log loss
-    primary_objective = model_class().sample_logistic_loss
+    # primary objective = log loss
+    primary_objective = objectives.logistic_loss
 
     # Load dataset from file
     loader = DataSetLoader(
         regime=regime)
-
     dataset = loader.load_supervised_dataset(
         filename=data_pth,
         metadata_filename=metadata_pth,
@@ -124,39 +121,14 @@ if __name__ == '__main__':
         elif constraint_name == 'predictive_equality':
             constraint_strs = ['abs((FPR | [M]) - (FPR | [F])) <= 0.2']
 
-        parse_trees = make_parse_trees_from_constraints(
-            constraint_strs,
-            deltas,
-            regime='supervised_learning',
-            sub_regime='classification',
-            columns=columns)
-        
-        # Save spec object, using defaults where necessary
-        spec = SupervisedSpec(
+        createSupervisedSpec(
             dataset=dataset,
-            model_class=model_class,
-            frac_data_in_safety=0.6,
-            primary_objective=primary_objective,
-            parse_trees=parse_trees,
-            initial_solution_fn=model_class().fit,
-            use_builtin_primary_gradient_fn=True,
-            optimization_technique='gradient_descent',
-            optimizer='adam',
-            optimization_hyperparams={
-                'lambda_init'   : 0.5,
-                'alpha_theta'   : 0.01,
-                'alpha_lamb'    : 0.01,
-                'beta_velocity' : 0.9,
-                'beta_rmsprop'  : 0.95,
-                'num_iters'     : 1000,
-                'gradient_library': "autograd",
-                'hyper_search'  : None,
-                'verbose'       : True,
-            }
-        )
-
-        spec_save_name = os.path.join(save_dir,'spec.pkl')
-        save_pickle(spec_save_name,spec,verbose=True)
+            metadata_pth=metadata_pth,
+            constraint_strs=constraint_strs,
+            deltas=deltas,
+            save_dir=save_base_dir,
+            save=True,
+            verbose=True)
 {% endhighlight python %}
 </div>
 Running this code should print out that the five spec files have been created.
