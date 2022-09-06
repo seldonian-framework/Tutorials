@@ -602,7 +602,7 @@ At this point, you will be able to use your custom base node in a constraint str
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %} 
-#run_engine_custom_base_node.py
+# run_engine_custom_base_node.py
 import autograd.numpy as np
 from seldonian.utils.tutorial_utils import make_synthetic_regression_dataset
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
@@ -611,10 +611,11 @@ from seldonian.spec import SupervisedSpec
 from seldonian.models.models import BoundedLinearRegressionModel
 from seldonian.models import objectives
 
+
 def main():
     """ Test that the gpa regression example runs 
     using the custom base node that calculates 
-    CVaR alpha of the squared residual. Make
+    CVaR alpha of the squared error. Make
     sure safety test passes and solution is correct.
 
     Check that the actual value of the constraint (not the bound)
@@ -638,12 +639,12 @@ def main():
         constraint_strs,
         deltas)
 
-    model_class = BoundedLinearRegressionModel
+    model = BoundedLinearRegressionModel()
 
     # Create spec object
     spec = SupervisedSpec(
         dataset=dataset,
-        model_class=model_class,
+        model=model,
         sub_regime='regression',
         primary_objective=objectives.Mean_Squared_Error,
         use_builtin_primary_gradient_fn=False,
@@ -666,7 +667,7 @@ def main():
 
     # Run seldonian algorithm
     SA = SeldonianAlgorithm(spec)
-    passed_safety,solution = SA.run(write_cs_logfile=True)
+    passed_safety,solution = SA.run(write_cs_logfile=True,debug=False)
     if passed_safety:
         print("Passed safety test!")
         print(f"solution={solution}")
