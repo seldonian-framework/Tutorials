@@ -129,7 +129,7 @@ next_page_name: Install Toolkit tutorial
     <p>
         The gradient based optimizer uses gradient descent with adaptive step size schedules (<a href="https://arxiv.org/pdf/1412.6980.pdf">Adam</a> by default). However, notice that we cannot directly use gradient ascent (or descent), because the problem is constrained. This can be overcome using the <a href="https://en.wikipedia.org/wiki/Karush%E2%80%93Kuhn%E2%80%93Tucker_conditions">KKT conditions</a> (a generalization of <a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange multipliers</a>). We describe our approach below:
     </p>
-    <div class="container inset-box border border-dark border-2 p-3 my-2">
+    <div id="kkt" class="container inset-box border border-dark border-2 p-3 my-2">
         <h2>Optimization using the KKT conditions</h2>
         <p>
             The KKT Theorem states that solutions to the constrainted optimization problem:

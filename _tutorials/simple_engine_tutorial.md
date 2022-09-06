@@ -81,24 +81,33 @@ if __name__ == "__main__":
     np.random.seed(0)
     num_points=1000  
     # 1. Define the data - X ~ N(0,1), Y ~ X + N(0,1)
-    dataset = make_synthetic_regression_dataset(num_points)
-    
+    dataset = make_synthetic_regression_dataset(
+        num_points=num_points,
+        loc_X=0,
+        loc_Y=0,
+        sigma_X=1,
+        sigma_Y=1)
+
     # 2. Create parse trees from the behavioral constraints 
     # constraint strings:
     constraint_strs = ['Mean_Squared_Error >= 1.25','Mean_Squared_Error <= 2.0']
     # confidence levels: 
     deltas = [0.1,0.1] 
+
     parse_trees = make_parse_trees_from_constraints(
         constraint_strs,deltas)
 
     # 3. Define the underlying machine learning model
-    model_class = LinearRegressionModel
+    model = LinearRegressionModel()
 
-    # 4. Create spec object
+    """4. Create a spec object, using some
+    hidden defaults we won't worry about here
+    """
     spec = SupervisedSpec(
         dataset=dataset,
-        model_class=model_class,
-        parse_trees=parse_trees
+        model=model,
+        parse_trees=parse_trees,
+        sub_regime='regression',
     )
 
     # 5. Run seldonian algorithm using the spec object
