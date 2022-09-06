@@ -61,8 +61,10 @@ They applied each of these constraints independently, each with $\delta=0.05$.
 
 <h3>Creating the specification object</h3>
 <p>
-We need to create a different spec object for each constraint because we will be running five different experiments. However, every other input to the spec object is the same, so we can make five spec objects using a for loop. In the script below, set <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to where you saved the data and metadata files from above. <code class='highlight'>save_base_dir</code> is the parent directory to where five directories will be created, one holding each spec object. Change it to somewhere convenient on your machine.
+We need to create a different spec object for each constraint because we will be running five different experiments. However, every other input to the spec object is the same, so we can make five spec objects using a for loop. In the script below, set <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to where you saved the data and metadata files from above. <code class='highlight'>save_base_dir</code> is the parent directory to where five directories will be created, one holding each spec object. Change it to somewhere convenient on your machine. 
 </p>
+
+<p><b>Note:</b> Comparing this script to the equivalent one in the <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url }}">fair loans tutorial</a>, you may notice that the model and primary objective are missing here. That is because we are using a wrapper function called <code class='highlight'>createSupervisedSpec()</code> here which fills in the default values for these quantities in the classification setting, i.e., a logistic regression model with log loss.</p>
 
 <p>
 <div>
@@ -87,12 +89,6 @@ if __name__ == '__main__':
     # Load metadata
     (regime, sub_regime, columns,
         sensitive_columns) = load_supervised_metadata(metadata_pth)
-    
-    # Use logistic regression model
-    model_class = LogisticRegressionModel
-    
-    # primary objective = log loss
-    primary_objective = objectives.logistic_loss
 
     # Load dataset from file
     loader = DataSetLoader(
