@@ -33,7 +33,7 @@ permalink: /tutorials/
             <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}">Creating custom base variables</a>
         </li>
         <li>
-            <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">Reinforcement learning first tutorial: gridworld</a>
+            <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">Reinforcement learning first tutorial</a>
         </li>
     </ol>
 </div>

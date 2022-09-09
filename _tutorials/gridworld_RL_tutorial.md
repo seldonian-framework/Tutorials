@@ -8,13 +8,13 @@ prev_page_name: Custom base variables tutorial
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial: Introduction to reinforcement learning with the Seldonian Toolkit: gridworld</h2>
+<h2 align="center" class="mb-3">Tutorial: Introduction to reinforcement learning with the Seldonian Toolkit</h2>
 
 <hr class="my-4">
 
 <h3>Introduction</h3>
 <p>
-The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL) Seldonian algorithms. In the RL setting, the user must provide data (the observations, actions, and rewards from past episodes), a policy parameterization (similar to a <i>model</i> in the supervised learning regime), and the desired behavioral constraints. Seldonian algorithms implemented via the Engine search for a new policy that simultaneously optimizes a primary objective function (expected discounted return) and satisfies the behavioral constraints with high confidence. In this tutorial, we will use an environment and agent that are built into the Engine library. They serve as examples to help you to build your own RL Seldonian algorithms. Note that due to the choice of confidence bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
+The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL) Seldonian algorithms. In the RL setting, the user must provide data (the observations, actions, and rewards from past episodes), a policy parameterization (similar to a <i>model</i> in the supervised learning regime), and the desired behavioral constraints. Seldonian algorithms implemented via the Engine search for a new policy that simultaneously optimizes a primary objective function (expected discounted return) and satisfies the behavioral constraints with high confidence. Note that due to the choice of confidence bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
 </p>
 
 <h3>Outline</h3>
@@ -22,9 +22,9 @@ The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL
 <p>In this tutorial, after reviewing RL notation and fundamentals, you will learn how to:</p>
 
 <ul>
-    <li>Define a RL Seldonian algorithm using a simple gridworld environment with a tabular softmax agent </li>
+    <li>Define a RL Seldonian algorithm using data generated from a gridworld environment and a tabular softmax policy </li>
     <li>Run the algorithm using the Seldonian Engine to find a policy that satisfies a behavioral constraint</li>
-    <li>Run a RL Seldonian Experiment</li>
+    <li>Run a RL Seldonian Experiment for this Seldonian algorithm</li>
 </ul>
 
 <h3 id="background">RL background</h3>
@@ -41,18 +41,18 @@ The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL
         <li>$R_t$: The reward received by the agent at time $t$ (the agent receives $R_t$ after the environment transitions to state $S_{t+1}$ due to action $A_t$).</li>
         <li>$\pi$: A <i>policy</i>, where $\pi(o,a)=\Pr(A_t=a|O_t=o)$ for all actions $a$ and observations $o$.</li>
         <li>$\pi_\theta$: A <i>parameterized policy</i>, which is simply a policy with a weight vector $\theta$ that changes the conditional distribution over $A_t$ given $O_t$. That is, for all actions $a$, observations $o$, and weight vectors $\theta$, $\pi_\theta(o,a) = \Pr(A_t=a|O_t=o ; \theta)$, where $;\theta$ indicates "given that the agent uses policy parameters $\theta$". This is not quite the same as a conditional probability because $\theta$ is not an event (one should not apply Bayes' Theorem to this expression thinking that $\theta$ is an event).</li>
-        <li>$\gamma$: The reward discount parameter. This is a problem-specific contant in $[0,1]$ that is used in the objective function, defined next.</li>
-        <li>$J$: The objective function. The default in the toolkit is the expected discounted return: $J(\pi)=\mathbf{E}\left [ \sum_{t=0}^\infty \gamma^t R_t\right ]$. The agent's goal is to find a policy that maximizes this objective function.</li>
+        <li>$\gamma$: The reward discount parameter. This is a problem-specific constant in $[0,1]$ that is used in the objective function, defined next.</li>
+        <li>$J$: The objective function. The default in the Toolkit is the expected discounted return: $J(\pi)=\mathbf{E}\left [ \sum_{t=0}^\infty \gamma^t R_t\right ]$. The agent's goal is to find a policy that maximizes this objective function.</li>
         <li>The agent's experiences can be broken into statistically independent <i>episodes</i>. Each episode begins at time $t=0$. When an episode ends, the agent no longer needs to select actions and no longer receives rewards (this can be modeled using a <i>terminal absorbing state</i> as defined on page 18 <a href="https://people.cs.umass.edu/~pthomas/courses/CMPSCI_687_Fall2020/687_F20.pdf">here</a>.</li>
     </ul>
 </p>
 <p>
-    At this time, this toolkit is only compatible with <i>batch</i> or <i>offline</i> RL. This means that some current policy (typically called the <i>behavior policy</i> $\pi_b$) is already in use to select actions. The available data corresponds to the observations, actions, and rewards from previous episodes wherein the current policy was used. To make this more formal, we will define a <i>history</i> $H$ to be the available historical information from one episode:
+    At this time, the Seldonian Toolkit is only compatible with <i>batch</i> or <i>offline</i> RL. This means that some current policy (typically called the <i>behavior policy</i> $\pi_b$) is already in use to select actions. The available data corresponds to the observations, actions, and rewards from previous episodes wherein the current policy was used. To make this more formal, we will define a <i>history</i> $H$ to be the available historical information from one episode:
     $$ H = (O_0, A_0, R_0, O_1, A_1, R_1, \dotsc).$$
     All of the available data can then be expressed as $D = (H_i)_{i=1}^m$, where $m$ is the number of episodes for which data is available. 
 </p>
 <p>
-    For generality, the toolkit does not require there to be just one current policy. Instead, the available data could have been generated by several different (past) policies. However, the default Seldonian RL algorithms in the toolkit require some knowledge about what the past policies were. Specifically, they require each action $A_t$ in the historical data to also come with the probability that the behavior policy (the policy that selected the action) would select that action: $\pi_b(O_t,A_t)$. Hence, we ammend the definition of a history $H$ to include this information:
+    For generality, the Toolkit does not require there to be just one current policy. Instead, the available data could have been generated by several different (past) policies. However, the default Seldonian RL algorithms in the Toolkit require some knowledge about what the past policies were. Specifically, they require each action $A_t$ in the historical data to also come with the probability that the behavior policy (the policy that selected the action) would select that action: $\pi_b(O_t,A_t)$. Hence, we ammend the definition of a history $H$ to include this information:
     $$ H = (O_0, A_0, \pi_b(O_0,A_0), R_0, O_1, A_1, \pi_b(O_1,A_1) R_1, \dotsc).$$
     Notice that in this batch setting, Seldonian RL algorithms can be used to improve upon current and past policies. However, they can't be used to construct the first policy for an application. 
 </p>
@@ -68,15 +68,15 @@ In this tutorial, we will consider a 3x3 gridworld environment as shown in the f
 
 <div align="center">
     <figure>
-        <img src="/Tutorials/assets/img/gridworld_img.png" class="img-fluid my-2" style="width: 20%" alt="Gridworld Sketch" /> 
-        <figcaption align="left"> <b>Figure 1</b> - 3x3 gridworld where the initial state ($S_0$) is the upper left cell. Episodes end when the agent reaches the bottom right cell, which we refer to as the "terminal state". This problem is fully observable, meaning that the agent observes the entire state: $O_t=S_t$ always. The possible actions are up, down, left, right, which cause the agent to move one cell in the specified direction. Hitting a wall, e.g., action=left in the initial state, is a valid action and returns the agent to the same state. Each cell is labeled with the reward that the agent receives when that state is $S_{t+1}$. For example, if the agent transitions from the middle state ($S_t$) to the bottom middle state ($S_{t+1}$) then the reward would be $R_t=-1$. Notice that the reward is $0$ in all cells except for a $-1$ reward in the bottom middle cell and a $+1$ reward when reaching the terminal state. We will use a discount factor of $\gamma=0.9$ for this environment when calculating the expected return of a policy.  </figcaption>
+        <img src="{{ "/assets/img/gridworld_img.png" | relative_url }}" class="img-fluid my-2" style="width: 20%" alt="Gridworld Sketch" /> 
+        <figcaption align="left"> <b>Figure 1</b> - 3x3 gridworld where the initial state ($S_0$) is the upper left cell. Episodes end when the agent reaches the bottom right cell, which we refer to as the "terminal state." This problem is fully observable, meaning that the agent observes the entire state: $O_t=S_t$ always. The possible actions are up, down, left, right, which cause the agent to move one cell in the specified direction. Hitting a wall, e.g., action=left in the initial state, is a valid action and returns the agent to the same state. Each cell is labeled with the reward that the agent receives when that state is $S_{t+1}$. For example, if the agent transitions from the middle state ($S_t$) to the bottom middle state ($S_{t+1}$) then the reward would be $R_t=-1$. Notice that the reward is $0$ in all cells except for a $-1$ reward in the bottom middle cell and a $+1$ reward when reaching the terminal state. We will use a discount factor of $\gamma=0.9$ for this environment when calculating the expected return of a policy.  </figcaption>
     </figure>
 </div>
 </p>
 
 <h5> Defining the policy </h5>
 <p>
-The toolkit is compatible with a wide range of possible policy parameterizations, and even allows you to introduce your own environment-specific policy representation. For this example, we will use a tabular softmax policy. This policy stores one policy parameter (weight) for every possible observation-action pair. Let $\theta_{o,a}$ be the parameter for observation $o$ and action $a$. A tabular softmax policy can then be expressed as:
+The Toolkit is compatible with a wide range of possible policy parameterizations, and even allows you to introduce your own environment-specific policy representation. For this example, we will use a tabular softmax policy. This policy stores one policy parameter (weight) for every possible observation-action pair. Let $\theta_{o,a}$ be the parameter for observation $o$ and action $a$. A tabular softmax policy can then be expressed as:
 $$ \pi_\theta(o,a) = \frac{e^{\theta_{o,a}}}{\sum_{a'}{e^{\theta_{o,a'}}}}.$$
 So, given the current observation $O_t$, the agent chooses an action by drawing from a discrete probability distribution where the probability of each action $a$ is $\pi(O_t,a)$.
 </p>
@@ -89,105 +89,129 @@ So, given the current observation $O_t$, the agent chooses an action by drawing 
     For those familiar with <i>off-policy evaluation</i> (OPE), our algorithms use off-policy estimates of the expected return based on the per-decision importance sampling estimator. These estimates are used both in the primary objective (maximize the expected discounted return) and sometimes in safety constraints (like in this example, where the safety constraint requires the performance of the new policy to be at least $-0.25$). The per-decision importance sampling estimator provides unbiased estimates of $J(\pi_\theta)$, for any $\theta$, which are used like the unbiased estimates $\hat g$ and $\hat z$ described in the tutorials for the supervised learning regime.
 </p>
 <p>
-    In summary, we will apply a Seldonian RL algorithm to ensure that the performance of the new policy is at least the performance of the behavior policy $(-0.25)$, with probability at least $0.95$. The algorithm will use 10,000 epsiodes of data generated using the behavior policy (which selects each action with equal probability). We selected the performance threshold of $-0.25$ by running 10,000 additional episodes using the behavior policy and computing the average discounted return, giving $J(\pi_b)\approx -0.25$. We can now write out the Seldonian ML problem:
+    In summary, we will apply a Seldonian RL algorithm to ensure that the performance of the new policy is at least the performance of the behavior policy $(-0.25)$, with probability at least $0.95$. The algorithm will use 1,000 epsiodes of data generated using the behavior policy (which selects each action with equal probability). We selected the performance threshold of $-0.25$ by running 10,000 additional episodes using the behavior policy and computing the average discounted return, giving $J(\pi_b)\approx -0.25$. We can now write out the Seldonian ML problem:
 </p>    
 <p>
     Find a new policy subject to the constraint:
     <ul>
         <li>$g1: J\_{\text{pi_new}} \geq -0.25$, and $\delta=0.05$</li>
     </ul>
-    where $J\_{\text{pi_new}}$ is an RL-specific <a href="/Tutorials/glossary/#measure_function">measure function</a>. The Engine is programmed to know that $J\_{\text{pi_new}}$ means the performance of the new policy. The performance is calculated using an importance sampling estimate. 
+    where $J\_{\text{pi_new}}$ is an RL-specific <a href="/Tutorials/glossary/#measure_function">measure function</a>, which means that the Engine is programmed to interpret $J\_{\text{pi_new}}$ as the performance of the new policy. The performance of the new policy is calculated using per-decision importance sampling against the behavior policy. 
 </p>
 
-<h5> From supervised to reinforcemnt learning</h5>
+<h5> From supervised learning to reinforcement learning</h5>
 <p>
-    From the toolkit's perspective, there are few differences between the supervised learning and reinforcement learning regimes. The algorithm overview remains unchanged: the Seldonian algorithm still has candidate selection and safety test modules. It still uses gradient descent using the KKT conditions to find the candidate solutions, and uses statistical tools like Student's $t$-test to compute confidence intervals. Though there are some differences in the code (as shown in the example below), the core conceptual differences are:
+    From the Toolkit's perspective, there are few differences between the supervised learning and reinforcement learning regimes. The algorithm overview remains unchanged: the Seldonian algorithm still has candidate selection and safety test modules. It still uses gradient descent using the KKT conditions (or black box optimization) to find the candidate solutions, and uses statistical tools like Student's $t$-test to compute confidence intervals. Though there are some differences in the code (as shown in the example below), the core conceptual differences are:
     <ul>
         <li>The parameterized "model" is replaced with a parameterized "policy". However, this is mostly just a terminology change (both take an input and provide a distribution over possible outputs).</li>
-        <li>Though both still use a parse tree to represent the behavioral constraints, the base variables (leaf nodes of the parse tree that are not constants) use <i>importance sampling</i> variants to estimate what would happen if a new policy were to be used. More precisely, they provides unbiased estimates of the expected discounted return of the new policy, and this expected discounted return can use additional rewards defined to capture the safety of the new policy. The importance sampling estimates correspond to the $\hat z$ functions described in the first tutorial.</li>
+        <li>Though both still use a parse tree to represent the behavioral constraints, in the RL regime the base variables (leaf nodes of the parse tree that are not constants) use <i>importance sampling</i> variants to estimate what would happen if a new policy were to be used. More precisely, they provides unbiased estimates of the expected discounted return of the new policy, and this expected discounted return can use additional rewards defined to capture the safety of the new policy. The importance sampling estimates correspond to the $\hat z$ functions described in the <a href="{{ "/Tutorials/alg_details_tutorial/#parse_tree" | relative_url }}">Algorithm details tutorial</a>.</li>
     </ul>
 </p>
 
 <h3>Creating the specification object</h3>
 <p>
-Our goal is to create an <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.RLSpec.html?highlight=rlspec#seldonian.spec.RLSpec">RLSpec</a> object, which will consist of everything we will need to run a Seldonian algorithm using the Engine. Creating this object involves defining the RL environment, agent, the dataset and the behavioral constraints. 
-</p>
-<p>
-We provide a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.environments.gridworld.Gridworld.html#seldonian.RL.environments.gridworld.Gridworld">Gridworld</a> environment as part of the Engine library, which defines a square gridworld of arbitrary size. This environment has a single parameter, <code class='highlight'>size</code>, which determines the number of grid cells on each side of the square. The default size is 3, and the reward function is already programmed to match the description in Figure 1, so we can use it as is. We also provide a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.Agents.Parameterized_non_learning_softmax_agent.Parameterized_non_learning_softmax_agent.html#seldonian.RL.Agents.Parameterized_non_learning_softmax_agent.Parameterized_non_learning_softmax_agent">Parameterized_non_learning_softmax_agent</a>, which inacts the softmax policy described above.
+Our goal is to create an <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.RLSpec.html?highlight=rlspec#seldonian.spec.RLSpec">RLSpec</a> object, which will consist of everything we will need to run a Seldonian algorithm using the Engine. Creating this object involves defining the behavior dataset, policy parameterization, any environment-specific parameters, and the behavioral constraints. 
 </p>
 
 <p>
-All RL problems using the Engine require a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.dataset.RLDataSet.html#seldonian.dataset.RLDataSet">RLdataset</a> object, which consists of an array of <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.dataset.Episode.html#seldonian.dataset.Episode">Episode</a> objects. Episode objects consist of arrays of states, actions, rewards and action probabilities, where each array entry is for one timestep in the episode. Episodes need to be pre-generated by the behavioral policy, which we stated above will be the uniform random softmax policy. When initialized, the softmax agent by default carries out a uniform random policy, i.e., it chooses actions up, right, down, left with equal probability regardless of state. 
+In general, the manner in which the behavior data is generated is not important. In fact, generating data is not something a user will typically do using the Engine. However, for this tutorial, we will generate synthetic data for reproducibility purposes. We will use the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.environments.gridworld.Gridworld.html#seldonian.RL.environments.gridworld.Gridworld">Gridworld</a> environment that is part of the Engine library. This environment defines a square gridworld of arbitrary size. The default size is 3 cells on a side, and the reward function is already programmed to match the description in Figure 1, so we can use this environment without modification. We will also use an agent that adopts a uniform random <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.Agents.Policies.Softmax.html#module-seldonian.RL.Agents.Policies.Softmax">DiscreteSoftmax</a> policy. The weights of the policy will be all zeros, such that the probability of each action after any observation is $p=0.25$, i.e., uniform random.
 </p>
-<p>
-In the code below, we will use the <code class='highlight'>run_trial()</code> function in the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.RL_runner.html">RL_runner</a> module to generate 1000 episodes using the behavioral policy and then instantiate an <code class='highlight'>RLDataSet</code> from those episodes. We will then define our constraints and pass in the metadata for this gridworld environment to a wrapper function that creates the RLSpec object called <code class='highlight'>createRLspec()</code>.
 
+<p> We will use the <code class='highlight'>run_trial()</code> in the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.RL_runner.html">RL_runner</a> module to actually generate the data. A trial is a set of episodes. This function takes as input a dictionary where we provide the specification of the trial, such as the number of episodes, the environment, and the agent. Again, this step is only necessary for generating the data, which users will likely do outside of the Engine library. 
+</p>
 <div>
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 
 {% highlight python %}
-# createSpec.py
+# generate_data.py
 from seldonian.RL.RL_runner import run_trial
-from seldonian.spec import createRLspec
-from seldonian.dataset import RLDataSet
+from seldonian.utils.io_utils import save_pickle
 
-hyperparams_and_setting_dict = {}
-hyperparams_and_setting_dict["env"] = "gridworld"
-hyperparams_and_setting_dict["agent"] = "Parameterized_non_learning_softmax_agent"
-hyperparams_and_setting_dict["num_episodes"] = 1000
-hyperparams_and_setting_dict["num_trials"] = 1
+trial_dict = {}
+trial_dict["env"] = "gridworld"
+trial_dict["agent"] = "Parameterized_non_learning_softmax_agent"
+trial_dict["num_episodes"] = 1000
+trial_dict["num_trials"] = 1
+trial_dict["vis"] = False
 
 def main():
-    episodes, agent = run_trial(hyperparameter_and_setting_dict)
-    dataset = RLDataSet(episodes=episodes)
-
-    metadata_pth = "../../static/datasets/RL/gridworld/gridworld_metadata.json"
-    save_dir = '.'
-    constraint_strs = ['J_pi_new >= -0.25']
-    deltas=[0.05]
-
-    createRLspec(
-        dataset=dataset,
-        metadata_pth=metadata_pth,
-        agent=agent,
-        constraint_strs=constraint_strs,
-        deltas=deltas,
-        save_dir=save_dir,
-        verbose=True)
+    episodes, agent = run_trial(trial_dict)
+    episodes_file = './gridworld_1000episodes.pkl'
+    save_pickle(episodes_file,episodes)
 
 if __name__ == '__main__':
     main()
 {% endhighlight python %}
 </div>
 
-Notice that in the <code class='highlight'>hyperparams_and_setting_dict</code> dictionary which we passed to <code class='highlight'>run_trial()</code>, we specified the string names of the environment and agent. <code class='highlight'>run_trial()</code> knows how to map these string names to the objects describing the environment and agent. Here are the contents of the metadata file that we passed to <code class='highlight'>createRLspec()</code>:
+<p>
+Saving this script as a file called <code>generate_data.py</code> and running it from the command line like: 
 
-{% highlight python %}
-# gridworld_metadata.json
-{
-   "columns":["episode_index","O","A","R","pi"],
-    "regime":"RL",
-    "RL_module_name":"gridworld",
-    "RL_class_name":"Gridworld"
-}
-{% endhighlight python %}
+{% highlight bash %}
+$ python generate_data.py
+{% endhighlight bash %}
 
-The <code class='highlight'>"RL_module_name":"gridworld"</code> points to the module  <code>seldonian.RL.environments.gridworld</code>. The <code class='highlight'>"RL_class_name":"Gridworld"</code> points to the class <code class='highlight'>Gridworld()</code> in that module. 
+This saves a file called <code>gridworld_1000episodes.pkl</code> in the current directory which contains the 1000 episodes.
 </p>
 
+<p>
+Now we can use these episodes to create a <code class='highlight'>RLDataSet</code> object and complete the spec file. We will use the <code class="highlight">createRLSpec()</code> function which takes as input a dataset, policy, constraint strings, deltas, and environment-specific keyword arguments. The dataset will be created from the episodes we just saved in one line. We already specified our constraint strings and deltas above. The policy requires some knowledge of the environment, which we call a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.Env_Description.Env_Description.Env_Description.html#seldonian.RL.Env_Description.Env_Description.Env_Description">Env_Description</a>. This is just a description of the observation and action spaces. We provide these as objects. In our case, the only additional environment-specific piece of information is the discount factor, $\gamma=0.9$, which we specify in the <code class='highlight'>env_kwargs</code> argument. 
+</p>
+
+{% highlight python %}
+# createSpec.py
+from seldonian.RL.Agents.Policies.Softmax import DiscreteSoftmax
+from seldonian.RL.Env_Description.Env_Description import Env_Description
+from seldonian.RL.Env_Description.Spaces import Discrete_Space
+from seldonian.spec import createRLSpec
+from seldonian.dataset import RLDataSet
+from seldonian.utils.io_utils import load_pickle
+
+def main():
+    episodes_file = './gridworld_1000episodes.pkl'
+    episodes = load_pickle(episodes_file)
+    dataset = RLDataSet(episodes=episodes)
+
+    # Initialize policy
+    num_states = 9
+    observation_space = Discrete_Space(0, num_states-1)
+    action_space = Discrete_Space(0, 3)
+    env_description =  Env_Description(observation_space, action_space)
+    policy = DiscreteSoftmax(hyperparam_and_setting_dict={},
+        env_description=env_description)
+    env_kwargs={'gamma':0.9}
+    save_dir = '.'
+    constraint_strs = ['J_pi_new >= -0.25']
+    deltas=[0.05]
+
+    spec = createRLSpec(
+        dataset=dataset,
+        policy=policy,
+        constraint_strs=constraint_strs,
+        deltas=deltas,
+        env_kwargs=env_kwargs,
+        save=True,
+        save_dir='.',
+        verbose=True)
+
+if __name__ == '__main__':
+    main()
+
+
+{% endhighlight python %}
 
 <p> 
-Running that file from the command line like:
+Saving this script to a file called <code>createSpec.py</code> and then running it the command line like:
 {% highlight bash %}
 $ python createSpec.py
 {% endhighlight bash %}
-creates a file called <code>spec.pkl</code> in whatever directory you ran the command. Once that file is created, you are ready to run the Seldonian algorithm. 
+will create a file called <code>spec.pkl</code> in whatever directory you ran the command. Once that file is created, you are ready to run the Seldonian algorithm. 
 </p>
 
 <h3> Running the Seldonian Engine </h3>
 <p>
-Now that we have the spec file, running the Seldonian algorithm is extremely simple. You may need to change the path to <code class='highlight'>specfile</code> if your spec file is saved in a location other than the current directory.:
+Now that we have the spec file, running the Seldonian algorithm is simple. You may need to change the path to <code class='highlight'>specfile</code> if your spec file is saved in a location other than the current directory. We will also change some of the defaults of the optimization process, namely set the number of iterations to $10$ and set the learning rates of $\theta$ and $\lambda$ to $0.01$.
 {% highlight python %}
 # run_gridworld.py 
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
@@ -197,11 +221,14 @@ if __name__ == '__main__':
     # load specfile
     specfile = './spec.pkl'
     spec = load_pickle(specfile)
+    spec.optimization_hyperparams['num_iters']=10
+    spec.optimization_hyperparams['alpha_theta']=0.01
+    spec.optimization_hyperparams['alpha_lamb']=0.01
     # Run Seldonian algorithm 
     SA = SeldonianAlgorithm(spec)
     passed_safety,solution = SA.run()
     if passed_safety:
-        print("Passed safety test")
+        print("Passed safety test!")
         print("The solution found is:")
         print(solution)
     else:
@@ -213,36 +240,36 @@ This should result in the following output, though the exact numbers may differ 
 Safety dataset has 600 episodes
 Candidate dataset has 400 episodes
 Iteration 0
-Iteration 10
-Iteration 20
 Passed safety test!
 The solution found is:
-[[-0.17718385  0.1704365  -0.17040032  0.17088498]
- [ 0.17059895  0.17041713 -0.17023933 -0.17075099]
- [ 0.17071368 -0.17149423  0.17053143 -0.16999813]
- [ 0.17053054 -0.17239301 -0.1705741   0.18006215]
- [ 0.17048531  0.17024612 -0.17034173 -0.17001209]
- [-0.17303155  0.17141605  0.17056875 -0.17039872]
- [ 0.17040837 -0.1702631   0.17070513  0.16976562]
- [ 0.17046631  0.17002752 -0.16996262 -0.17031659]
+[[ 0.19907136  0.20260221 -0.20081473  0.2004336 ]
+ [-0.20323448  0.20115298 -0.2023812  -0.19957809]
+ [-0.20665602  0.19071499  0.20247835 -0.20167761]
+ [ 0.20084656  0.21050098 -0.20152061 -0.20083289]
+ [ 0.20156723  0.2012198  -0.20136459  0.20180457]
+ [-0.20693545 -0.20328714  0.20207675 -0.20123736]
+ [ 0.20047478 -0.20036864 -0.20053801  0.19877662]
+ [ 0.20421366  0.20038838 -0.20056068  0.21222363]
  [ 0.          0.          0.          0.        ]]
+
 {% endhighlight bash %}
 
 </p>
-As we can see, the solution returned by candidate selection passed the safety test. The solution is the Q-table, $p(s,a)$ of the new policy, where the jth column in the ith row represents the jth action given the ith state in the gridworld. The final row is all zeros because no actions are taken from the terminal state. 
+As we can see, the solution returned by candidate selection passed the safety test. The solution shows the weights $\theta(s,a)$ of the new policy, where the jth column in the ith row represents the $j$th action given the $i$th observation (also state, in this case) in the gridworld. The final row is all zeros because no actions are taken from the terminal state. This may not be a particularly good solution, but we have a high probability guarantee that it is better than the uniform random policy. 
 <h3> Running a Seldonian Experiment </h3>
 <p>
-Now that we have successfully run the Seldonian algorithm once with the Engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policy. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. The <a href="https://seldonian-toolkit.github.io/Experiments"> Seldonian Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
+Now that we have successfully run the Seldonian algorithm once with the Engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policy. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
 
 <p>
     Here is an outline of the experiment we will run: 
     <ul>
-        <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 10 different data fractions, which will be log-spaced between aproximately 0.005 and 1.0. This array times the number of epsiodes in the original dataset (1000) will make up the horizontal axis of the three plots.</li>
-        <li>Create 20 datasets (one for each trial) by re-running the behavioral data generation process with a different random seed. Each regenerated dataset will have the same number of episodes (1000) as the original dataset. We use 20 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use yet another re-generated dataset as the ground truth dataset</b> for calculating the performance and safety metrics.</li>
+        <li>The performance metric we will use is the expected discounted return.</li>
+        <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 10 different data fractions, which will be log-spaced between aproximately 0.005 and 1.0. This array times the number of epsiodes in the original dataset (1,000) will make up the horizontal axis of the three plots, i.e., the "number of training samples."</li>
+        <li>Create 20 datasets (one for each trial) by re-running the behavior data generation process with a different random seed. Each regenerated dataset will have the same number of episodes (1,000) as the original dataset. We use 20 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use a dataset of 1,000 episodes generated using the new policy as the ground truth dataset</b> when calculating the performance and safety metrics for each trial. </li>
         <li>
         For each <code class='highlight'>data_frac</code> in the array of data fractions, run 20 trials. In each trial, use only the first <code class='highlight'>data_frac</code> fraction of episodes to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the Engine, where only the <code class='highlight'>dataset</code> parameter will be modified for each trial. This will generate 15x20=300 total runs of the Seldonian algorithm. Each run will consist of a different set of new policy parameters, or "NSF" if no solution was found. </li>
-        <li>For each <code class='highlight'>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (expected discounted return) across the 20 trials at this <code class='highlight'>data_frac</code> using the new policy parameters evaluated on the ground truth episodes. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 20 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the constraint was violated on the ground truth episodes. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
+        <li>For each <code class='highlight'>data_frac</code>, calculate the mean and standard error on the performance (expected discounted return) across the 20 trials at this <code class='highlight'>data_frac</code>. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 20 trials. This fraction, referred to as the "solution rate," will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the constraint was violated on the ground truth episodes. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
     </ul>
 </p>
 <p>
@@ -259,17 +286,18 @@ from experiments.generate_plots import RLPlotGenerator
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import run_trial_given_agent_and_env
+from seldonian.RL.RL_runner import (create_env,
+    create_agent,run_trial_given_agent_and_env)
 {% endhighlight python %}
 </p>
 
 <p>
-Now we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set <code class='highlight'>n_workers</code> to however many CPUs you want to use. The results for each experiment we run will be saved in subdirectories of results_dir. <code class='highlight'>n_episodes_for_eval</code> determines how many episodes are used for evaluating the performance and failure rate.
+Now we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set <code class='highlight'>n_workers</code> to however many CPUs you want to use. The results for each experiment we run will be saved in subdirectories of <code class='highlight'>results_dir</code>. Change this variable as desired. <code class='highlight'>n_episodes_for_eval</code> determines how many episodes are used for evaluating the performance and failure rate. 
 
 {% highlight python %}
 if __name__ == "__main__":
     # Parameter setup
-    run_experiments = Ture
+    run_experiments = True
     make_plots = True
     save_plot = False
     performance_metric = 'J(pi_new)'
@@ -277,7 +305,7 @@ if __name__ == "__main__":
     data_fracs = np.logspace(-2.3,0,10)
     n_workers = 8
     verbose=True
-    results_dir = f'results/gridworld_debug_{n_trials}trials'
+    results_dir = f'results/gridworld_2022Sep09_{n_trials}trials'
     os.makedirs(results_dir,exist_ok=True)
     plot_savename = os.path.join(results_dir,f'gridworld_{n_trials}trials.png')
     n_episodes_for_eval = 1000
@@ -285,10 +313,10 @@ if __name__ == "__main__":
 </p>
 
 <p>
-Now we will need to load the same spec object that we created for running the Engine. As before, change the path to the where you saved this file. We will modify some of the hyperparameters of gradient descent. This is not necessary, but we found that using these parameters resulted in better performance than the default parameters that we used to run the Engine a single time above. This also illustrates one way to modify the spec object before running an experiment, which can be useful.   
+Now we will need to load the same spec object that we created for running the Engine. As before, change the path to where you saved this file. We will modify some of the hyperparameters of gradient descent. This is not necessary, but we found that using these parameters resulted in better performance than the default parameters that we used to run the Engine a single time. This also illustrates how to modify the spec object before running an experiment, which can be useful.   
 {% highlight python %}
     # Load spec
-    specfile = f'./spec.pkl'
+    specfile = './spec.pkl'
     spec = load_pickle(specfile)
     spec.optimization_hyperparams['num_iters'] = 40
     spec.optimization_hyperparams['alpha_theta'] = 0.01
@@ -297,40 +325,45 @@ Now we will need to load the same spec object that we created for running the En
 </p>
 
 <p>
-We need to define the function we will use to evaluate the performance. This function will generate 1000 new episodes using the new policy and evaluate the performance by calculating the expected discounted return ($\gamma = 0.9$). We also define the keyword arguments to pass to this function in each trial. 
+One of the remaining parameters of the plot generator is <code class="highlight">perf_eval_fn</code>, a function that will be used to evaluate the performance in each trial. In general, this function is completely up to the user to define. During each trial, this function is called after the Seldonian algorithm has been run and only if the safety test passed for that trial. The <code class='highlight'>kwargs</code> passed to this function will always consist of the <code class="highlight">model</code> object from the current trial and the <code class='highlight'>hyperparameter_and_setting_dict</code>. There is also the option to pass additional keyword arguments to this function via the <code class='highlight'>perf_eval_kwargs</code> parameter. In our case, we will define this function to generate 1000 episodes using the policy obtained by running the Seldonian algorithm and calculate the expected discounted return ($\gamma = 0.9$). The only additional argument we need to provide is how many episodes to run. This function uses the same <code class='highlight'>run_trial</code> function that we used when generating the original dataset. We set the agent's weights to the weights that were trained by the Seldonian algorithm so that the data are generated using the new policy obtained by the Seldonian algorithm. 
 
 {% highlight python %}
-    def perf_eval_fn(model,**kwargs):
-        """ Calculate the expected return of the sum 
-        of discounted rewards by generating episodes
-        
-        :param model: The RL_model object containing
-            the environment and agent 
-        
+    def generate_episodes_and_calc_J(**kwargs):
+        """ Calculate the expected discounted return 
+        by generating episodes
+
         :return: episodes, J, where episodes is the list
             of generated ground truth episodes and J is
             the expected discounted return
         :rtype: (List(Episode),float)
         """
-        agent = model.agent
-        env = model.env
-        num_episodes = kwargs['n_episodes']
+        # Get trained model weights from running the Seldonian algo
+        model = kwargs['model']
+        new_params = model.policy.get_params()
+       
+        # create env and agent
+        hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
+        agent = create_agent(hyperparameter_and_setting_dict)
+        env = create_env(hyperparameter_and_setting_dict)
+       
+        # set agent's weights to the trained model weights
+        agent.set_new_params(new_params)
+        
         # generate episodes
+        num_episodes = kwargs['n_episodes_for_eval']
         episodes = run_trial_given_agent_and_env(
-            agent=agent,
-            env=env,
-            num_episodes=num_episodes)
+            agent=agent,env=env,num_episodes=num_episodes)
 
         # Calculate J, the discounted sum of rewards
         returns = np.array([weighted_sum_gamma(ep.rewards,env.gamma) for ep in episodes])
         J = np.mean(returns)
         return episodes,J
-    perf_eval_kwargs = {'n_episodes':n_episodes_for_eval}   
+    perf_eval_kwargs = {'n_episodes_for_eval':n_episodes_for_eval}   
 {% endhighlight python %}
 </p>
 
 <p>
-We also need to define a <code class='highlight'>hyperparameter_and_setting_dict</code> as we did in the <code>createSpec.py</code> script above. This is required for generating the datasets that we will use in each of the 20 trials. Each of these needs to have 1000 episodes.
+Next, we need to define the <code class='highlight'>hyperparameter_and_setting_dict</code> as we did in the <code>createSpec.py</code> script above. This is required for generating the datasets that we will use in each of the 20 trials, as well as for generating the data in the function we defined to evaluate the performance. Note that in this case the number of episodes that we use for generating the trial datasets and the number of episodes that we use for evaluating the performance are the same. This does not need to be the case, as we can pass a different value for <code class="highlight">n_episodes_for_eval</code> via <code class="highlight">perf_eval_kwargs</code> if we wanted to. 
 
 {% highlight python %}
     hyperparameter_and_setting_dict = {}
@@ -383,7 +416,8 @@ After the experiment is done running, we can make the three plots, which is done
 </p>
 
 <p>
-Here is the entire script, saved in a file called <code>generate_gridworld_plots.py</code>
+Here is the entire script, saved in a file called <code>generate_gridworld_plots.py</code>. We put the function definition for evaluating the performance outside of the main block in the full script for clarity. This is a slightly different place than where we presented it in the step by step code blocks above. 
+
 {% highlight python %}
 # generate_gridworld_plots.py
 import os
@@ -393,38 +427,43 @@ from experiments.generate_plots import RLPlotGenerator
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import run_trial_given_agent_and_env
+from seldonian.RL.RL_runner import (create_env,
+    create_agent,run_trial_given_agent_and_env)
 
-def generate_episodes_and_calc_J(model,**kwargs):
-    """ Calculate the expected return of the sum 
-    of discounted rewards by generating episodes
-    
-    :param model: The RL_model object containing
-        the environment and agent 
-    
+def generate_episodes_and_calc_J(**kwargs):
+    """ Calculate the expected discounted return 
+    by generating episodes
+
     :return: episodes, J, where episodes is the list
         of generated ground truth episodes and J is
         the expected discounted return
     :rtype: (List(Episode),float)
     """
-    agent = model.agent
-    env = model.env
-    num_episodes = kwargs['n_episodes']
+    # Get trained model weights from running the Seldonian algo
+    model = kwargs['model']
+    new_params = model.policy.get_params()
+   
+    # create env and agent
+    hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
+    agent = create_agent(hyperparameter_and_setting_dict)
+    env = create_env(hyperparameter_and_setting_dict)
+   
+    # set agent's weights to the trained model weights
+    agent.set_new_params(new_params)
+    
     # generate episodes
+    num_episodes = kwargs['n_episodes_for_eval']
     episodes = run_trial_given_agent_and_env(
-        agent=agent,
-        env=env,
-        num_episodes=num_episodes)
+        agent=agent,env=env,num_episodes=num_episodes)
 
     # Calculate J, the discounted sum of rewards
     returns = np.array([weighted_sum_gamma(ep.rewards,env.gamma) for ep in episodes])
     J = np.mean(returns)
     return episodes,J
     
-
 if __name__ == "__main__":
     # Parameter setup
-    run_experiments = Ture
+    run_experiments = True
     make_plots = True
     save_plot = False
     performance_metric = 'J(pi_new)'
@@ -432,12 +471,12 @@ if __name__ == "__main__":
     data_fracs = np.logspace(-2.3,0,10)
     n_workers = 8
     verbose=True
-    results_dir = f'results/gridworld_debug_{n_trials}trials'
+    results_dir = f'results/gridworld_2022Sep09_{n_trials}trials'
     os.makedirs(results_dir,exist_ok=True)
     plot_savename = os.path.join(results_dir,f'gridworld_{n_trials}trials.png')
     n_episodes_for_eval = 1000
     # Load spec
-    specfile = f'../interface_outputs/gridworld_james/spec.pkl'
+    specfile = f'../engine-repo/examples/gridworld_tutorial/spec.pkl'
     spec = load_pickle(specfile)
     spec.optimization_hyperparams['num_iters'] = 40
     spec.optimization_hyperparams['alpha_theta'] = 0.01
@@ -446,10 +485,9 @@ if __name__ == "__main__":
     spec.optimization_hyperparams['beta_rmspropr'] = 0.95
 
     perf_eval_fn = generate_episodes_and_calc_J
-    perf_eval_kwargs = {'n_episodes':n_episodes_for_eval}
+    perf_eval_kwargs = {'n_episodes_for_eval':n_episodes_for_eval}
 
     hyperparameter_and_setting_dict = {}
-
     hyperparameter_and_setting_dict["env"] = "gridworld"
     hyperparameter_and_setting_dict["agent"] = "Parameterized_non_learning_softmax_agent"
     hyperparameter_and_setting_dict["num_episodes"] = 1000
@@ -478,11 +516,12 @@ if __name__ == "__main__":
         else:
             plot_generator.make_plots(fontsize=12,legend_fontsize=8,
                 performance_label=performance_metric,)
+
 {% endhighlight python %}
 </p>
 
 <p>
-Running the script should produce a plot that looks very similar to this:
+Running the script should produce a plot that looks very similar to the the one below. Once the experiments are run, if you want to save the plot but not re-run the experiments simply set: <code class="highlight">run_experiments = False</code> and <code class="highlight">save_plot = True</code>.
 
 <div align="center">
     <figure>
@@ -490,11 +529,11 @@ Running the script should produce a plot that looks very similar to this:
         <figcaption align="left"> <b>Figure 2</b> - The Three Plots of a Seldonian Experiment shown for the gridworld environment with a softmax agent. A behavioral constraint, $J\_{\text{pi_new}} \geq -0.25$, is enforced with $\delta = 0.05$. Each panel shows the mean (point) and standard error (shaded region) over 20 trials of a quantity for the Quasi-Seldonian model (QSA, blue), plotted against the number of training samples as determined from the data fraction array. (Left) the performance of the new policy evaluated on the ground truth dataset. (Middle) the fraction of trials at each data fraction that returned a solution. (Right) the fraction of trials that violated the safety constraint on the ground truth dataset. The black dashed line is set at the $\delta=0.05$ value that we set in our behavioral constraint. </figcaption>
     </figure>
 </div>
-The performance of the obtained policy increases steadily with increasing number of episodes. The QSA does not always return a solution for small amounts of data, but at $\sim10^3$ episodes it returns a solution every time it is run. This is desired behavior because for small amounts of data, the uncertainty about whether the solution is safe is too large for the algorithm to guarantee safety. The QSA fails only for very small amounts of data ($\sim5$ episodes), which can happen because it is quasi-Seldonian, i.e., the method used to calculate the confidence bound on the behavioral constraint is not appropriate for very small amounts of data. Given more than 5 episodes, the QSA never violates the behavioral constraint on the ground truth dataset.
+The performance of the obtained policy increases steadily with increasing number of episodes provided to the QSA. The QSA does not always return a solution for small amounts of data, but at $\sim10^3$ episodes it returns a solution every time it is run. This is desired behavior because for small amounts of data, the uncertainty about whether the solution is safe is too large for the algorithm to guarantee safety. The QSA always produces safe behavior (failure rate = 0). For very small amounts of data ($\lesssim10$ episodes), the algorithm may have a non-zero failure rate in your case. This can happen because the algorithm we are using here is quasi-Seldonian, i.e., the method used to calculate the confidence bound on the behavioral constraint makes assumptions that are only reasonable for relatively large amounts of data. 
 </p>
 <h3>Summary</h3>
 <p>
-In this tutorial, we demonstrated how to run a quasi-Seldonian reinforcement learning algorithm with the Seldonian Toolkit. We defined the Seldonian machine learning problem for an simple gridworld problem with a softmax agent. Running the algorithm using the Seldonian Engine, we found that the solution we obtained passed the safety test and was therefore deemed safe. To explore the behavior of the algorithm in more detail, we ran a Seldonian Experiment. We produced the Three Plots: performance, solution rate, and failure rate as a function of number of episodes used to run the algorithm. The softmax agent's performance is improved as more episodes are used. The algorithm needs close to 1000 episodes before it can return a solution every time, 
+In this tutorial, we demonstrated how to run a quasi-Seldonian offline reinforcement learning algorithm with the Seldonian Toolkit. We defined the Seldonian machine learning problem in the context of a simple gridworld environment with a softmax policy parameterization. The behavioral constraint we set out to enforce was that the performance of the new policy must be at least as good as a uniform random policy. Running the algorithm using the Seldonian Engine, we found that the solution we obtained passed the safety test and was therefore deemed safe. To explore the behavior of the algorithm in more detail, we ran a Seldonian Experiment. We produced the Three Plots: performance, solution rate, and failure rate as a function of number of episodes used to run the algorithm. We found expected behavior of the algorithm: the performance of the obtained policy parameterization improved as more episodes were used. When small amounts of data were provided to the algorithm, the uncertainty in the safety constraint was large, preventing the algorithm from guaranteeing safety. With enough data, though, the algorithm returned a solution it guaranteed to be safe. Importantly, the algorithm never returned a solution it deemed to be safe that actually was not safe according to a ground truth dataset.
 </p>
 
 </div>
