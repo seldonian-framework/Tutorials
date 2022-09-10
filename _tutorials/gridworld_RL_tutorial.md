@@ -105,6 +105,8 @@ So, given the current observation $O_t$, the agent chooses an action by drawing 
     <ul>
         <li>The parameterized "model" is replaced with a parameterized "policy". However, this is mostly just a terminology change (both take an input and provide a distribution over possible outputs).</li>
         <li>Though both still use a parse tree to represent the behavioral constraints, in the RL regime the base variables (leaf nodes of the parse tree that are not constants) use <i>importance sampling</i> variants to estimate what would happen if a new policy were to be used. More precisely, they provides unbiased estimates of the expected discounted return of the new policy, and this expected discounted return can use additional rewards defined to capture the safety of the new policy. The importance sampling estimates correspond to the $\hat z$ functions described in the <a href="{{ "/Tutorials/alg_details_tutorial/#parse_tree" | relative_url }}">Algorithm details tutorial</a>.</li>
+        <li>The data consist of $m$ episodes in the RL regime as opposed to $m$ data points in the supervised learning regime. </li>
+        <li>In the Experiments library, the default way of generating ground truth data in the RL regime is to run additional episodes using a behavior policy. We will see this played out in the <a href="#Experiments">Running a Seldonian Experiment</a> section.</li>
     </ul>
 </p>
 
@@ -256,7 +258,7 @@ The solution found is:
 
 </p>
 As we can see, the solution returned by candidate selection passed the safety test. The solution shows the weights $\theta(s,a)$ of the new policy, where the jth column in the ith row represents the $j$th action given the $i$th observation (also state, in this case) in the gridworld. The final row is all zeros because no actions are taken from the terminal state. This may not be a particularly good solution, but we have a high probability guarantee that it is better than the uniform random policy. 
-<h3> Running a Seldonian Experiment </h3>
+<h3 id="Experiments"> Running a Seldonian Experiment </h3>
 <p>
 Now that we have successfully run the Seldonian algorithm once with the Engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policy. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
