@@ -77,7 +77,11 @@ In this tutorial, we will consider a 3x3 gridworld environment as shown in the f
 <h5> Defining the policy </h5>
 <p>
 The Toolkit is compatible with a wide range of possible policy parameterizations, and even allows you to introduce your own environment-specific policy representation. For this example, we will use a tabular softmax policy. This policy stores one policy parameter (weight) for every possible observation-action pair. Let $\theta_{o,a}$ be the parameter for observation $o$ and action $a$. A tabular softmax policy can then be expressed as:
-$$ \pi_\theta(o,a) = \frac{e^{\theta_{o,a}}}{\sum_{a'}{e^{\theta_{o,a'}}}}.$$
+$$ \begin{equation}
+\pi_\theta(o,a) = \frac{e^{\theta_{o,a}}}{\sum_{a'}{e^{\theta_{o,a'}}}}
+\label{policy_parameterization}
+\end{equation}
+$$
 So, given the current observation $O_t$, the agent chooses an action by drawing from a discrete probability distribution where the probability of each action $a$ is $\pi(O_t,a)$.
 </p>
 
@@ -116,7 +120,7 @@ Our goal is to create an <a href="https://seldonian-toolkit.github.io/Engine/bui
 </p>
 
 <p>
-In general, the manner in which the behavior data is generated is not important. In fact, generating data is not something a user will typically do using the Engine. However, for this tutorial, we will generate synthetic data for reproducibility purposes. We will use the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.environments.gridworld.Gridworld.html#seldonian.RL.environments.gridworld.Gridworld">Gridworld</a> environment that is part of the Engine library. This environment defines a square gridworld of arbitrary size. The default size is 3 cells on a side, and the reward function is already programmed to match the description in Figure 1, so we can use this environment without modification. We will also use an agent that adopts a uniform random <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.Agents.Policies.Softmax.html#module-seldonian.RL.Agents.Policies.Softmax">DiscreteSoftmax</a> policy. The weights of the policy will be all zeros, such that the probability of each action after any observation is $p=0.25$, i.e., uniform random.
+In general, the manner in which the behavior data is generated is not important. In fact, generating data is not something a user will typically do using the Engine. However, for this tutorial, we will generate synthetic data for reproducibility purposes. The data file we will create can be found here if you would like to skip this step: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/RL/gridworld/gridworld_1000episodes.pkl">gridworld_1000episodes.pkl</a>. We will use the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.environments.gridworld.Gridworld.html#seldonian.RL.environments.gridworld.Gridworld">Gridworld</a> environment that is part of the Engine library. This environment defines a square gridworld of arbitrary size. The default size is 3 cells on a side, and the reward function is already programmed to match the description in Figure 1, so we can use this environment without modification. We will use an agent that adopts a uniform random <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.Agents.Policies.Softmax.html#module-seldonian.RL.Agents.Policies.Softmax">DiscreteSoftmax</a> policy. The weights of the policy are used to generate the transition probabilities as in equation \eqref{policy_parameterization}. Because there are 9 states and 4 possible actions, there are a total of 36 weights. The behavior policy sets all of these weights to zero, such that the probability of each action after any observation is $p=0.25$, i.e., uniform random.
 </p>
 
 <p> We will use the <code class='highlight'>run_trial()</code> in the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.RL_runner.html">RL_runner</a> module to actually generate the data. A trial is a set of episodes. This function takes as input a dictionary where we provide the specification of the trial, such as the number of episodes, the environment, and the agent. Again, this step is only necessary for generating the data, which users will likely do outside of the Engine library. 
