@@ -13,7 +13,7 @@ permalink: /overview/
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3"><b>Overview</b></h5>
     <hr class="my-4" />
-    <p>Here you will find an overview of Seldonian algorithms, the Seldonian framework, and this software library. If you are new to these topics, we recommend reading from the top down, but you are welcome to jump ahead using the links below. The content below is organized into the following topics:</p>
+    <p>At this website you will find a description of Seldonian algorithms as well as hands on tutorials for implementing them with the Seldonian Toolkit. Use the navigation buttons at the top of the page to jump between pages or click the links in the navbar at the top of the page. This page provides an overview of Seldonian algorithms, the Seldonian framework, and this software library. If you are new to these topics, we recommend reading from the top down, but you are welcome to jump ahead using the links below. The content below is organized into the following topics:</p>
     <ol>
         <li>
             <a href="#need">The need for safe and fair machine learning</a>

@@ -12,7 +12,7 @@ permalink: /tutorials/
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3">Tutorials</h5>
     <hr class="my-4">
-    <p>Here you will find tutorials on how to install and use the software in the Seldonian Toolkit. If you are new these libraries, we recommend reading the first few tutorials in order. The content below is organized into the following topics:</p>
+    <p>Here you will find tutorials on how to install and use the software in the Seldonian Toolkit. For the supervised learning track, we recommend following tutorials 1-4. For the reinforcement learning track, we recommend following tutorials 1-3, then 7. </p>
     <ol>
         <li>
             <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url}}">Seldonian Algorithm Details</a>
@@ -27,7 +27,7 @@ permalink: /tutorials/
             <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">Fairness for Automated Loan Approval Systems</a>
         </li>
         <li>
-            <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">Reproducing the GPA classification results from Seldonian Science paper</a>
+            <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">Reproducing the GPA classification results from the Seldonian Science paper</a>
         </li>
         <li>
             <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}">Creating custom base variables</a>
