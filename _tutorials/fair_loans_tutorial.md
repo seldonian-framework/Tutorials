@@ -100,7 +100,6 @@ from seldonian.models import objectives
 if __name__ == '__main__':
     data_pth = "../../static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv"
     metadata_pth = "../../static/datasets/supervised/german_credit/metadata_german_loan.json"
-    # save_dir = '../../../interface_outputs/loan_disparate_impact_fairlearndef'
     save_dir = '../../../interface_outputs/loan_equalized_odds_seldodef'
     os.makedirs(save_dir,exist_ok=True)
     # Load metadata
@@ -128,23 +127,12 @@ if __name__ == '__main__':
     
     # Define behavioral constraints
     constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.9'] 
+    deltas=[0.05]
 
     # For each constraint (in this case only one), make a parse tree
-    parse_trees = []
-    for ii in range(len(constraint_strs)):
-        constraint_str = constraint_strs[ii]
-
-        delta = deltas[ii]
-        # Create parse tree object
-        parse_tree = ParseTree(delta=delta,regime='supervised_learning',
-            sub_regime='classification',columns=columns)
-
-        # Fill out tree
-        parse_tree.build_tree(
-            constraint_str=constraint_str,
-            delta_weight_method='equal')
-        
-        parse_trees.append(parse_tree)
+    parse_trees = make_parse_trees_from_constraints(
+        constraint_strs,deltas,regime='supervised_learning',
+        sub_regime='classification',columns=columns)
 
     # Save spec object, using defaults where necessary
     spec = SupervisedSpec(
