@@ -159,7 +159,7 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-4 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3" id="toolkit"><b>What software do we provide?</b></h5>
+    <h5 class="mb-3" id="toolkit"><b>What is this software toolkit?</b></h5>
     <hr class="my-4" />
     <p>
         We developed the Seldonian Toolkit to provide:
