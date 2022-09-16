@@ -9,7 +9,7 @@ next_page_name: Fair loans tutorial
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h2 align="center" class="mb-3">Tutorial: Getting Started with the Seldonian Engine</h2>
+    <h2 align="center" class="mb-3">Tutorial: Running the Seldonian Engine</h2>
     <hr class="my-4">
     <h3>Outline</h3>
     <p>In this tutorial, you will learn how to:

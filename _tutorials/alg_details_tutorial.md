@@ -2,7 +2,7 @@
 layout: tutorial
 permalink: /tutorials/alg_details_tutorial/
 prev_url: /tutorials
-prev_page_name: Tutorials home
+prev_page_name: Getting started
 next_url: /tutorials/install_toolkit_tutorial/
 next_page_name: Install Toolkit tutorial
 ---
