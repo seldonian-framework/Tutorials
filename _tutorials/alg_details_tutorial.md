@@ -23,7 +23,7 @@ next_page_name: Install Toolkit tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Seldonian algorithm overview</h3>
+    <h3 id="overview">Seldonian algorithm overview</h3>
     <p>
         A common misconception is that there is an algorithm that is <i>the</i> Seldonian algorithm. This is not the case&mdash;Seldonian algorithms are a class of algorithms, like classification or regression algorithms. Any algorithm \(a\) that ensures that for all \(i \in \{1,2,\dotsc,n\}\), \(\Pr(g_i(a(D))\leq 0)\geq 1-\delta_i\) is a Seldonian algorithm. For those not familiar with this expression or notation, we recommend first reviewing the <a href="{{"/overview/" | relative_url}}">overview page</a>.
     </p>
