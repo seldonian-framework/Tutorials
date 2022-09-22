@@ -2,14 +2,14 @@
 layout: tutorial
 permalink: /tutorials/install_toolkit_tutorial/
 prev_url: /tutorials/alg_details_tutorial/
-prev_page_name: Seldonian Algorithm details 
+prev_page_name: (A) Seldonian Algorithm details 
 next_url: /tutorials/simple_engine_tutorial/
-next_page_name: Simple Engine tutorial
+next_page_name: (C) Simple Engine tutorial
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h2 align="center" class="mb-3">Tutorial: Installing the Seldonian Toolkit libraries</h2>
+<h2 align="center" class="mb-3">Tutorial B: Installing the Seldonian Toolkit libraries</h2>
 <hr class="my-4">
 
 <h3> Installation </h3>

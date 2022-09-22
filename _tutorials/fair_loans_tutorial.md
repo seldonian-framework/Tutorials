@@ -2,15 +2,15 @@
 layout: tutorial
 permalink: /tutorials/fair_loans_tutorial/
 prev_url: /tutorials/simple_engine_tutorial/
-prev_page_name: Simple Engine tutorial
+prev_page_name: (C) Simple Engine tutorial
 next_url: /tutorials/science_GPA_tutorial/
-next_page_name: Science paper GPA tutorial
+next_page_name: (E) Science paper GPA tutorial
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial: Fairness for Automated Loan Approval Systems</h2>
+<h2 align="center" class="mb-3">Tutorial D: Fairness for Automated Loan Approval Systems</h2>
 
 <hr class="my-4">
 

@@ -2,15 +2,15 @@
 layout: tutorial
 permalink: /tutorials/custom_base_variable_tutorial/
 prev_url: /tutorials/science_GPA_tutorial/
-prev_page_name: Science paper GPA tutorial
+prev_page_name: (E) Science paper GPA tutorial
 next_url: /tutorials/gridworld_RL_tutorial/
-next_page_name: Reinforcement learning first tutorial - gridworld
+next_page_name: (G) Reinforcement learning first tutorial - gridworld
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial: Creating custom base variables in the behavioral constraints</h2>
+<h2 align="center" class="mb-3">Tutorial F: Creating custom base variables in the behavioral constraints</h2>
 
 <hr class="my-4">
 <p> The purpose of this tutorial is to help you understand how to extend the functionality of string-based behavioral constraints to suit your custom constraints. If the answer to any of these questions is "yes" or "maybe" then keep reading:

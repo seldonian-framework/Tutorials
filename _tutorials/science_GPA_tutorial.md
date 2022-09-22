@@ -2,15 +2,15 @@
 layout: tutorial
 permalink: /tutorials/science_GPA_tutorial/
 prev_url: /tutorials/fair_loans_tutorial/
-prev_page_name: Fair Loans tutorial
+prev_page_name: (D) Fair Loans tutorial
 next_url: /tutorials/custom_base_variable_tutorial/
-next_page_name: Custom base variables tutorial
+next_page_name: (F) Custom base variables tutorial
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial: Reproducing the GPA classification results from the Seldonian Science paper  </h2>
+<h2 align="center" class="mb-3">Tutorial E: Reproducing the GPA classification results from the Seldonian Science paper  </h2>
 
 <hr class="my-4">
 

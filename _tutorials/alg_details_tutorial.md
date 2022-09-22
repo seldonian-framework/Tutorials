@@ -4,12 +4,12 @@ permalink: /tutorials/alg_details_tutorial/
 prev_url: /tutorials
 prev_page_name: Getting started
 next_url: /tutorials/install_toolkit_tutorial/
-next_page_name: Install Toolkit tutorial
+next_page_name: (B) Install Toolkit tutorial
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h2 align="center" class="mb-3">Tutorial: Seldonian algorithm details</h2>
+    <h2 align="center" class="mb-3">Tutorial A: Seldonian algorithm details</h2>
     <hr class="my-4" />
     <h3>Outline</h3>
     <p>In this tutorial, you will learn:</p>

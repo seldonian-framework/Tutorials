@@ -2,13 +2,13 @@
 layout: tutorial
 permalink: /tutorials/gridworld_RL_tutorial/
 prev_url: /tutorials/custom_base_variable_tutorial/
-prev_page_name: Custom base variables tutorial
+prev_page_name: (F) Custom base variables tutorial
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial: Introduction to reinforcement learning with the Seldonian Toolkit</h2>
+<h2 align="center" class="mb-3">Tutorial G: Introduction to reinforcement learning with the Seldonian Toolkit</h2>
 
 <hr class="my-4">
 

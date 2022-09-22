@@ -2,14 +2,14 @@
 layout: tutorial
 permalink: /tutorials/simple_engine_tutorial/
 prev_url: /tutorials/install_toolkit_tutorial/
-prev_page_name: Install Engine tutorial
+prev_page_name: (B) Install Engine tutorial
 next_url: /tutorials/fair_loans_tutorial/
-next_page_name: Fair loans tutorial
+next_page_name: (D) Fair loans tutorial
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h2 align="center" class="mb-3">Tutorial: Running the Seldonian Engine</h2>
+    <h2 align="center" class="mb-3">Tutorial C: Running the Seldonian Engine</h2>
     <hr class="my-4">
     <h3>Outline</h3>
     <p>In this tutorial, you will learn how to:
