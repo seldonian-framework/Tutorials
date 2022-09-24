@@ -21,7 +21,7 @@ next_page_name: (D) Fair loans tutorial
     </p>
     <h3> An example Seldonian machine learning problem </h3>
     <p>
-        Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict the label Y using the single feature X. To solve this problem we can use linear regression with an objective function of the <i>mean squared error</i> (MSE). We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
+        Consider a simple supervised regression problem with two continous random variables X and Y. Let the goal be to predict the label Y using the single feature X. To solve this problem we can use linear regression with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
     </p>
     <p>
         Now let's suppose we want to add the following two constraints into the problem:
@@ -58,9 +58,9 @@ next_page_name: (D) Fair loans tutorial
     </p>
     <ol>
         <li> Define the data - we will generate some synthetic data for X and Y in this case.</li>
-        <li> Create parse trees from the behavioral constraints</li>
-        <li> Define the underlying machine learning model </li>
-        <li> Create a spec object containing all of this information and some hyperparameters - we can ignore many of these in this example. For a full list of parameters and their defaults see the API docs for <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a>.</li>
+        <li> Create parse trees from the behavioral constraints.</li>
+        <li> Define the underlying machine learning model. </li>
+        <li> Create a spec object containing all of this information and some hyperparameters - we can ignore many of these in this example. For a full list of parameters and their default values see the API docs for <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a>.</li>
         <li> Run the Seldonian algorithm using the spec object. </li>
     </ol>
     Let's write out the code to do this. Each step above is enumerated in comments in the code below. We will make heavy use of helper functions with many hidden defaults. In the tutorials that follow, we will explore how to customize running the Engine.
@@ -138,9 +138,9 @@ True [0.16911355 0.1738146 ]
 {% endhighlight %}
     </p>
     <p>
-    Notice in the last few lines of the script that <code class="highlight">SA.run()</code> returns two values. <code class="highlight">passed_safety</code> is a boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+    Notice in the last few lines of the script that <code class="highlight">SA.run()</code> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code> then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
 </p>
-<p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it must satisfy: $1.25 \leq {\theta} \leq 2.0$ (with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information:
+<p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it should be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information:
 
 {% highlight python %}
 # Check the value of the primary objective on the safety dataset
@@ -153,7 +153,7 @@ This should print a value around: $1.61$, which satsifies the behavioral constra
 </p>
 
 <p>
-We might also wonder what the values of the primary objective and the behavioral constraint function were during the candidate selection process. All of this information and more is stored in a dictionary which is retrievable via the <code class="highlight">SA.get_cs_result()</code> method:
+We might also wonder what the values of the primary objective and the behavioral constraint function were during the candidate selection process. All of this information and more is stored in a dictionary that is retrievable via the <code class="highlight">SA.get_cs_result()</code> method:
 {% highlight python %}
 cs_dict = SA.get_cs_result() # returns a dictionary with a lot of quantities evaluated at each step of gradient descent
 print(cs_dict.keys())
