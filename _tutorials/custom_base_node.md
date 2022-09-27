@@ -4,7 +4,7 @@ permalink: /tutorials/custom_base_variable_tutorial/
 prev_url: /tutorials/science_GPA_tutorial/
 prev_page_name: (E) Science paper GPA tutorial
 next_url: /tutorials/gridworld_RL_tutorial/
-next_page_name: (G) Reinforcement learning first tutorial - gridworld
+next_page_name: (G) Reinforcement learning first tutorial
 ---
 
 <!-- Main Container -->

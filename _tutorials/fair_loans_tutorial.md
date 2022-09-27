@@ -32,7 +32,7 @@ next_page_name: (E) Science paper GPA tutorial
 <h3 id="dataset_prep"> Dataset preparation </h3>
 
 <p>
-    We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/german_credit/loan_dataset_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of the notebook here: <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit">https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit</a>. 
+    We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/loan_tutorial/loan_dataset_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of the notebook here: <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit">https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit</a>. 
 </p>
 
 <p>
@@ -240,7 +240,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object 
 
 <h3> Running the Seldonian Engine </h3>
 <p>
-    We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code above into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
+    We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code below into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
 
 <div>
 
@@ -341,11 +341,11 @@ Running this script will generate a figure like this:
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/loan_cs.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Candidate selection"> 
-        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective, $f({\theta})$, i.e.,  the log loss, (middle left) single lagrange multiplier, ${\lambda_1}$, (middle right) predicted high confidence upper bound (HCUB) on the disparate impact constraint function, ${g_1}(\theta)$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(g_i(\theta)) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on our loan fairness problem. The panels show the values of the (left) primary objective $\hat{f}(\theta,D_\mathrm{cand})$ (in this case the log loss), (middle left) single Lagrange multiplier, ${\lambda_1}$, (middle right) predicted high confidence upper bound (HCUB) on the disparate impact constraint function, $\hat{g}_1(\theta,D_\mathrm{cand})$, and finally the Lagrangian $L(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(\hat{g}_i(\theta,D_\mathrm{cand})) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
 <p>
-Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent for more iterations or with different learning rates or beta values.  If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
+Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent (with Adam optimizer) for more iterations or with different learning rates or velocity values (the beta terms in Adam). If you are still seeing NSF after hyperparameter exporation, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
 
 <h3> Running a Seldonian Experiment </h3>
