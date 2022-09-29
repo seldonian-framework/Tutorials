@@ -14,3 +14,4 @@ assets/vendor/bootstrap-sass/assets/javascripts/
 .env
 .jekyll-metadata
 tmp/
+**/logs

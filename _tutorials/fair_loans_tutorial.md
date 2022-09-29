@@ -584,6 +584,12 @@ Finally, we make the three plots. When we set our variables at the top of the sc
 
 <p>
 Here is the entire script all together, which we will call <code>generate_threeplots.py</code>:
+</p>
+
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
+
 {% highlight python %}      
 # generate_threeplots.py  
 import os
@@ -718,7 +724,7 @@ if __name__ == "__main__":
             plot_generator.make_plots(fontsize=12,legend_fontsize=8,
                 performance_label=performance_metric)
 {% endhighlight python %}
-</p>
+</div>
 
 <p>
 Running the script will produce the following plot (or something very similar depending on your machine's random number generator):
