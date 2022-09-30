@@ -82,7 +82,7 @@ permalink: /v1/
         </li>
 
         <li>
-        Support for parametric supervised learning algorithms (binary classification and regression) as well as off-policy ("batch") reinforcement learning algorithms
+        Support for parametric supervised learning algorithms (binary classification and regression) as well as offline ("batch") reinforcement learning algorithms
         </li>
 
         <li>
