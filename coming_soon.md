@@ -22,7 +22,7 @@ permalink: /coming_soon/
         </li>
 
         <li>
-        Importance sampling variants, such as weighted and per-decision importance sampling. In version 1, the standard importance sampling estimator is the only primary objective function avaiable for Seldonian reinforcement algorithms. 
+        Importance sampling variants, such as weighted and per-decision importance sampling. In version alpha, the standard importance sampling estimator is the only primary objective function avaiable for Seldonian reinforcement algorithms. 
         </li>
 
         <li>

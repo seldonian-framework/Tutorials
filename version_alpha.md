@@ -1,16 +1,16 @@
 ---
 layout: home
-permalink: /v1/
+permalink: /v_alpha/
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3"><b>What is in version 1?</b></h5>
+    <h5 class="mb-3"><b>What is in version alpha?</b></h5>
     <hr class="my-4">
-    <p>We released version 1 of the Seldonian Toolkit on September __, 2022. In this document, we cover what is included and excluded in this version.
+    <p>We released version alpha of the Seldonian Toolkit on September 29, 2022. In this document, we cover what is included and excluded in this version.
     </p>
 
-    <h5>What is included in the version 1 API</h5>
+    <h5>What is included in the version alpha API</h5>
     <h7><u>Packages/libraries</u></h7>
     <ul>
         <li>
@@ -142,12 +142,12 @@ permalink: /v1/
     </ul>
 
 
-    <h5> Limitations of version 1 API</h5>
+    <h5> Limitations of the version alpha API</h5>
     <p> Many of the features below are in development. Check the <a href="{{"/coming_soon" | relative_url}}">Coming soon</a> page to learn more. Feel free to raise an <a href="https://github.com/seldonian-toolkit/Engine/issues">issue on github</a> requesting new features.</p>
     <ul>
         
         <li>
-        The $t$-test confidence bound used when calculating the upper bound on the behavioral constraint relies on reasonable but possibly false assumptions about the distribution of the data. As a result, the algorithms implemented in version 1 are quasi-Seldonian. <a href="https://en.wikipedia.org/wiki/Hoeffding%27s_inequality">Hoeffding's</a> concentration inequality does not rely on such assumptions and, once incorporated into the Engine, will enable running true Seldonian algorithms.
+        The $t$-test confidence bound used when calculating the upper bound on the behavioral constraint relies on reasonable but possibly false assumptions about the distribution of the data. As a result, the algorithms implemented in version alpha are quasi-Seldonian. <a href="https://en.wikipedia.org/wiki/Hoeffding%27s_inequality">Hoeffding's</a> concentration inequality does not rely on such assumptions and, once incorporated into the Engine, will enable running true Seldonian algorithms.
         </li>
 
         <li>
