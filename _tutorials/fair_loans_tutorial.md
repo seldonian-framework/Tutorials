@@ -32,8 +32,12 @@ next_page_name: (E) Science paper GPA tutorial
 <h3 id="dataset_prep"> Dataset preparation </h3>
 
 <p>
-    We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/loan_tutorial/loan_dataset_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of the notebook here: <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit">https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/german_credit</a>. 
+    We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/loan_tutorial/loan_dataset_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly re-formatted dataset and metadata file that are the end product of the notebook here: 
 </p>
+<ul>
+    <li>Data file: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. </li>
+    <li>Metadata file: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json</a>. </li>
+</ul>
 
 <p>
     UCI provides two versions of the dataset: "german.data" and "german.data-numeric". They also provide a file "german.doc" describing the "german.data" file only. We ignored the "german.data-numeric" file because there was no documentation for it. We downloaded the file "german.data" from here: <a href="https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/">https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/</a>. We converted it to a CSV file by replacing the space characters with commas. Attribute 9 according to "german.doc" is the personal status/sex of each person. This is a categorical column with 5 possible values, 2 of which describe females and 3 of which describe males. We created a new column that has a value of "F" if female (A92 or A95) and "M" if male (any other value) and dropped the personal status column. We decided to ignore the marriage status of the person for the purpose of this tutorial. 
@@ -89,7 +93,8 @@ A complete script for creating the spec object for our Seldonian ML problem is s
 {% highlight python %}
 # createSpec.py
 import os
-from seldonian.parse_tree.parse_tree import ParseTree
+from seldonian.parse_tree.parse_tree import (ParseTree,
+    make_parse_trees_from_constraints)
 from seldonian.dataset import DataSetLoader
 from seldonian.utils.io_utils import (load_json,save_pickle,
     load_supervised_metadata)
@@ -171,11 +176,12 @@ Let's take a close look at the instantiation of <code class='highlight'>Supervis
 {% highlight python %}
 spec = SupervisedSpec(
         dataset=dataset,
-        model_class=model_class,
+        model=model,
+        parse_trees=parse_trees,
+        sub_regime='classification',
         frac_data_in_safety=0.6,
         primary_objective=primary_objective,
-        parse_trees=parse_trees,
-        initial_solution_fn=model_class().fit,
+        initial_solution_fn=model.fit,
         use_builtin_primary_gradient_fn=True,
         optimization_technique='gradient_descent',
         optimizer='adam',
@@ -193,11 +199,11 @@ spec = SupervisedSpec(
     )
 {% endhighlight python %}
 
-First, the object takes the <code class='highlight'>dataset</code> and <code class='highlight'>model_class</code>. Then, we set <code class='highlight'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='highlight'>primary_objective</code> function and <code class='highlight'>parse_trees</code> list that we defined above in the script. In our case we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. <code class='highlight'>initial_solution_fn</code> specifies the function we will use to provide the initial solution to candidate selection, which we are setting to <code class='highlight'>model_class().fit</code>. Because <code class='highlight'>model_class()</code> refers to our <code class='highlight'>LogisticRegressionModel()</code>, <code class='highlight'>model_class().fit</code> refers to that class' <code class='highlight'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
+First, the spec object takes the <code class='highlight'>dataset</code> and <code class='highlight'>model</code> objects as arguments. Next, we pass the <code class='highlight'>parse_trees</code> list that we defined above in the script. In our case we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. We set <code class='highlight'>sub_regime='classification'</code> to indicate the type of supervised ML problem (the other sub-regime of supervised learning is regression). <code class='highlight'></code>Then, we set <code class='highlight'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection.  Next, we specify the <code class='highlight'>primary_objective</code> function, followed by the <code class='highlight'>initial_solution_fn</code>, which specifies the function we will use to provide the initial solution to candidate selection. Here, we set <code class='highlight'>initial_solution_fn=model.fit</code>.  Because <code class='highlight'>model</code> refers to our <code class='highlight'>LogisticRegressionModel()</code> object, <code class='highlight'>model.fit</code> refers to that objects' <code class='highlight'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
 </p>
 
 <p>
-The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This instructs the Engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = model_class().sample_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the sample logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient will likely speed up execution. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
+The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This instructs the Engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = objectives.logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the Engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient can speed up execution in some cases. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
 </p>
 
 <p>
@@ -222,7 +228,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object 
 <h5> Creating the specification object from the Seldonian interface GUI</h5>
 
 <p>
-    The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Start up the GUI and then upload the data file you downloaded from the link in the <a href="#dataset_prep"> Dataset preparation section</a> in the "Data file" field of the "Data and metadata setup" section. Then select the "supervised_learning" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
+    The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Once you have started up the GUI, scroll down to the "Data and metadata setup" section. Upload the data file you downloaded in the <a href="#dataset_prep"> Dataset preparation section</a> above in the "Data file" field of the form. For convenience, here is the file you need to upload: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. Then select the "supervised_learning" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
 </p>
 <p>
     <code>
@@ -231,7 +237,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object 
 </p>
 
 <p>
-    This is the list of all of the columns in the dataset, including the label column. Enter: <code>M,F</code> into the "Sensitive attributes" field, and <code>credit_rating</code> into the "Label column" field.
+    This is the list of all of the columns in the dataset, including the sensitive attributes and the label column. Enter: <code>M,F</code> into the "Sensitive attributes" field, and <code>credit_rating</code> into the "Label column" field.
 </p>
 
 <p>
@@ -426,7 +432,7 @@ Now we will need to load the same spec object that we created for running the En
     specfile = '../interface_outputs/loan_disparate_impact_0p9/spec.pkl'
     spec = load_pickle(specfile)
 
-    spec.primary_objective = spec.model_class().sample_logistic_loss
+    spec.primary_objective = objectives.logistic_loss
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
     spec.optimization_hyperparams['num_iters'] = 1500
@@ -621,7 +627,7 @@ if __name__ == "__main__":
     specfile = f'../interface_outputs/loan_{constraint_name}_seldodef/spec.pkl'
     spec = load_pickle(specfile)
 
-    spec.primary_objective = spec.model_class().sample_logistic_loss
+    spec.primary_objective = objectives.logistic_loss
     spec.use_builtin_primary_gradient_fn = False
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
