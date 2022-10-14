@@ -7,12 +7,14 @@ from seldonian.dataset import DataSetLoader
 from seldonian.utils.io_utils import (load_json,save_pickle,
     load_supervised_metadata)
 from seldonian.spec import SupervisedSpec
-from seldonian.models.models import LogisticRegressionModel
+from seldonian.models.models import (
+    BinaryLogisticRegressionModel as LogisticRegressionModel) 
 from seldonian.models import objectives
 
 if __name__ == '__main__':
     data_pth = "../../static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv"
     metadata_pth = "../../static/datasets/supervised/german_credit/metadata_german_loan.json"
+    # save_dir = '../../../interface_outputs/loan_disparate_impact_fairlearndef'
     save_dir = '../../../interface_outputs/loan_disparate_impact_seldodef'
     os.makedirs(save_dir,exist_ok=True)
     # Load metadata
@@ -25,7 +27,7 @@ if __name__ == '__main__':
     model = LogisticRegressionModel()
     
     # Set the primary objective to be log loss
-    primary_objective = objectives.logistic_loss
+    primary_objective = objectives.binary_logistic_loss
 
     # Load dataset from file
     loader = DataSetLoader(
@@ -40,6 +42,11 @@ if __name__ == '__main__':
     
     # Define behavioral constraints
     constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.9'] 
+    # constraint_strs = ['0.9 - min((PR | [M])/(PR),(PR)/(PR | [M]))'] 
+    # constraint_strs = ['abs((PR | [M]) - PR) - 0.1'] 
+    # constraint_strs = ['abs((PR | [M]) - (PR | [F])) - 0.1'] 
+    # constraint_strs = ['abs((FPR | [M]) - FPR) - 0.1'] 
+    # constraint_strs = ['abs((FPR | [M]) - (FPR | [F])) + abs((FNR | [M]) - (FNR | [F])) - 0.2'] 
     
     # For each constraint (in this case only one), make a parse tree
     deltas = [0.05]

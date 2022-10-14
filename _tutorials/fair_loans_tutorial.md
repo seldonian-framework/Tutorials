@@ -83,7 +83,7 @@ Let us enforce this constraint function with a confidence of $0.95$.
 
 <h5> Creating the specification object from a script </h5>
 <p>
-A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set as the directory where you run this script, so change <code class='highlight'>save_dir</code> in the code snippet below to another directory if you want to save it elsewhere. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
+A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set to a relative path on my computer, so change <code class='highlight'>save_dir</code> in the code snippet below to the directory where you want to save the spec file. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
 </p>
 
 <div>
@@ -95,17 +95,19 @@ A complete script for creating the spec object for our Seldonian ML problem is s
 import os
 from seldonian.parse_tree.parse_tree import (ParseTree,
     make_parse_trees_from_constraints)
+
 from seldonian.dataset import DataSetLoader
 from seldonian.utils.io_utils import (load_json,save_pickle,
     load_supervised_metadata)
 from seldonian.spec import SupervisedSpec
-from seldonian.models.models import LogisticRegressionModel
+from seldonian.models.models import (
+    BinaryLogisticRegressionModel as LogisticRegressionModel) 
 from seldonian.models import objectives
 
 if __name__ == '__main__':
     data_pth = "../../static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv"
     metadata_pth = "../../static/datasets/supervised/german_credit/metadata_german_loan.json"
-    save_dir = '../../../interface_outputs/loan_equalized_odds_seldodef'
+    save_dir = '../../../interface_outputs/loan_disparate_impact_seldodef'
     os.makedirs(save_dir,exist_ok=True)
     # Load metadata
     metadata_dict = load_json(metadata_pth)
@@ -117,7 +119,7 @@ if __name__ == '__main__':
     model = LogisticRegressionModel()
     
     # Set the primary objective to be log loss
-    primary_objective = objectives.logistic_loss
+    primary_objective = objectives.binary_logistic_loss
 
     # Load dataset from file
     loader = DataSetLoader(
@@ -132,8 +134,8 @@ if __name__ == '__main__':
     
     # Define behavioral constraints
     constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.9'] 
-    deltas=[0.05]
-
+    deltas = [0.05]
+    
     # For each constraint (in this case only one), make a parse tree
     parse_trees = make_parse_trees_from_constraints(
         constraint_strs,deltas,regime='supervised_learning',
@@ -253,6 +255,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 
 {% highlight python %}
+# loan fairness
 import os
 
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
@@ -260,9 +263,8 @@ from seldonian.utils.io_utils import load_pickle
 
 if __name__ == '__main__':
     # Load loan spec file
-    specfile = './spec.pkl'
+    specfile = '../../../interface_outputs/loan_disparate_impact_seldodef/spec.pkl'
     spec = load_pickle(specfile)
-    
     SA = SeldonianAlgorithm(spec)
     passed_safety,solution = SA.run(write_cs_logfile=True)
     if passed_safety:
@@ -432,7 +434,6 @@ Now we will need to load the same spec object that we created for running the En
     specfile = '../interface_outputs/loan_disparate_impact_0p9/spec.pkl'
     spec = load_pickle(specfile)
 
-    spec.primary_objective = objectives.logistic_loss
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
     spec.optimization_hyperparams['num_iters'] = 1500
