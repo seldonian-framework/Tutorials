@@ -376,11 +376,13 @@ Seldonian Experiments are a way to thoroughly evaluate the performance and safet
     </ul>
 </p>
 <p>
-We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that always predicts $p=0.5$ for the positive class regardless of input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. We will describe the Fairlearn model used in more detail below. Each model requires its own experiment, but the main parameters of the experiment such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same Three Plots. 
+We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that predicts the positive class with probability $p=0.5$ regardless of the input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. We will describe the Fairlearn model in more detail below. Each model requires its own experiment, but the main parameters of the experiment such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same three plots. 
 </p>
 <p>
     Now we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code class='highlight'>PlotGenerator</code> class, and in our particular example the <code class='highlight'>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
 </p>
+
+<p><b>Note:</b> Running the code below in a Jupyter Notebook may crash the notebook. To prevent this from happening, set <code class="highlight">verbose=False</code> or run the code in a script only. </p>
 
 <p>
     First, the imports we will need:
@@ -593,6 +595,8 @@ Finally, we make the three plots. When we set our variables at the top of the sc
 Here is the entire script all together, which we will call <code>generate_threeplots.py</code>:
 </p>
 
+<p><b>Note:</b> Running the code below in a Jupyter Notebook may crash the notebook. To prevent this from happening, set <code class="highlight">verbose=False</code> or run the code in a script only. </p>
+
 <div>
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
@@ -628,7 +632,6 @@ if __name__ == "__main__":
     specfile = f'../interface_outputs/loan_{constraint_name}_seldodef/spec.pkl'
     spec = load_pickle(specfile)
 
-    spec.primary_objective = objectives.logistic_loss
     spec.use_builtin_primary_gradient_fn = False
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
