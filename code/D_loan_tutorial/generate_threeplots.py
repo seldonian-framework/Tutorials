@@ -29,7 +29,7 @@ if __name__ == "__main__":
 	specfile = f'../interface_outputs/loan_{constraint_name}_seldodef/spec.pkl'
 	spec = load_pickle(specfile)
 
-	spec.primary_objective = spec.model_class().sample_logistic_loss
+	spec.primary_objective = spec.model.sample_logistic_loss
 	# spec.use_builtin_primary_gradient_fn = False
 
 	os.makedirs(results_dir,exist_ok=True)

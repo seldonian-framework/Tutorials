@@ -35,11 +35,11 @@ def main():
 		deltas)
 	def init_solution(*args,**kwargs):
 		return np.array([0.0])
-	model_class = BoundedLinearRegressionModel
+	model = BoundedLinearRegressionModel()
 	# Create spec object
 	spec = SupervisedSpec(
 		dataset=dataset,
-		model_class=model_class,
+		model=model,
 		sub_regime='regression',
 		primary_objective=objectives.Mean_Squared_Error,
 		use_builtin_primary_gradient_fn=True,
