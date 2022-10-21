@@ -253,8 +253,7 @@ class BoundedLinearRegressionModel(LinearRegressionModel):
     def __init__(self):
         """ Implements linear regression 
         with a bounded predict function.
-        Overrides several parent methods.
-        Assumes y-intercept is 0. """
+        Overrides several parent methods. """
         super().__init__()
         self.model_class = LinearRegression
 
@@ -633,7 +632,7 @@ def main():
         loc_Y=0.0,
         sigma_X=1.0,
         sigma_Y=0.2,
-        include_intercept_term=False,clipped=True)
+        clipped=True)
 
     parse_trees = make_parse_trees_from_constraints(
         constraint_strs,

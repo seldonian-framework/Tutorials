@@ -177,7 +177,6 @@ if __name__ == "__main__":
     dataset = spec.dataset
     label_column = dataset.label_column
     include_sensitive_columns = dataset.include_sensitive_columns
-    include_intercept_term = dataset.include_intercept_term
 
     test_features = dataset.df.loc[:,
         dataset.df.columns != label_column]
@@ -186,9 +185,6 @@ if __name__ == "__main__":
     if not include_sensitive_columns:
         test_features = test_features.drop(
             columns=dataset.sensitive_column_names) 
-
-    if include_intercept_term:
-        test_features.insert(0,'offset',1.0) # inserts a column of 1's in place
 
     # Setup performance evaluation function and kwargs 
     # of the performance evaluation function

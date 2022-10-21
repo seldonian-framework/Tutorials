@@ -37,7 +37,6 @@ if __name__ == '__main__':
         filename=data_pth,
         metadata_filename=metadata_pth,
         include_sensitive_columns=False,
-        include_intercept_term=False,
         file_type='csv')
     
     # Define behavioral constraints

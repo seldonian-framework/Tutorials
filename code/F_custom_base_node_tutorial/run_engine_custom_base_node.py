@@ -29,7 +29,7 @@ def main():
 	    loc_Y=0.0,
 	    sigma_X=1.0,
 	    sigma_Y=0.2,
-		include_intercept_term=False,clipped=True)
+		clipped=True)
 	parse_trees = make_parse_trees_from_constraints(
 		constraint_strs,
 		deltas)

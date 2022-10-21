@@ -129,7 +129,6 @@ if __name__ == '__main__':
         filename=data_pth,
         metadata_filename=metadata_pth,
         include_sensitive_columns=False,
-        include_intercept_term=False,
         file_type='csv')
     
     # Define behavioral constraints
@@ -449,7 +448,6 @@ Next, we will set up the ground truth dataset on which we will calculate the per
     dataset = spec.dataset
     label_column = dataset.label_column
     include_sensitive_columns = dataset.include_sensitive_columns
-    include_intercept_term = dataset.include_intercept_term
 
     test_features = dataset.df.loc[:,
         dataset.df.columns != label_column]
@@ -459,8 +457,6 @@ Next, we will set up the ground truth dataset on which we will calculate the per
         test_features = test_features.drop(
             columns=dataset.sensitive_column_names) 
 
-    if include_intercept_term:
-        test_features.insert(0,'offset',1.0) # inserts a column of 1's in place  
 {% endhighlight python %}
 </p>
 <p>
@@ -543,7 +539,7 @@ mitigator = ExponentiatedGradient(classifier,
 
 <p>
 
-The way Fairlearn handles sensitive columns is different than way we handle them in the Seldonian Engine library. In the Engine, we one-hot encode sensitive columns. In Fairlearn, they integer encode. This is why we have two columns, M and F, in the dataset used for the Engine, whereas they would have one for defining the sex. It turns out that our M column encodes both sexes since it is binary-valued (0=female, 1=male), so we can just tell Fairlearn to use the "M" column. We also can drop the "offset" column which is a column of ones that we use in the Engine if the dataset.include_intercept_term parameter is True, which in our case it was. 
+The way Fairlearn handles sensitive columns is different than way we handle them in the Seldonian Engine library. In the Engine, we one-hot encode sensitive columns. In Fairlearn, they integer encode. This is why we have two columns, M and F, in the dataset used for the Engine, whereas they would have one for defining the sex. It turns out that our M column encodes both sexes since it is binary-valued (0=female, 1=male), so we can just tell Fairlearn to use the "M" column. 
 
 {% highlight python %}
     ######################
@@ -643,7 +639,6 @@ if __name__ == "__main__":
     dataset = spec.dataset
     label_column = dataset.label_column
     include_sensitive_columns = dataset.include_sensitive_columns
-    include_intercept_term = dataset.include_intercept_term
 
     test_features = dataset.df.loc[:,
         dataset.df.columns != label_column]
@@ -652,9 +647,6 @@ if __name__ == "__main__":
     if not include_sensitive_columns:
         test_features = test_features.drop(
             columns=dataset.sensitive_column_names) 
-
-    if include_intercept_term:
-        test_features.insert(0,'offset',1.0) # inserts a column of 1's in place
 
     # Setup performance evaluation function and kwargs 
     # of the performance evaluation function
