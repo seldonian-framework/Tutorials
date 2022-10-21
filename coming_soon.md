@@ -14,7 +14,7 @@ permalink: /coming_soon/
         <a href="https://en.wikipedia.org/wiki/Hoeffding%27s_inequality">Hoeffding's</a> concentration inequality bounding method. This will enable running true Seldonian algorithms (as opposed to quasi-Seldonian algorithms) with the Seldonian Engine.
         </li>
          <li>
-        Multi-class classification 
+        Multi-class classification - This was implemented in the Engine in <a href="https://pypi.org/project/seldonian-experiments/0.0.8/">version 0.0.8</a>, but is not yet integrated into the Experiments library.
         </li>
 
         <li>

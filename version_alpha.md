@@ -7,7 +7,19 @@ permalink: /v_alpha/
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3"><b>What is in version alpha?</b></h5>
     <hr class="my-4">
-    <p>We released version alpha of the Seldonian Toolkit on September 29, 2022. In this document, we cover what is included and excluded in this version.
+    <p>We released version alpha of the Seldonian Toolkit on September 29, 2022. The alpha version of the Engine and Experiments library can be installed via: 
+    {% highlight python %}
+    pip install seldonian-engine==0.6.0
+    pip install seldonian-experiments==0.0.7
+    {% endhighlight python %}
+    For the latest bug fixes and features, we recommend installing the latest development version of the library:
+    {% highlight bash %}
+    pip install --upgrade seldonian-engine
+    pip install --upgrade seldonian-experiments
+    {% endhighlight bash %}
+    </p>
+    <p>
+    In this document, we cover what is included and excluded in the alpha version.
     </p>
 
     <h5>What is included in the version alpha API</h5>
