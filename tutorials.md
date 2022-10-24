@@ -12,7 +12,7 @@ permalink: /tutorials/
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3"><b>Getting started</b></h5>
     <hr class="my-4">
-    <p>Whether you are interested in supervised learning or reinforcement learning Seldonian algorithms, this is the place to start. We have created a list of seven tutorials labeled A-G, which may be helpful before running your own Seldonian algorithms. We recommend starting with "The Basics" regardless of which track you choose. Reinforcement learning is a more advanced topic than supervised learning, which is why we recommend one of the supervised learning tutorials for that track as well.</p>
+    <p>Whether you are interested in Seldonian algorithms for supervised learning or reinforcement learning, this is the place to start. We have created a list of seven tutorials, labeled A–G, which may be helpful before running your own Seldonian algorithms. We recommend starting with "The Basics," tutorials A–C, regardless of which track you choose. Reinforcement learning is a more advanced topic than supervised learning, which is why we recommend one of the supervised learning tutorials for that track as well.</p>
 
     <div class="container inset-box border border-dark border-2 p-3 my-2">
         <h5>The Basics (start here)</h5>
@@ -51,7 +51,7 @@ permalink: /tutorials/
                 <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for Automated Loan Approval Systems</a>
             </li>
             <li>
-                <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">(G) Reinforcement learning first tutorial</a>
+                <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">(G) Introduction to reinforcement learning with the Seldonian Toolkit</a>
             </li>
         </ol>
     </div>
@@ -60,7 +60,7 @@ permalink: /tutorials/
         <h5>Advanced (for developers) </h5>
         <ol>
             <li>
-                <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}"> (F) Creating custom base variables</a>
+                <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}"> (F) Creating custom base variables in behavioral constraints</a>
             </li>
         
         </ol>
