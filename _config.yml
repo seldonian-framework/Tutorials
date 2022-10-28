@@ -2,7 +2,7 @@
 title: "Seldonian Toolkit Tutorials"
 description: "Learn how to build Seldonian algorithms"
 permalink: "/stories/:title"
-url: https://seldonian-toolkit.github.io/Tutorials
+url: https://seldonian.cs.umass.edu
 relative_permalinks: false
 
 
