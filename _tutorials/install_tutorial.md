@@ -15,13 +15,13 @@ next_page_name: (C) Simple Engine tutorial
 <h3> Installation </h3>
 
 <p>
-The Seldonian Toolkit consists of two main libraries and a GUI. The two libraries are the Seldonian Engine library and the Seldonian Experiments library. While it is not necessary to do so, we recommend installing all of these pieces of software in the same virtual environment. 
+The Seldonian Toolkit consists of two main libraries and a GUI. The two libraries are the Seldonian Engine library and the Seldonian Experiments library. While it is not necessary to do so, we recommend installing all three pieces of software in the same virtual environment. 
 </p>
 
 <h5> Engine installation </h5>  
 
 <p> 
-    The Seldonian Engine library can be installed in a single line:
+    The Seldonian Engine library can be installed with a single line:
 </p>
 
 <p>
@@ -51,7 +51,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 </p> 
 
 <p>
-    then make sure that the python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your python command by running:
+    then make sure that the Python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your Python command by running:
 </p>
 
 <p>
@@ -77,7 +77,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 <h5> Experiments installation </h5>  
 
 <p> 
-    The Seldonian Experiments library can be installed in a single line:
+    The Seldonian Experiments library can be installed with a single line:
 </p>
 
 <p>
@@ -108,7 +108,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 </p> 
 
 <p>
-    then make sure that the python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your python command by running:
+    then make sure that the Python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your Python command by running:
 </p>
 
 <p>
@@ -163,7 +163,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 </p> 
 
 <p>
-    This will start a webserver running at localhost:5001 on your local machine. Go to that address in your browser and you should see a page displaying something like the following: 
+    This will start a webserver running at localhost:5001 on your local machine. Go to that address in your browser, and you should see a page displaying something like the following: 
 </p>
 
 <div align="center">
