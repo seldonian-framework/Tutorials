@@ -17,4 +17,5 @@ group :development, :test do
   gem 'rouge'
   gem 'rubocop'
   gem 'typhoeus'
+  gem 'webrick'
 end

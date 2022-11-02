@@ -12,7 +12,7 @@ highlighter: rouge
 markdown: kramdown
 
 include: ["_tutorials"]
-exclude: ["script", "Gemfile", "Gemfile.lock", "Rakefile", "README.md", "package.json", "node_modules"]
+exclude: ["script", "Gemfile", "Gemfile.lock", "Rakefile", "README.md", "package.json", "node_modules","vendor"]
 plugins_dir: ./_plugins
 plugins:
   - jekyll-avatar
