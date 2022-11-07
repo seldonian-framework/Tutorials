@@ -7,7 +7,7 @@ permalink: /v_alpha/
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3"><b>What is in version alpha?</b></h5>
     <hr class="my-4">
-    <p>We released version alpha of the Seldonian Toolkit on September 29, 2022. The alpha version of the Engine and Experiments library can be installed via: 
+    <p>We released version alpha of the Seldonian Toolkit on September 29, 2022. The alpha versions of the Engine and Experiments library can be installed via: 
     {% highlight python %}
     pip install seldonian-engine==0.6.0
     pip install seldonian-experiments==0.0.7
@@ -34,7 +34,7 @@ permalink: /v_alpha/
         </li>
 
         <li>
-        <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">Seldonian Interface GUI</a>, an interactive GUI for creating behavioral constraints via drag and drop. One example of a Seldonian interface.
+        <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">Seldonian Interface GUI</a>, an interactive GUI for creating behavioral constraints via drag-and-drop. One example of a Seldonian interface.
         </li>
     </ul>
 
@@ -46,43 +46,43 @@ permalink: /v_alpha/
         </li>
 
         <li> 
-        Student's $t$-test for the confidence bound calculation 
+        Student's $t$-test for the confidence-bound calculation. 
         </li>
         
         <li>
-        Parse tree capable of handling wide range of user-provided behavioral constraints. Constraints can consist of basic mathematical operations (+,-,/,*) operations and use any combination of (min,max,abs,exp) functions.
+        Parse tree capable of handling a wide range of user-provided behavioral constraints. Constraints can consist of basic mathematical operations (+,-,/,*) and use any combination of (min,max,abs,exp) functions.
         </li>
 
         <li>
-        Parse tree visualizer
+        Parse tree visualizer.
         </li>
 
         <li>
-        Efficient bound propagation in parse tree by limiting the number of confidence intervals that need to be calculated
+        Efficient bound propagation in parse tree by limiting the number of confidence intervals that need to be calculated.
         </li>
 
         <li>
-        User can specify an arbitrary number of behavioral constraints for a single Seldonian algorithm
+        User can specify an arbitrary number of behavioral constraints for a single Seldonian algorithm.
         </li>
 
         <li>
-        User can specify split fraction between candidate selection and safety test    
+        User can specify split fraction between candidate selection and safety test.
         </li>
 
         <li>
-        Dataset loaders for CSV-formatted datasets
+        Dataset loaders for CSV-formatted datasets.
         </li>
 
         <li>
-        Gradient descent with Adam optimizer module option for candidate selection
+        Gradient descent with Adam optimizer module option for candidate selection.
         </li>
 
         <li>
-        Black box optimization using SciPy with barrier function module option for candidate selection
+        Black box optimization using SciPy with barrier function module option for candidate selection.
         </li>
 
         <li>
-        Gradient descent visualizer
+        Gradient descent visualizer.
         </li>
 
         <li>
@@ -94,11 +94,11 @@ permalink: /v_alpha/
         </li>
 
         <li>
-        Support for parametric supervised learning algorithms (binary classification and regression) as well as offline ("batch") reinforcement learning algorithms
+        Support for parametric supervised learning algorithms (binary classification and regression) as well as offline ("batch") reinforcement learning algorithms.
         </li>
 
         <li>
-        Example reinforcement learning policies supporting discrete and continuous observation spaces, such as softmax 
+        Example reinforcement learning policies supporting discrete and continuous observation spaces, such as softmax. 
         </li>
 
         <li>
@@ -109,7 +109,7 @@ permalink: /v_alpha/
     <h7><u>Experiments features</u></h7>
     <ul>
         <li>
-        Three plot generator (performance, solution rate, failure rate) for supervised learning and reinforcement learning Seldonian algorithms
+        Three-plot generator (performance, solution rate, failure rate) for supervised learning and reinforcement learning Seldonian algorithms.
         </li>
 
         <li>
@@ -121,11 +121,11 @@ permalink: /v_alpha/
         </li>
 
         <li>
-        Generate resampled datasets that approximate ground truth using no additional data (supervised learning)
+        Generate resampled datasets that approximate ground truth using no additional data (supervised learning only).
         </li>
 
         <li>
-        Generate new episodes to use as ground truth from existing policy parameterizations
+        Generate new episodes to use as ground truth from existing policy parameterizations (reinforcement learning only).
         </li>
 
         <li>
@@ -137,19 +137,19 @@ permalink: /v_alpha/
     <h7><u>GUI features</u></h7>
     <ul>
         <li>
-        Flask application that users run locally
+        Flask application that users run locally.
         </li>
 
         <li>
-        Upload locally stored datasets 
+        Upload locally stored datasets. 
         </li>
 
         <li>
-        Drag-and-drop to build wide array of behavioral constraints
+        Drag-and-drop to build a wide array of behavioral constraints.
         </li>
 
         <li>
-        Five definitions of fairness hardcoded for quick reference
+        Five definitions of fairness hardcoded for quick reference and use.
         </li>
     </ul>
 
@@ -159,11 +159,11 @@ permalink: /v_alpha/
     <ul>
         
         <li>
-        The $t$-test confidence bound used when calculating the upper bound on the behavioral constraint relies on reasonable but possibly false assumptions about the distribution of the data. As a result, the algorithms implemented in version alpha are quasi-Seldonian. <a href="https://en.wikipedia.org/wiki/Hoeffding%27s_inequality">Hoeffding's</a> concentration inequality does not rely on such assumptions and, once incorporated into the Engine, will enable running true Seldonian algorithms.
+        The $t$-test confidence bound used when calculating the upper bound on the behavioral constraint relies on reasonable but possibly false assumptions about the distribution of the data. As a result, the algorithms implemented in version alpha are quasi-Seldonian. <a href="https://en.wikipedia.org/wiki/Hoeffding%27s_inequality">Hoeffding's</a> concentration inequality does not rely on such assumptions and, once incorporated into the engine, will enable running true Seldonian algorithms.
         </li>
 
         <li>
-        Multi-class classification is not yet supported
+        Multiclass classification is not yet supported
         </li>
 
         <li>
@@ -171,7 +171,7 @@ permalink: /v_alpha/
         </li>
 
         <li>
-        Non-parameteric machine learning models (e.g., random forest), are not yet supported.
+        Nonparameteric machine learning models (e.g., random forest), are not yet supported.
         </li>
 
     </ul>

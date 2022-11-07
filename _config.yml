@@ -10,6 +10,8 @@ relative_permalinks: false
 # Syntax highlighting
 highlighter: rouge
 markdown: kramdown
+kramdown:
+  math_engine: katex
 
 include: ["_tutorials"]
 exclude: ["script", "Gemfile", "Gemfile.lock", "Rakefile", "README.md", "package.json", "node_modules","vendor"]

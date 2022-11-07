@@ -9,19 +9,19 @@ permalink: /faq/
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Does this toolkit support deep learning?</b></h5>
-Yes, this toolkit supports deep learning using <a href="https://pytorch.org/">PyTorch</a>. However, due to the added complexity of enforcing safety and fairness constraints while training, large neural networks like those used for language models and some computer vision tasks are unlikely to be computationally feasible. This will be one priority for future versions.
+Yes. This is an area of active development, so if you have a potential deep learning application and are not sure where to start, please see our <a href="{{ "/support" | relative_url }}">Support</a> page, where you can find information for contacting us or opening an issue on Github. We are currently working on a tutorial to demonstrate building a fair deep learning model with PyTorch.
 
 <hr class="my-4">
-<h5 class="mb-3"><b>Why did you choose the write the Toolkit in Python 3?</b></h5>
+<h5 class="mb-3"><b>Why did you choose the write the toolkit in Python 3?</b></h5>
 Machine learning researchers usually use and are most familiar with Python 3. Writing the entire toolkit in Python therefore makes it easier for researchers to extend and improve all of the methods in the toolkit, facilitating further research into safe and fair machine learning. 
 
 <hr class="my-4">
-<h5 class="mb-3"><b>What software does the Toolkit contain?</b></h5>
-The Seldonian Toolkit has four components (four repositories): <code>Engine</code>, <code>Experiments</code>, <code>Tutorials</code>, and <code>GUI</code>. The <code>Engine</code> library contains the code necessary to run the provided Seldonian algorithm, and does not rely on the other libraries. The <code>Experiments</code> library uses the <code>Engine</code> repository, and provides a framework for experimenting with and evaluating Seldonian and other machine learning algorithms. The <code>Tutorials</code> repository contains tutorials and examples that use the other libraries. The <code>GUI</code> repository contains the code to run the Seldonian Interface GUI, an example Seldonian interface written in Flask, a Python web framework.
+<h5 class="mb-3"><b>What software does the toolkit contain?</b></h5>
+The Seldonian Toolkit has four components (four repositories): <code>Engine</code>, <code>Experiments</code>, <code>Tutorials</code>, and <code>GUI</code>. The <code>Engine</code> library contains the code necessary to run the provided Seldonian algorithm and does not rely on the other libraries. The <code>Experiments</code> library uses the <code>Engine</code> repository and provides a framework for experimenting with and evaluating Seldonian and other machine learning algorithms. The <code>Tutorials</code> repository contains tutorials and examples that use the other libraries. The <code>GUI</code> repository contains the code to run the Seldonian Interface GUI, an example Seldonian interface written in Flask, a Python web framework.
 
 <hr class="my-4">
-<h5 class="mb-3"><b>How can I contribute?</b></h5>
-Yes! This project is open source and hosted as several repositories on GitHub <a href="https://github.com/seldonian-toolkit">here</a>. You are welcome to fork the project repositories and submit pull requests. We welcome both minor fixes and new functionality. If you have questions about the toolkit, please see the <a href="support.html">support</a> page.
+<h5 class="mb-3"><b>Can I contribute?</b></h5>
+Yes! This project is open source and hosted as several public repositories on GitHub <a href="https://github.com/seldonian-toolkit">here</a>. You are welcome to fork the project repositories and submit pull requests. We welcome both minor fixes and new functionality. If you have questions about the toolkit, please see the <a href="{{ "/support" | relative_url }}">Support</a> page.
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Who funded this work?</b></h5>

@@ -11,6 +11,9 @@ next_page_name: (D) Fair loans tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial C: Running the Seldonian Engine</h2>
     <hr class="my-4">
+    <h3>Introduction</h3>
+    <p>The Seldonian Engine library is one of the components of the Seldonian Toolkit. The engine is the core library that implements a basic Seldonian algorithm. The Experiments library is another component of the toolkit that runs many trials of a Seldonian algorithm. In doing so, it calls the engine many times. Because the Experiments library is dependent on the Engine library, but not vice versa, we present the Engine first in these tutorials. However, once you are more familiar with these libraries and Seldonian algorithms in general, you will find that the typical workflow involves first running Seldonian experiments with the experiments library. Once a Seldonian model is vetted with the experiments library, then one can run the Engine a single time to obtain a safe or fair model. The process can be thought of analogously to the development/deployment process. The Experiments library is used for development, and when it is time to deploy the model, the Engine library is used. </p>
+
     <h3>Outline</h3>
     <p>In this tutorial, you will learn how to:
     <ul>
