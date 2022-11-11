@@ -34,7 +34,12 @@ prev_page_name: (G) Reinforcement learning first tutorial
 {% highlight javascript %}
 $ pip install --upgrade seldonian-engine
 {% endhighlight javascript %}
-
+    <p>
+        You will also need the <code>torchvision</code> Python package if you want to run the example below, and this package is not included in the library:
+    </p>
+{% highlight python %}
+pip install torchvision
+{% endhighlight python %}
 <p>
     It is important to make a clear distinction when referring to "models" throughout this tutorial. We will use the term "Seldonian model" to refer to the highest level model abstraction in the toolkit. The Seldonian model is the thing that communicates with the rest of the toolkit. The Seldonian model we will build in this tutorial consists of a "PyTorch model," a term which we will use to refer to the actual PyTorch implementation of the neural network. The PyTorch model <i>does not</i> communicate with the other pieces of the Seldonian Toolkit, whereas the Seldonian model does. 
 </p>
