@@ -164,25 +164,25 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 {% endhighlight python %}
 
-<p>Next, set a random seed so that we can reproduce the result each time we run the script, set the regime and subregime of the problem, and then fetch the data. We obtain the data using PyTorch's <code class="highlight">torchvision</code> API, which provides a copy of the MNIST dataset. We will retrieve the training and test sets and then combine them into a single dataset. If you want, you can set <code class="highlight">download=True</code> to download the data to disk so that you can run the script in the future when you are offline. If you choose to do that, change the <code class="highlight">data_folder</code> to where you want to download the data. We extract the features and labels from the combined data. The Seldonian algorithm will partition these into candidate and safety data according to the value of <code class="highlight">frac_data_in_safety</code> that we specify in the spec object. In this example, we will use <code class="highlight">frac_data_in_safety=0.5</code> </p>
+<p>Next, set a random seed so that we can reproduce the result each time we run the script, set the regime and subregime of the problem, and then fetch the data. We obtain the data using PyTorch's <code class="highlight">torchvision</code> API, which provides a copy of the MNIST dataset. We will retrieve the training and test sets using <code class="highlight">download=True</code> to download the data (64 MB) to a folder on your computer <code class="highlight">data_folder</code> the first time you run the script. If you run the script again, it will not redownload the data, but will look in your <code class="highlight">data_folder</code> for an existing copy of the data. We combine the train and test sets and then extract the features and labels from the combined data. The Seldonian algorithm will partition these into candidate and safety data according to the value of <code class="highlight">frac_data_in_safety</code> that we specify in the spec object. In this example, we will use <code class="highlight">frac_data_in_safety=0.5</code>. </p>
 
 {% highlight python %}
 if __name__ == "__main__":
     torch.manual_seed(0)
     regime='supervised_learning'
     sub_regime='multiclass_classification'
-    data_folder = '../../../notebooks/data'
+    data_folder = './data'
     train_data = datasets.MNIST(
         root = data_folder,
         train = True,                         
         transform = ToTensor(), 
-        download = False,            
+        download = True,            
     )
     test_data = datasets.MNIST(
         root = data_folder,
         train = False,                         
         transform = ToTensor(), 
-        download = False,            
+        download = True,            
     )
     # Combine train and test data into a single tensor of 70,000 examples
     all_data = torch.vstack((train_data.data,test_data.data))
@@ -329,18 +329,18 @@ if __name__ == "__main__":
     torch.manual_seed(0)
     regime='supervised_learning'
     sub_regime='multiclass_classification'
-    data_folder = '../../../notebooks/data'
+    data_folder = './data'
     train_data = datasets.MNIST(
         root = data_folder,
         train = True,                         
         transform = ToTensor(), 
-        download = False,            
+        download = True,            
     )
     test_data = datasets.MNIST(
         root = data_folder,
         train = False,                         
         transform = ToTensor(), 
-        download = False,            
+        download = True,            
     )
     # Combine train and test data into a single tensor of 70,000 examples
     all_data = torch.vstack((train_data.data,test_data.data))
