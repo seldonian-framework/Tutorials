@@ -40,6 +40,10 @@ permalink: /tutorials/
             <li>
                 <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">(E) Reproducing the GPA classification results from the Seldonian Science paper</a>
             </li>
+
+            <li>
+                <a href="{{ "/tutorials/pytorch_mnist/" | relative_url}}">(H) Creating your first Seldonian PyTorch model</a>
+            </li> 
         </ol>
     </div>
 

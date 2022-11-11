@@ -3,6 +3,8 @@ layout: tutorial
 permalink: /tutorials/gridworld_RL_tutorial/
 prev_url: /tutorials/custom_base_variable_tutorial/
 prev_page_name: (F) Custom base variables tutorial
+next_url: /tutorials/pytorch_mnist/
+next_page_name: (H) Creating your first Seldonian PyTorch model
 ---
 
 <!-- Main Container -->

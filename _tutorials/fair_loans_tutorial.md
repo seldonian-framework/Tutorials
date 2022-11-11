@@ -86,6 +86,9 @@ Let us enforce this constraint function with a confidence of $0.95$.
 A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set to a relative path on my computer, so change <code class='highlight'>save_dir</code> in the code snippet below to the directory where you want to save the spec file. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
 </p>
 
+{% highlight python %}
+
+{% endhighlight python %}
 <div>
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
