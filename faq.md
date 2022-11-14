@@ -9,7 +9,7 @@ permalink: /faq/
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Does this toolkit support deep learning?</b></h5>
-Yes. This is an area of active development, so if you have a potential deep learning application and are not sure where to start, please see our <a href="{{ "/support" | relative_url }}">Support</a> page, where you can find information for contacting us or opening an issue on Github. We are currently working on a tutorial to demonstrate building a fair deep learning model with PyTorch.
+Yes. We support PyTorch models (see the <a href="{{ "/tutorials/pytorch_mnist" | relative_url }}">Creating your first Seldonian PyTorch model tutorial</a>), and we are actively working on supporting other deep learning libraries, starting with Tensorflow. If you have a potential deep learning application and are not sure where to start, please see our <a href="{{ "/support" | relative_url }}">Support</a> page, where you can find information for contacting us or opening an issue on Github. 
 
 <hr class="my-4">
 <h5 class="mb-3"><b>Why did you choose the write the toolkit in Python 3?</b></h5>
