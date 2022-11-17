@@ -12,7 +12,7 @@ next_page_name: (D) Fair loans tutorial
     <h2 align="center" class="mb-3">Tutorial C: Running the Seldonian Engine</h2>
     <hr class="my-4">
     <h3>Introduction</h3>
-    <p>The Seldonian Engine library is one of the components of the Seldonian Toolkit. The engine is the core library that implements a basic Seldonian algorithm. The Experiments library is another component of the toolkit that runs many trials of a Seldonian algorithm. In doing so, it calls the engine many times. Because the Experiments library is dependent on the Engine library, but not vice versa, we present the Engine first in these tutorials. However, once you are more familiar with these libraries and Seldonian algorithms in general, you will find that the typical workflow involves first running Seldonian experiments with the experiments library. Once a Seldonian model is vetted with the experiments library, then one can run the Engine a single time to obtain a safe or fair model. The process can be thought of analogously to the development/deployment process. The Experiments library is used for development, and when it is time to deploy the model, the Engine library is used. </p>
+    <p>The Seldonian Engine library is one of the components of the Seldonian Toolkit. The engine is the core library that implements a basic Seldonian algorithm. The Experiments library is another component of the toolkit that runs many trials of a Seldonian algorithm. In doing so, it calls the engine many times. Because the Experiments library is dependent on the Engine library, but not vice versa, we present the Engine first in these tutorials. However, once you are more familiar with these libraries and Seldonian algorithms in general, you will find that the typical workflow involves first running Seldonian Experiments with the Experiments library. Once a Seldonian model is vetted with the Experiments library, then one can run the engine a single time to obtain a safe or fair model. The process can be thought of analogously to the development/deployment process. The Experiments library is used for development, and when it is time to deploy the model, the Engine library is used. </p>
 
     <h3>Outline</h3>
     <p>In this tutorial, you will learn how to:
@@ -24,7 +24,7 @@ next_page_name: (D) Fair loans tutorial
     </p>
     <h3> An example Seldonian machine learning problem </h3>
     <p>
-        Consider a simple supervised regression problem with two continuous random variables X and Y. Let the goal be to predict the label Y using the single feature X. To solve this problem, we can use linear regression with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
+        Consider a simple supervised regression problem with two continuous random variables X and Y. Let the goal be to predict the label Y using the single feature X. One approach to this problem is to use gradient descent on a linear regression model with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
     </p>
     <p>
         Now, let's suppose we want to add the following two constraints into the problem:
@@ -51,7 +51,7 @@ next_page_name: (D) Fair loans tutorial
         </li>
     </ul>
     <p>
-        First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$ and we stated that the constraints should be enforced with a probability of at least $0.9$. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective. If it cannot find a solution that satisfies the constraints, it will return "NSF", i.e., "No Solution Found". 
+        First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective, the MSE. If it cannot find a solution that satisfies the constraints at the confidence levels provided, it will return "NSF", i.e., "No Solution Found". 
     </p>
     <p>
         Next, notice that here the MSE is <i>not</i> just the average squared error on the available training data. These constraints are much stronger: they are constraints on the MSE when the learned model is applied to <i>new data</i>. This is important because we don't just want machine learning models that appear to be safe or fair on the training data. We want machine learning models that are safe or fair when used to made decisions or predictions in the future.
@@ -130,20 +130,22 @@ $ python example.py
 {% endhighlight %}
 </p>
 <p>
-    You should see some output like:
+    You should see some output like this:
 {% highlight python %}
-Iteration 0
-Iteration 10
-Iteration 20
-Iteration 30
-Iteration 40
+Have 200 epochs and 1 batches of size 400
+
+Epoch: 0, batch iteration 0
+Epoch: 1, batch iteration 0
+Epoch: 2, batch iteration 0
+Epoch: 3, batch iteration 0
+Epoch: 4, batch iteration 0
 ...
 Passed safety test
 True [0.16911355 0.1738146 ]
 {% endhighlight %}
     </p>
     <p>
-    Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+    The output shows some of the default values that were hidden in the script. For example, we are running gradient descent in "batch" mode, i.e., putting all of our candidate data (400 data points) in at once and running for 200 epochs. These settings can be changed, but we won't cover that in this tutorial. Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
 </p>
 <p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it should be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
 
@@ -158,14 +160,14 @@ This should print a value around $1.61$, which satisfies the behavioral constrai
 </p>
 
 <p>
-We might also wonder what the values of the primary objective and the behavioral constraint function were during the candidate selection process. All of this information and more is stored in a dictionary that is retrievable via the <a href="">SA.get_cs_result()</a> method:
+We might also wonder what the values of the primary objective and the behavioral constraint function were during the candidate selection process. All of this information and more is stored in a dictionary that is retrievable via the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.get_cs_result">SA.get_cs_result()</a> method:
 {% highlight python %}
 cs_dict = SA.get_cs_result() # returns a dictionary with a lot of quantities evaluated at each step of gradient descent
 print(cs_dict.keys())
 {% endhighlight %}
 This will print all of the keys of this dictionary:
 {% highlight python %}
-['candidate_solution', 'best_index', 'best_feasible_g', 'best_feasible_f', 'solution_found', 'theta_vals', 'f_vals', 'g_vals', 'lamb_vals', 'L_vals']
+['candidate_solution', 'best_index', 'best_g', 'best_f', 'found_feasible_solution', 'theta_vals', 'f_vals', 'g_vals', 'lamb_vals', 'L_vals']
 {% endhighlight %}
 So, to get the primary objective values, we would do:
 {% highlight python %}

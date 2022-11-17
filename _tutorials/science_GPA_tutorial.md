@@ -23,10 +23,10 @@ One of the examples presented by <a href="https://www.science.org/stoken/author-
 <ul>
 <li> The Seldonian Toolkit currently only supports quasi-Seldonian algorithms, so we will not recreate the curves labeled "Seldonian classification" by Thomas et al. (2019) in their Figure 3.</li>
 <li> Version 0.2.0 of Fairlearn, the version used by Thomas et al. and the first publicly released version, is not compatible with Python 3.8, the minimum version of Python supported by the Seldonian Toolkit. Instead, we used the most recent stable version of Fairlearn (0.7.0) to run the code in this tutorial. The Fairlearn API has evolved considerably since 0.2.0, and it now supports more of the fairness constraints considered by Thomas et al. (2019). </li>
-<li> In candidate selection, we used gradient descent with a logistic regression model, whereas Thomas et al. (2019) used black box optimization with a linear classifier model to find the candidate solution. This may change how much data it takes for the performance and solution rate of the quasi-Seldonian models to achieve the optimum values, but the overall trends should not be affected.  </li>
+<li> In candidate selection, we used gradient descent with a logistic regression model, whereas Thomas et al. (2019) used black box optimization with a linear classifier model to find the candidate solution. This may change how much data it takes for the performance and solution rate of the quasi-Seldonian models to achieve the optimal values, but the overall trends should not be affected.  </li>
 <li> We used 50 trials per data fraction in our experiments, compared to Thomas et al. (2019) who used 250 trials per data fraction. This only has the effect of increasing our uncertainty ranges compared to theirs. The overall trends are not affected. </li>
 </ul>
-For all of these reasons, we seek to reproduce the general trends found by Thomas et al. (2019) rather than identical results. 
+For all of these reasons, we seek to reproduce the general trends found by Thomas et al. (2019) rather than the identical results. 
 </p>
 
 <h3>Outline</h3>
@@ -76,8 +76,7 @@ We need to create a different spec object for each constraint because we will be
 import os
 from seldonian.parse_tree.parse_tree import make_parse_trees_from_constraints
 from seldonian.dataset import DataSetLoader
-from seldonian.utils.io_utils import (load_json,
-    load_supervised_metadata,save_pickle)
+from seldonian.utils.io_utils import (load_json,save_pickle)
 from seldonian.spec import createSupervisedSpec
 from seldonian.models.models import (
     BinaryLogisticRegressionModel as LogisticRegressionModel)
@@ -87,13 +86,14 @@ if __name__ == '__main__':
     data_pth = "../../static/datasets/supervised/GPA/gpa_classification_dataset.csv"
     metadata_pth = "../../static/datasets/supervised/GPA/metadata_classification.json"
     save_base_dir = '../../../interface_outputs'
+    # save_base_dir='.'
     # Load metadata
-    (regime, sub_regime, columns,
-        sensitive_columns) = load_supervised_metadata(metadata_pth)
+    regime='supervised_learning'
+    sub_regime='classification'
 
-    # Load dataset from file
     loader = DataSetLoader(
         regime=regime)
+
     dataset = loader.load_supervised_dataset(
         filename=data_pth,
         metadata_filename=metadata_pth,
@@ -126,6 +126,8 @@ if __name__ == '__main__':
             save_dir=save_dir,
             save=True,
             verbose=True)
+
+
 {% endhighlight python %}
 </div>
 Running this code should print out that the five spec files have been created.
@@ -162,7 +164,7 @@ if __name__ == "__main__":
     n_trials = 50
     data_fracs = np.logspace(-4,0,15)
     n_workers = 8
-    results_dir = f'results/gpa_{constraint_name}_{performance_metric}'
+    results_dir = f'results/gpa_{constraint_name}_{performance_metric}_2022Nov15'
     plot_savename = os.path.join(results_dir,f'gpa_{constraint_name}_{performance_metric}.png')
 
     verbose=True
@@ -175,21 +177,12 @@ if __name__ == "__main__":
 
     # Use entire original dataset as ground truth for test set
     dataset = spec.dataset
-    label_column = dataset.label_column
-    include_sensitive_columns = dataset.include_sensitive_columns
-
-    test_features = dataset.df.loc[:,
-        dataset.df.columns != label_column]
-    test_labels = dataset.df[label_column]
-
-    if not include_sensitive_columns:
-        test_features = test_features.drop(
-            columns=dataset.sensitive_column_names) 
+    test_features = dataset.features
+    test_labels = dataset.labels
 
     # Setup performance evaluation function and kwargs 
     # of the performance evaluation function
 
-    # perf_eval_fn = lambda y_pred,y,X: fbeta_score(y,y_pred,beta=2)
     def perf_eval_fn(y_pred,y,**kwargs):
         if performance_metric == 'log_loss':
             return log_loss(y,y_pred)
@@ -233,17 +226,18 @@ if __name__ == "__main__":
     
     # Make dict of test set features, labels and sensitive feature vectors
     
-    # Make dict of test set features, labels and sensitive feature vectors
-    if 'offset' in test_features.columns:
-        test_features_fairlearn = test_features.drop(columns=['offset'])
-    else:
-        test_features_fairlearn = test_features
+    fairlearn_sensitive_feature_names = ['M']
+    fairlearn_sensitive_col_indices = [dataset.sensitive_col_names.index(
+        col) for col in fairlearn_sensitive_feature_names]
+    fairlearn_sensitive_features = dataset.sensitive_attrs[:,fairlearn_sensitive_col_indices]
+    # Setup ground truth test dataset for Fairlearn
+    test_features_fairlearn = test_features
     fairlearn_eval_kwargs = {
         'X':test_features_fairlearn,
         'y':test_labels,
-        'sensitive_features':dataset.df.loc[:,
-            fairlearn_sensitive_feature_names],
+        'sensitive_features':fairlearn_sensitive_features,
         'eval_method':fairlearn_eval_method,
+        'performance_metric':performance_metric,
         }
 
     if run_experiments:
@@ -291,10 +285,10 @@ Running the script for each constraint will produce the following plots:
     </figure>
 </div>  
 <p>
-While the QSA requires the most samples to return a solution and to achieve optimal accuracy, it is the only model that always satisfies the fairness constraints regardless of the number of samples. We observe the same general trends for the QSA here that Thomas et al. (2019) saw for all five fairness constraints. Our QSA models require slightly fewer data points than theirs to achieve optimal performance and a solution rate of 1.0. This is likely due to the difference in candidate selection. We used gradient descent, whereas Thomas et al. (2019) used black box optimization. Both methods are equally valid. In fact, any algorithm is valid for candidate selection (that is, it will not cause the algorithm to violate its safety guarantee) as long as it does not use any of the safety data. 
+While the QSA requires the most samples to return a solution and to achieve optimal accuracy, it is the only model that always satisfies the fairness constraints regardless of the number of samples. We observe the same general trends for the QSA here that Thomas et al. (2019) saw for all five fairness constraints. Our QSA models require slightly fewer data points than theirs to achieve optimal performance and a solution rate of 1.0. This is likely due to the difference in the optimization strategies for candidate selection. We used gradient descent, whereas Thomas et al. (2019) used black box optimization. Both methods are equally valid. In fact, any algorithm is valid for candidate selection (that is, it will not cause the algorithm to violate its safety guarantee) as long as it does not use any of the safety data. 
 </p>
 <p>
-The largest differences between our experiments and those done by Thomas et al. are in the Fairlearn results. The newer Fairlearn models that we ran achieve near-optimal accuracy with almost any amount of data. The older Fairlearn models never reached optimal accuracy in the experiments performed by Thomas et al. The Fairlearn API has changed considerably since Thomas et al. used it, and more fairness constraints can be included in their models. That being said, their models continue to violate the fairness constraints. In particular, the disparate impact constraint is violated over the entire range of sample sizes considered. This is not surprising given that the Fairlearn models do not have a safety test; their models make no guarantee that they will not violate the constraints on unseen data. 
+The largest differences between our experiments and those done by Thomas et al. are in the Fairlearn results. The newer Fairlearn models that we ran achieve near-optimal accuracy with almost any amount of data. The older Fairlearn models never reached optimal accuracy in the experiments performed by Thomas et al. The Fairlearn API has changed considerably since Thomas et al. used it, and more fairness constraints can be included in their models. That being said, their models continue to violate the fairness constraints. In particular, the disparate impact constraint is violated with high probability over the most of the sample sizes considered. This is not surprising given that the Fairlearn models do not have a safety test; their models make no guarantee that they will not violate the constraints on unseen data. 
 </p>
 
 
