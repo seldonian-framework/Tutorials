@@ -34,8 +34,11 @@ prev_page_name: (G) Reinforcement learning first tutorial
 {% highlight javascript %}
 $ pip install --upgrade seldonian-engine
 {% endhighlight javascript %}
+<p>
+    This will ensure that you have an updated version of the PyTorch Python library installed.
+</p>
     <p>
-        You will also need the <code>torchvision</code> Python package if you want to run the example below, and this package is not included in the library:
+        You will also need the <code>torchvision</code> Python package if you want to run the example below, and this package is not included when you install the Seldonian Engine library:
     </p>
 {% highlight python %}
 $ pip install torchvision
@@ -285,12 +288,16 @@ print(torch.backends.mps.is_built())
             'hyper_search'  : None,
             'verbose'       : True,
         },
+        batch_size_safety=1000
+
     )
 {% endhighlight python %}
 <p>
-    Notice in <code class="highlight">optimization_hyperparams</code> that we are specifying <code class="highlight">'use_batches' : True</code>, indicating that we want to use batches in gradient descent. The batch size we request is <code class="highlight">150</code>, and we want to run for 5 epochs. Using batches of around this size will make gradient descent run significantly faster. If we don't use batches, we will be running every image in the candidate dataset (35,000 in this example) through the forward and backward pass of the model on every single step of gradient descent, which will be extremely slow. We should note that we had to play around with batch size, number of epochs, and the theta learning rate, <code class="highlight">alpha_theta</code>, to get gradient descent to converge appropriately. We did not perform a proper hyperparameter optimization process, which we recommend for a real problem.
+    Notice in <code class="highlight">optimization_hyperparams</code> that we are specifying <code class="highlight">'use_batches' : True</code>, indicating that we want to use batches in gradient descent. The batch size we request is <code class="highlight">150</code>, and we want to run for 5 epochs. Using batches of around this size will make gradient descent run significantly faster. If we don't use batches, we will be running every image in the candidate dataset (35,000 in this example) through the forward and backward pass of the model on every single step of gradient descent, which will be extremely slow. We should note that we had to play around with batch size, number of epochs, and the theta learning rate, <code class="highlight">alpha_theta</code>, to get gradient descent to converge appropriately. We did not perform a proper hyperparameter optimization process, which we recommend doing for a real problem.
 </p>
-
+<p>
+    We also batch the safety data using <code class="highlight">batch_size_safety=1000</code>. This passes 1000 images in the safety dataset through the model at a time during the safety test. If we exclude this parameter, all 35,000 samples in the safety dataset will be passed through the model at once. This can be extremely slow and can result in exhausting the memory of your machine. As a result, for problems with large datasets and/or large models we highly recommend using this parameter. The value of this parameter does not change the result of the safety test.  The value you choose for your use case will depend on your dataset, model, and resources you have available.
+</p>
 <p>
     Finally, we are ready to run the Seldonian algorithm using this spec object. 
 </p>
