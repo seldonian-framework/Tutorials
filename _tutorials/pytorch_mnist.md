@@ -406,6 +406,7 @@ if __name__ == "__main__":
             'hyper_search'  : None,
             'verbose'       : True,
         },
+        batch_size_safety=1000
     )
 
     SA = SeldonianAlgorithm(spec)
@@ -428,7 +429,7 @@ $ python pytorch_mnist.py
     You will see the following output:
 </p>
 {% highlight python %}
-Have 5 epochs and 234 batches of size 150
+Have 5 epochs and 234 batches of size 150 for a total of 1170 iterations
 
 Epoch: 0, batch iteration 0
 Epoch: 0, batch iteration 10
@@ -441,13 +442,14 @@ Epoch: 4, batch iteration 210
 Epoch: 4, batch iteration 220
 Epoch: 4, batch iteration 230
 Wrote /Users/ahoag/beri/code/engine-repo-dev/examples/pytorch_mnist_batch/logs/candidate_selection_log10.p with candidate selection log info
+Have 35 batches of size 1000 in safety test
 Passed safety test.
 Primary objective evaluated on safety test:
 0.0812836065524022
 {% endhighlight python %}
 
 <p>
-    The whole script takes about 90 seconds to run on my M1 Macbook Air using the GPU, and about 5 minutes to run on the CPU. The location of the candidate selection log info file will be in a <code>logs/</code> subfolder of wherever you ran the script. The safety test should also pass for you, though the value of the primary objective (cross entropy over all 10 classes) on the safety test might differ slightly because your machine's random number generator may differ from mine. The important thing is that the gradient descent curve is similar. Plot it using the following Python code, replacing the path to the <code class="highlight">logfile</code> with the location where that file was saved on your machine.
+    The whole script takes about 90 seconds to run on my M1 Macbook Air using the 8-core GPU, and about 5 minutes to run on the CPU. The location of the candidate selection log info file will be in a <code>logs/</code> subfolder of wherever you ran the script. The safety test should also pass for you, though the value of the primary objective (cross entropy over all 10 classes) on the safety test might differ slightly because your machine's random number generator may differ from mine. The important thing is that the gradient descent curve is similar. Plot it using the following Python code, replacing the path to the <code class="highlight">logfile</code> with the location where that file was saved on your machine.
 </p>
 {% highlight python %}
 from seldonian.utils.plot_utils import plot_gradient_descent
