@@ -3,8 +3,8 @@ layout: tutorial
 permalink: /tutorials/science_GPA_tutorial/
 prev_url: /tutorials/fair_loans_tutorial/
 prev_page_name: (D) Fair Loans tutorial
-next_url: /tutorials/custom_base_variable_tutorial/
-next_page_name: (F) Custom base variables tutorial
+next_url: /tutorials/new_supervised_model/
+next_page_name: (F) Creating a new Seldonian supervised learning model
 ---
 
 <!-- Main Container -->

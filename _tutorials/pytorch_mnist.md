@@ -1,13 +1,16 @@
 ---
 layout: tutorial
 permalink: /tutorials/pytorch_mnist/
-prev_url: /tutorials/gridworld_RL_tutorial/
-prev_page_name: (G) Reinforcement learning first tutorial
+prev_url: /tutorials/new_supervised_model/
+prev_page_name: (F) Creating a new Seldonian supervised learning model
+next_url: /tutorials/gridworld_RL_tutorial/
+next_page_name: (H) Reinforcement learning first tutorial
+
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h2 align="center" class="mb-3">Tutorial H: Creating your first Seldonian PyTorch model </h2>
+    <h2 align="center" class="mb-3">Tutorial G: Creating your first Seldonian PyTorch model </h2>
     <hr class="my-4">
     <h3>Introduction</h3>
     <p>

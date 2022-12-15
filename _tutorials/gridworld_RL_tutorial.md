@@ -1,16 +1,16 @@
 ---
 layout: tutorial
 permalink: /tutorials/gridworld_RL_tutorial/
-prev_url: /tutorials/custom_base_variable_tutorial/
-prev_page_name: (F) Custom base variables tutorial
-next_url: /tutorials/pytorch_mnist/
-next_page_name: (H) Creating your first Seldonian PyTorch model
+prev_url: /tutorials/pytorch_mnist/
+prev_page_name: (G) Creating your first Seldonian PyTorch model
+next_url: /tutorials/custom_base_variable_tutorial/
+next_page_name: (I) Creating custom base variables in behavioral constraints
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial G: Introduction to reinforcement learning with the Seldonian Toolkit</h2>
+<h2 align="center" class="mb-3">Tutorial H: Introduction to reinforcement learning with the Seldonian Toolkit</h2>
 
 <hr class="my-4">
 

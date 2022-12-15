@@ -42,7 +42,11 @@ permalink: /tutorials/
             </li>
 
             <li>
-                <a href="{{ "/tutorials/pytorch_mnist/" | relative_url}}">(H) Creating your first Seldonian PyTorch model</a>
+                <a href="{{ "/tutorials/pytorch_mnist/" | relative_url}}">(F) Creating a new Seldonian supervised learning model </a>
+            </li> 
+
+            <li>
+                <a href="{{ "/tutorials/pytorch_mnist/" | relative_url}}">(G) Creating your first Seldonian PyTorch model</a>
             </li> 
         </ol>
     </div>
@@ -55,7 +59,7 @@ permalink: /tutorials/
                 <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for Automated Loan Approval Systems</a>
             </li>
             <li>
-                <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">(G) Introduction to reinforcement learning with the Seldonian Toolkit</a>
+                <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">(H) Introduction to reinforcement learning with the Seldonian Toolkit</a>
             </li>
         </ol>
     </div>
@@ -64,7 +68,7 @@ permalink: /tutorials/
         <h5>Advanced (for developers) </h5>
         <ol>
             <li>
-                <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}"> (F) Creating custom base variables in behavioral constraints</a>
+                <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}"> (I) Creating custom base variables in behavioral constraints</a>
             </li>
         
         </ol>
