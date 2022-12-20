@@ -37,4 +37,20 @@ permalink: /about/
         </div>
     </div>
 </div>
+
+<hr class="my-2">
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <img src="https://people.cs.umass.edu/~jekostas/my_picture.jpg" class="img-fluid mx-auto d-block rounded shadow p-3 mb-5 bg-white" alt="James Kostas"> 
+        </div>
+        <div class="col-md-10">
+            <h4><a href="https://people.cs.umass.edu/~jekostas/jekostas.html">James Kostas </a></h4>
+            <h5>PhD Candidate, Manning College of Information and Computer Sciences, University of Massachusetts</h5>
+            <i>jamesekostas@gmail.com</i>
+            <hr>
+            James helped build the reinforcement learning (RL) components of this library.  His research focuses on different types of neural networks for RL. James is a member of the Autonomous Learning Laboratory (ALL) at the University of Massachusetts, where he is advised by Prof. Thomas.
+        </div>
+    </div>
+</div>
 </div>
