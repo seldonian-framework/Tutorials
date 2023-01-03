@@ -37,6 +37,9 @@ For all of these reasons, we seek to reproduce the general trends found by Thoma
     <li>Format the GPA classification dataset used by Thomas et al. (2019) for use in the Seldonian Toolkit. </li>
     <li>Create the three plots of a Seldonian Experiment for the five different fairness definitions considered by Thomas et al. (2019). </li>
 </ul>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 
 <h3 id="dataset_prep"> Dataset preparation </h3>
 <p>
@@ -45,7 +48,9 @@ For all of these reasons, we seek to reproduce the general trends found by Thoma
 
 <p> We downloaded the GPA dataset file called <code>data.csv</code> from the <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/O35FW8">Harvard dataverse link</a> listed by Thomas et al. (2019). Specifically, we followed that link and then clicked the "Access Dataset" dropdown and downloaded the "Original Format ZIP (3.0 MB)" file. At that link, there is a description of the columns. We used the <a href="https://pandas.pydata.org/">pandas</a> library to load the CSV file into a dataframe. We scaled the columns representing the nine entrance exam scores using a standard scaler. We then created a new column called <code class='highlight'>GPA_class</code> to which we assigned a value of 1 if the existing GPA column had a value $\geq3$ and assigned a value of 0 otherwise. While the dataset already has a gender column, the Seldonian Toolkit requires each group in a sensitive attribute to have its own binary-valued column. As a result, we created two new columns, "M" (male) and "F" (female) from the values of the gender column. We set the values of the "M" column to be 1 if the gender was male and 0 if female. For the "F" column, we set the values to be 1 if the gender was female and 0 if male. Finally, we dropped the original gender and GPA columns, reordered the columns so that the sensitive attributes were first, followed by the scaled test scores, followed by the <code class='highlight'>GPA_class</code> label column, and saved the file in CSV format. This file can be found <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/GPA/gpa_classification_dataset.csv">here</a>. We also created a JSON file containing the metadata that we will provide to the Seldonian Engine library <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/GPA/metadata_classification.json">here</a>.
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Formulate the Seldonian ML problem</h3>
 
 Thomas et al. (2019) considered five different definitions of fairness to apply to the problem of predicting whether students would have high or low GPAs based on nine entrance examination scores. The five definitions, and their constraint strings are:
@@ -59,6 +64,9 @@ Thomas et al. (2019) considered five different definitions of fairness to apply 
 
 They applied each of these constraints independently, each with $\delta=0.05$. 
 
+</div>  
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Creating the specification object</h3>
 <p>
 We need to create a different spec object for each constraint because we will be running five different experiments. However, every other input to the spec object is the same, so we can make five spec objects using a for loop. In the script below, set <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to where you saved the data and metadata files from above. <code class='highlight'>save_base_dir</code> is the parent directory to where five directories will be created, one holding each spec object. Change it to somewhere convenient on your machine. 
@@ -132,7 +140,9 @@ if __name__ == '__main__':
 </div>
 Running this code should print out that the five spec files have been created.
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3> Running a Seldonian Experiment </h3>
 <p>
 To produce the three plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) in the constraint in order to match Thomas et al. (2019). As a sanity check, we also included a random classifier baseline model in our experiment. The performance metric is accuracy. Here is the code we used to produce the plot for disparate impact: 
@@ -290,8 +300,9 @@ While the QSA requires the most samples to return a solution and to achieve opti
 <p>
 The largest differences between our experiments and those done by Thomas et al. are in the Fairlearn results. The newer Fairlearn models that we ran achieve near-optimal accuracy with almost any amount of data. The older Fairlearn models never reached optimal accuracy in the experiments performed by Thomas et al. The Fairlearn API has changed considerably since Thomas et al. used it, and more fairness constraints can be included in their models. That being said, their models continue to violate the fairness constraints. In particular, the disparate impact constraint is violated with high probability over the most of the sample sizes considered. This is not surprising given that the Fairlearn models do not have a safety test; their models make no guarantee that they will not violate the constraints on unseen data. 
 </p>
+</div>
 
-
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Summary</h3>
 <p>
 In this tutorial, we demonstrated how to use the Seldonian Toolkit to recreate the analysis performed by Thomas et al. (2019) using the GPA classification dataset. In particular, we sought to recreate their Figure 3. We showed how to format the dataset so that it can be used in the Seldonian Toolkit. Using the same five fairness constraints that Thomas et al. (2019) considered, we ran a Seldonian Experiment for each constraint. We produced the three plots: accuracy, solution rate, and failure rate, finding similar overall trends as Thomas et al. The quasi-Seldonian algorithms we ran slightly outperformed those run by Thomas et al. (2019), but in general were very similar. The main differences we found were in the Fairlearn models. The differences we observed are easily explained by updates to the Fairlearn API that took place since 2019. Due to compatibility issues, we were unable to use the same Fairlearn API version as Thomas et al. with the newer Python versions required by the Seldonian Toolkit.  

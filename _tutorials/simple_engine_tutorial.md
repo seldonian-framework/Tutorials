@@ -22,6 +22,8 @@ next_page_name: (D) Fair loans tutorial
     </ul>
     Note that due to the choice of confidence-bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs). See <a href="{{ "/overview/#algorithm" | relative_url}}">the overview</a> for more details.
     </p>
+</div>
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3> An example Seldonian machine learning problem </h3>
     <p>
         Consider a simple supervised regression problem with two continuous random variables X and Y. Let the goal be to predict the label Y using the single feature X. One approach to this problem is to use gradient descent on a linear regression model with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
@@ -179,6 +181,8 @@ print(cs_dict['g_vals'])
 {% endhighlight %}
 Even if candidate selection returns "NSF", the <code class="highlight">cs_dict</code> stores these values.
 </p>
+</div> 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3>Summary</h3>
     <p>In this tutorial, we demonstrated how to:</p>
     <ul>

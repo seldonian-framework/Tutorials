@@ -10,8 +10,8 @@ permalink: /overview/
 
 <!-- Main Container -->
 
-<div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3"><b>Overview</b></h5>
+<div class="container p-3 my-4 border" style="background-color: #f3f4fc;">
+    <h3 class="mb-3">Overview</h3>
     <hr class="my-4" />
     <p>At this website, you will find a description of Seldonian algorithms as well as hands-on tutorials for implementing them with the Seldonian Toolkit. Use the navigation buttons at the top of the page to jump between pages, or click the links in the navbar at the top of the page. This page provides an overview of Seldonian algorithms, the Seldonian framework, and this software toolkit. If you are new to these topics, we recommend reading from the top down, but you are welcome to jump ahead using the links below. The content below is organized into the following topics:</p>
     <ol>
@@ -37,7 +37,7 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-        <h5 class="mb-3" id="need"><b>The need for safe and fair machine learning</b></h5>
+        <h3 class="mb-3" id="need">The need for safe and fair machine learning</h3>
         <hr class="my-4" />
         <p>
             Intelligent machines are everywhere, ranging from simple data analysis and pattern recognition tools used across the sciences, to complex systems that achieve superhuman performance on various tasks. Ensuring that these machines are well-behaved&mdash;that they do not, for example, harm humans or act in a racist or sexist way&mdash;is therefore not a hypothetical problem to be dealt with in the future, but a practical one that must be addressed today.
@@ -51,7 +51,7 @@ permalink: /overview/
     </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3" id="probabilistic"><b>The necessity of <i>probabilistic</i> guarantees</b></h5>
+    <h3 class="mb-3" id="probabilistic">The necessity of <i>probabilistic</i> guarantees</h3>
     <hr class="my-4" />
     <p>
         There are two possible types of safety and fairness guarantees: <b>deterministic</b> and <b>probabilistic</b> (also called <i>stochastic</i>). Deterministic guarantees hold with certainty. A <i>deterministic</i> guarantee that an ML system will not give a medical treatment that results in a patient dying means that the ML system will <i>never</i> give a medical treatment that results in a patient dying. As another example, Asimov's <a href="https://en.wikipedia.org/wiki/Three_Laws_of_Robotics">three laws of robotics</a> are three proposed deterministic safety constraints for robots.
@@ -108,7 +108,7 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3" id="algorithm"><b>What is a Seldonian algorithm?</b></h5>
+    <h3 class="mb-3" id="algorithm">What is a Seldonian algorithm?</h3>
     <hr class="my-4" />
     <p>Seldonian algorithms are machine learning algorithms that provide high-confidence guarantees that they will not produce undesirable behavior. To make this statement more precise, we will define notation and then convert the English statement into a mathematical statement.</p>
     Notation:
@@ -144,7 +144,7 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3" id="framework"><b>What is the Seldonian framework?</b></h5>
+    <h3 class="mb-3" id="framework">What is the Seldonian framework?</h3>
     <hr class="my-4" />
     <p>
         The Seldonian <i>framework</i> provides guidance for the creation of useful Seldonian algorithms. The most critical points are:
@@ -159,7 +159,7 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-4 border" style="background-color: #f3f4fc;">
-    <h5 class="mb-3" id="toolkit"><b>What is this software toolkit?</b></h5>
+    <h3 class="mb-3" id="toolkit">What is this software toolkit?</h3>
     <hr class="my-4" />
     <p>
         We developed the Seldonian Toolkit to provide:
@@ -175,7 +175,7 @@ permalink: /overview/
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-        <h5 class="mb-3" id="limitations"><b>What are some limitations of this software toolkit?</b></h5>
+        <h3 class="mb-3" id="limitations">What are some limitations of this software toolkit?</b></h3>
         <hr class="my-4" />
         <p>
             This toolkit, and Seldonian algorithms in general, have several important limitations, several of which are listed below.
@@ -187,7 +187,7 @@ permalink: /overview/
             <li>The current version of the software toolkit supports <i>parametric</i> machine learning. Nonparametric models such as random forest and support vector machines are not currently supported, though we may consider supporting them in future versions.</li>
             <li>Often, the distribution of training data does not precisely match the distribution of data that an algorithm will face in the future. For example, training data collected in the past may not account for shifting trends over time (like seasonality). Similarly, data collected by an autonomous vehicle that undergoes wear and tear may not accurately represent the vehicle's future degraded performance. As another example, data collected in one city will not accurately capture the demographics of a different city, meaning that a model that is fair when trained on data from Los Angeles may not be fair when applied to a problem where it makes decisions for people in New York. Prof. Thomas and collaborators are actively working on methods to handle these types of "distributional shift," "covariate shift," "demographic shift," and general non-stationarity (<a href="https://people.cs.umass.edu/~pthomas/papers/Chandak2020b.pdf">1</a>, <a href="https://people.cs.umass.edu/~pthomas/papers/Giguere2022.pdf">2</a>). However, these advances are not in the existing toolkit. The safety guarantees of the current toolkit assume that the learned model will be deployed to data that comes from the same distribution that the training data was sampled from. Though this assumption is extremely common in machine learning, when it is false, the Seldonian algorithms in this toolkit do not provide high-confidence safety guarantees.</li>
             <li>Seldonian algorithms are <i>not</i> inherently robust to corrupted data. That is, if an adversary can corrupt even a few points in a data set, they can cause Seldonian algorithms to be extremely <i>unsafe</i> (particularly in the reinforcement learning setting). Though this issue has been studied, and techniques exist for making Seldonian algorithms more robust to (adversarially) corrupted data (<a href="https://people.cs.umass.edu/~pthomas/papers/Ozisik2020.pdf">1</a>), these extensions are not included in the current Seldonian Toolkit.</li>
-            <li>If a Seldonian algorithm returns No Solution Found (NSF), a user might be tempted to tweak settings of the algorithm and try running it again. This raises a potential issue. As an analogy, consider a study testing a new drug by giving a placebo to a control group and the new drug to the other participants. After gathering data from this study, one might test whether people in the control group tend to have more headaches. If this is not the case, one might test whether the people in the control group had more fevers. One could continue testing hypotheses until one is found where the drug appears to have an effect. Even if the new drug has no effect (it was also a placebo), eventually one will find some property that happens to be more prevalent in the control group (say, people in the control group were in fewer car accidents). This isn't because the new drug actually influenced the frequency of car accidents, but rather is because the people in the control group happened to have fewer accidents. This is a common example of the <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparisons problem</a>, showing why only one hypothesis (does the new drug reduce the frequency of headaches?) should be tested using a given data set. If multiple hypotheses are tested, then the appropriate statistical tools must be used to account for this practice. One can think of the "safety test" mechanism as running such a hypothesis test (testing whether the candidate solution is safe), and so this same issue arises. <b>The key point is to recognize that a Seldonian algorithm's high-probability guarantee applies to a single run of the algorithm.</b> If the algorithm produces undesirable behavior with probability at most \(\delta\), and you run the algorithm \(k\) times in a row, <a href="https://en.wikipedia.org/wiki/Boole%27s_inequality">Boole's inequality</a> tells us that the probability that it produces undesirable behavior can be as large as \(\operatorname{min}(1,k\delta)\) (if separate independent data sets are used for the runs, the failure events would be statistically independent, bringing the probability of undesirable behavior down to $1-(1-\delta)^k$). For example, if \(\delta=0.1\), the algorithm should produce unsafe solutions at most \(10\%\) of the time. However, if you run the algorithm two times, the probability that it produces unsafe behavior could be as high as \(20\%\) of the time. </li>
+            <li>If a Seldonian algorithm returns No Solution Found (NSF), a user might be tempted to tweak settings of the algorithm and try running it again. This raises a potential issue. As an analogy, consider a study testing a new drug by giving a placebo to a control group and the new drug to the other participants. After gathering data from this study, one might test whether people in the control group tend to have more headaches. If this is not the case, one might test whether the people in the control group had more fevers. One could continue testing hypotheses until one is found where the drug appears to have an effect. Even if the new drug has no effect (it was also a placebo), eventually one will find some property that happens to be more prevalent in the control group (say, people in the control group were in fewer car accidents). This isn't because the new drug actually influenced the frequency of car accidents, but rather is because the people in the control group happened to have fewer accidents. This is a common example of the <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparisons problem</a>, showing why only one hypothesis (does the new drug reduce the frequency of headaches?) should be tested using a given data set. If multiple hypotheses are tested, then the appropriate statistical tools must be used to account for this practice. One can think of the "safety test" mechanism as running such a hypothesis test (testing whether the candidate solution is safe), and so this same issue arises. The key point is to recognize that a Seldonian algorithm's high-probability guarantee applies to a single run of the algorithm.</b> If the algorithm produces undesirable behavior with probability at most \(\delta\), and you run the algorithm \(k\) times in a row, <a href="https://en.wikipedia.org/wiki/Boole%27s_inequality">Boole's inequality</a> tells us that the probability that it produces undesirable behavior can be as large as \(\operatorname{min}(1,k\delta)\) (if separate independent data sets are used for the runs, the failure events would be statistically independent, bringing the probability of undesirable behavior down to $1-(1-\delta)^k$). For example, if \(\delta=0.1\), the algorithm should produce unsafe solutions at most \(10\%\) of the time. However, if you run the algorithm two times, the probability that it produces unsafe behavior could be as high as \(20\%\) of the time. </li>
         </ul>
 </div>
 

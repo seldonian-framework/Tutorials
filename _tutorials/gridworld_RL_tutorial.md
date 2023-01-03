@@ -28,7 +28,9 @@ The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL
     <li>Run the algorithm using the Seldonian Engine to find a policy that satisfies a behavioral constraint</li>
     <li>Run a RL Seldonian Experiment for this Seldonian algorithm</li>
 </ul>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="background">RL background</h3>
 <p>
     In the RL regime, an <i>agent</i> interacts sequentially with an <i>environment</i>. Time is discretized into integer time steps $t \in \{0,1,2,\dotsc\}$. At each time, the agent makes an observation $O_t$ about the current state $S_t$ of the environment. This observation can be noisy and incomplete. The agent then selects an action $A_t$, which causes the environment to transition to the next state $S_{t+1}$ and emit a scalar (real-valued) reward $R_t$. The agent's goal is to determine which actions will cause it to obtain as much reward as possible (we formalize this statement with math below).
@@ -58,7 +60,9 @@ The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL
     $$ H = (O_0, A_0, \pi_b(O_0,A_0), R_0, O_1, A_1, \pi_b(O_1,A_1) R_1, \dotsc).$$
     Notice that in this batch setting, Seldonian RL algorithms can be used to improve upon current and past policies. However, they can't be used to construct the first policy for an application. 
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="dataset_prep"> Define the environment and policy </h3>
 <p> 
 The first steps in setting up an RL Seldonian algorithm are to select an environment of interest and then to specify the policy parameterization the agent should use. That is, how does $\theta$ change the policy $\pi_\theta$? For example, when using a neural network, this corresponds to determining the network architecture and how the network's outputs specify the probability of each possible action.
@@ -86,7 +90,9 @@ $$ \begin{equation}
 $$
 So, given the current observation $O_t$, the agent chooses an action by drawing from a discrete probability distribution where the probability of each action $a$ is $\pi(O_t,a)$.
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Formulate the Seldonian ML problem</h3>
 <p>
     Consider the offline RL problem of finding a policy for the 3x3 gridworld that has the largest expected return possible (primary objective) subject to the safety constraint that the expected return is at least $-0.25$ (this might be the performance of the current policy). In this tutorial, we simulate this process, generating many episodes of data using a behavior policy (current policy) and then feeding this data to our Seldonian algorithm with the tabular softmax policy parameterization. We include a behavioral constraint that requires the performance of the new policy to be at least $-0.25$ with probability at least $0.95$. In later tutorials, we show how safety constraints can be defined in terms of additional reward functions (as in constrained Markov decision processes [MDPs]).
@@ -115,7 +121,9 @@ So, given the current observation $O_t$, the agent chooses an action by drawing 
         <li>In the Experiments library, the default way of generating ground truth data in the RL regime is to run additional episodes using a behavior policy. We will see this played out in the <a href="#Experiments">Running a Seldonian Experiment</a> section.</li>
     </ul>
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Creating the specification object</h3>
 <p>
 Our goal is to create an <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.RLSpec.html?highlight=rlspec#seldonian.spec.RLSpec">RLSpec</a> object, which will consist of everything we will need to run a Seldonian algorithm using the engine. Creating this object involves defining the behavior dataset, policy parameterization, any environment-specific parameters, and the behavioral constraints. 
@@ -216,7 +224,9 @@ $ python createSpec.py
 {% endhighlight bash %}
 will create a file called <code>spec.pkl</code> in whatever directory you ran the command. Once that file is created, you are ready to run the Seldonian algorithm. 
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3> Running the Seldonian Engine </h3>
 <p>
 Now that we have the spec file, running the Seldonian algorithm is simple. You may need to change the path to <code class='highlight'>specfile</code> if your spec file is saved in a location other than the current directory. We will also change some of the defaults of the optimization process; namely, we will set the number of iterations to $10$ and set the learning rates of $\theta$ and $\lambda$ to $0.01$.
@@ -264,6 +274,9 @@ The solution found is:
 
 </p>
 As we can see, the solution returned by candidate selection passed the safety test. The solution shows the weights $\theta(s,a)$ of the new policy, where the $j$th column in the $i$th row represents the $j$th action given the $i$th observation (also state, in this case) in the gridworld. The final row is all zeros because no actions are taken from the terminal state. This may not be a particularly good solution, but we have a high-probability guarantee that it is better than the uniform random policy. 
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="Experiments"> Running a Seldonian Experiment </h3>
 <p>
 Now that we have successfully run the Seldonian algorithm once with the engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policy. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
@@ -539,6 +552,9 @@ Running the script should produce a plot that looks very similar to the one belo
 </div>
 The performance of the obtained policy increases steadily with increasing number of episodes provided to the QSA. The QSA does not always return a solution for small amounts of data, but at $\sim10^3$ episodes it returns a solution every time it is run. This is desired behavior because for small amounts of data, the uncertainty about whether the solution is safe is too large for the algorithm to guarantee safety. The QSA always produces safe behavior (failure rate = 0). For very small amounts of data ($\lesssim10$ episodes), the algorithm may have a non-zero failure rate in your case. It can even have a failure rate above $\delta$ because the algorithm we are using here is quasi-Seldonian, i.e., the method used to calculate the confidence bound on the behavioral constraint makes assumptions that are only reasonable for relatively large amounts of data. 
 </p>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Summary</h3>
 <p>
 In this tutorial, we demonstrated how to run a quasi-Seldonian offline reinforcement learning algorithm with the Seldonian Toolkit. We defined the Seldonian machine learning problem in the context of a simple gridworld environment with a softmax policy parameterization. The behavioral constraint we set out to enforce was that the performance of the new policy must be at least as good as a uniform random policy. Running the algorithm using the Seldonian Engine, we found that the solution we obtained passed the safety test and was therefore deemed safe. To explore the behavior of the algorithm in more detail, we ran a Seldonian Experiment. We produced the three plots, performance, solution rate, and failure rate as a function of the number of episodes used to run the algorithm. We found the expected behavior of the algorithm: the performance of the obtained policy parameterization improved as more episodes were used. When small amounts of data were provided to the algorithm, the uncertainty in the safety constraint was large, preventing the algorithm from guaranteeing safety. With enough data, though, the algorithm returned a solution it guaranteed to be safe. Importantly, the algorithm never returned a solution it deemed to be safe that actually was not safe according to a ground truth dataset.

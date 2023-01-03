@@ -29,6 +29,8 @@ next_page_name: (E) Science paper GPA tutorial
     <li>Run a Seldonian Experiment, assessing the performance and safety of the Seldonian ML model relative to baseline models and other fairness-aware ML models. </li>
 </ul>
 </p>
+</div>
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="dataset_prep"> Dataset preparation </h3>
 
 <p>
@@ -50,7 +52,9 @@ next_page_name: (E) Science paper GPA tutorial
 <p> 
     We also prepared a JSON file containing the metadata that we will need to provide to the Seldonian Engine library <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json">here</a>. The column names beginning with "c__" were the columns created by scikit-learn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html">OneHotEncoder</a>. The columns "M" and "F" are somewhat buried in the middle of the columns list and correspond to the male and female one-hot encoded columns. The "sensitive_columns" key in the JSON file points to those columns. The "label_column" key in the JSON file points to the "credit_rating" column. 
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Formulate the Seldonian ML problem</h3>
 
 <p>
@@ -74,7 +78,9 @@ Let us enforce this constraint function with a confidence of $0.95$.
     </li>
 </ul>
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Creating the specification object</h3>
 
 <p>
@@ -219,7 +225,9 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object,
 <p>
     Scroll down to the "Constraint building blocks" area and click the "Disparate impact" button. This will auto-fill Constraint #1 with a preconfigured constraint for disparate impact, which will have the form that we defined above. The one change you will need to make is to remove the constant block titled "0.8" and create a new constant block titled "0.9". Drag the new constant block into the constraint so that it becomes solid. Type 0.05 into the field titled "${\delta} = $" just below where the constraint function was auto-filled. Then hit the submit button. A dialog box should show up displaying: "Saved ./spec.pkl", which indicates that the specification object has been saved as a pickle file to the directory where you launched the GUI. 
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3> Running the Seldonian Engine </h3>
 <p>
     We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code below into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
@@ -319,7 +327,9 @@ Running this script will generate a figure like this:
 <p>
 Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent (with the Adam optimizer) for more iterations or with different learning rates or velocity values (the beta terms in Adam). If you are still seeing NSF after hyperparameter exploration, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3> Running a Seldonian Experiment </h3>
 
 <p>
@@ -761,9 +771,15 @@ We also need to point to the new spec file we created for the new constraint. Ru
     </figure>
 </div>
 </p>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Summary</h3>
 <p>
-In this tutorial, we demonstrated how to use the Seldonian Toolkit to build a predictive model that enforces a variety of fairness constraints on the German Credit dataset. We covered how to format the dataset and metadata so that they can be used by the Seldonian Engine. Using the engine, we ran a Seldonian algorithm and confirmed that we were able to find a safe solution. We then ran Seldonian Experiments to evaluate the true performance and safety of our quasi-Seldonian algorithm (QSA). We found that the QSA can flexibly satisfy a range of custom-defined fairness constraints and that the model does not violate the constraints. We compared the QSA to several baselines that do not enforce any behavioral constraints as well as one model, Fairlearn, that does enforce constraints. We found that the performance of the QSA approaches the performance of a logistic regression model that lacks constraints. The logistic regression model and the fairness-aware Fairlearn model frequently violate the constraints for some definitions of fairness. 
+In this tutorial, we demonstrated how to use the Seldonian Toolkit to build a predictive model that enforces a variety of fairness constraints on the German Credit dataset. We covered how to format the dataset and metadata so that they can be used by the Seldonian Engine. Using the engine, we ran a Seldonian algorithm and confirmed that we were able to find a safe solution. We then ran a serires of Seldonian Experiments to evaluate the true performance and safety of our quasi-Seldonian algorithm (QSA) using different fairness definitions.
+</p>
+<p>
+ We found that the QSA can flexibly satisfy a range of custom-defined fairness constraints and that the model does not violate the constraints. We compared the QSA to several baselines that do not enforce any behavioral constraints as well as one model, Fairlearn, that does enforce constraints. We found that the performance of the QSA approaches the performance of a logistic regression model that lacks constraints. The logistic regression model and the fairness-aware Fairlearn model frequently violate the constraints for some definitions of fairness. 
 </p>
 
 </div>

@@ -41,6 +41,9 @@ The engine supports several built-in strings that trigger a call to a function. 
 <p> 
 However, it is possible that creating a new measure function will not be sufficient for your use case. Recall from the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a> discussion that confidence bounds are calculated on base variables and then propagated to the root of the tree to get the upper bound on the overall constraint, $g(\theta)$. The confidence bounds are first calculated on the mean of the base variable. If your desired constraint involves bounding something other than the mean of one of these base variables, then you will not be able to define your constraint in terms of measure functions. In that case, you will need to create a new type of base variable, which we call a "custom base variable." In the <a href="#custom_base_variable">Creating a custom base variable</a> section below, we demonstrate how to do this for a constraint involving the <a href="https://en.wikipedia.org/wiki/Expected_shortfall">conditional value at risk (CVaR)</a> statistic. 
 </p>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 class="my-4" id="new_measure_function"> Adding a new measure function </h3>
 <p>
  The currently programmed measure functions are listed <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.parse_tree.operators.html#seldonian.parse_tree.operators.measure_functions_dict">here</a> by regime and subregime. Let's say your desired constraint involves precision, which is not an existing measure function, and the string you want to use to represent it is "PREC". And say that the constraint you are considering is that you want the precision of the model to differ by no more than 10% between males and females in the dataset.  This constraint could be expressed to the engine as: 
@@ -127,8 +130,10 @@ At this point, you can now use the "PREC" in your constraint strings that you pr
 abs((PREC | [M]) - (PREC | [F])) - 0.1,
 {% endhighlight python %}
 will now be correctly interpreted as: "ensure that the precision of the model should differ by no more than 10% between males (M) and females (F) in the dataset." The probability that this constraint will be upheld is controlled by what you set $\delta$ to, as in all other constraints. 
-
 </p>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 class="my-4" id="custom_base_variable"> Creating a custom base variable </h3>
 
 <p>
@@ -737,7 +742,9 @@ which will produce a plot like this:
 <p>
     The plot shows that despite the initial solution starting out in the infeasible set, a feasible solution was found in relatively few iterations. The default hyperparameters of gradient descent worked well in this case, but in other cases it may be necessary to adjust them. 
 </p>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Summary</h3>
 <p>
     In this tutorial, we demonstrated two methods for customizing your behavioral constraints. The first method was to create a new measure function. We demonstrated how to implement this using precision as an example measure function that is not already implemented in the library. When one uses a measure function in their constraint, they are assuming that the high-confidence bounds are calculated on the mean of that function over the provided data. We showed a second method, creating a custom base variable, where that assumption does not have to hold. To illustrate this alternative method, we implemented a constraint that uses the conditional value at risk (CVaR) of the squared residual in a regression problem. We showed how to create a custom base variable to support this type of custom constraint. Finally, we used our new custom base variable in a Seldonian algorithm.  

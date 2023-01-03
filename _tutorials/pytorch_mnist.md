@@ -18,7 +18,7 @@ next_page_name: (H) Reinforcement learning first tutorial
     </p>
 
     <p> 
-        <a href="https://pytorch.org/">PyTorch</a> is an open-source machine learning framework written in Python that is extremely popular for deep learning. PyTorch uses objects called tensors (<code class="highlight">torch.Tensor</code>) to represent multi-dimensional arrays of data. The Seldonian toolkit uses NumPy arrays to represent data and as a whole is not written in PyTorch. Fortunately, PyTorch tensors can be converted to NumPy arrays with relative ease, and vice versa. The toolkit takes care of this conversion, allowing you to focus on implementing your PyTorch model. For now, only the Seldonian model can be written in PyTorch. The dataset must still be provided to the engine as numpy arrays, not PyTorch tensors. Currently, PyTorch is <b>only supported for supervised learning models</b>. We plan to support deep reinforcement learning policies in PyTorch in the near future. 
+        <a href="https://pytorch.org/">PyTorch</a> is an open-source machine learning framework written in Python that is popular for deep learning. PyTorch uses objects called tensors (<code class="highlight">torch.Tensor</code>) to represent multi-dimensional arrays of data. The Seldonian toolkit uses NumPy arrays to represent data and as a whole is not written in PyTorch. Fortunately, PyTorch tensors can be converted to NumPy arrays with relative ease, and vice versa. The toolkit takes care of this conversion, allowing you to focus on implementing your PyTorch model. For now, only the Seldonian model can be written in PyTorch. The dataset must still be provided to the engine as NumPy arrays, not PyTorch objects. Currently, PyTorch is <b>only supported for supervised learning models</b>. We plan to support deep reinforcement learning policies in PyTorch in the near future. 
     </p>
 
     <p>
@@ -29,7 +29,9 @@ next_page_name: (H) Reinforcement learning first tutorial
         <b>Note:</b> To enable GPU acceleration, you will need to have the proper setup for your machine. For example, CUDA needs to be enabled if you have an NVIDIA graphics card. The good news is that even if you don't have access to a GPU, you will still be able to run the model on your CPU. To learn more about GPU-acceleration for PyTorch, see the "Install Pytorch" section of this page: <a href="https://pytorch.org/">https://pytorch.org/</a>
   
     </p> 
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3> Implementing a convolutional neural network with PyTorch </h3>
 
 <p>
@@ -43,9 +45,9 @@ $ pip install --upgrade seldonian-engine
     <p>
         You will also need the <code>torchvision</code> Python package if you want to run the example below, and this package is not included when you install the Seldonian Engine library:
     </p>
-{% highlight python %}
+{% highlight javascript %}
 $ pip install torchvision
-{% endhighlight python %}
+{% endhighlight javascript %}
 <p>
     It is important to make a clear distinction when referring to "models" throughout this tutorial. We will use the term "Seldonian model" to refer to the highest level model abstraction in the toolkit. The Seldonian model is the thing that communicates with the rest of the toolkit. The Seldonian model we will build in this tutorial consists of a "PyTorch model," a term which we will use to refer to the actual PyTorch implementation of the neural network. The PyTorch model <i>does not</i> communicate with the other pieces of the Seldonian Toolkit, whereas the Seldonian model does. 
 </p>
@@ -128,7 +130,9 @@ class PytorchCNN(SupervisedPytorchBaseModel):
 <p>
     At this point, this model is ready to use in the toolkit.
 </p>
-     
+</div>   
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">  
 <h3> MNIST with a safety constraint </h3>
 
 <p> The Modified National Institute of Standards and Technology <a href="https://en.wikipedia.org/wiki/MNIST_database">(MNIST)</a> database is a commonly used dataset in machine learning research. It contains 60,000 training images and 10,000 testing images of the handwritten digits 0-9. Yes, there are models that are superior to the simple CNN we built in terms of accuracy (equivalently, error rate), but objective in this tutorial is to show how to create a Seldonian version of a PyTorch deep learning model, not to achieve maximum accuracy. 
@@ -470,7 +474,9 @@ plot_gradient_descent(sol_dict,'cross entropy')
         <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on the MNIST task. The panels show the values of the (left) primary objective $\hat{f}(\theta,D_\mathrm{cand})$ (in this case the cross entropy), (middle left) single Lagrange multiplier, ${\lambda_1}$, (middle right) predicted high-confidence upper bound (HCUB) on the  constraint function, $\hat{g}_1(\theta,D_\mathrm{cand}) = \text{ACC} - 0.95$, and (right) the Lagrangian $\mathcal{L}(\theta,\lambda)$. The dotted lines indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(\hat{g}_i(\theta,D_\mathrm{cand})) \leq 0, i \in \{1 ... n\}$.  In this example, we only have one constraint. The infeasible region is shown in red in the middle right plot. The feasible region is shown in white in the same plot. The noise in the curves for $\hat{f}$ and $\mathcal{L}$ is due to the fact that we batched the candidate data in gradient descent.</figcaption>
     </figure>
 </div>
+</div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3>Summary</h3>
 <p>In this tutorial, we demonstrated how to implement a deep learning model using Pytorch and integrate it with the Seldonian toolkit. We created a convolutional neural network and enforced a simple safety constraint on it. The safety constraint was simple only for the purposes of creating a simple example. The constraints that one can apply to this PyTorch model are no more restricted than to any other supervised learning model. We hope by providing an example implementation of a convolutional neural network, it will be easier for you to implement your own safe and fair PyTorch models.  </p>
 

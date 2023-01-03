@@ -9,7 +9,7 @@ permalink: /tutorials/
 </div>
 
 <!-- Main Container -->
-<div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
+<div class="container p-3 my-4 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3"><b>Getting started</b></h5>
     <hr class="my-4">
     <p>Whether you are interested in Seldonian algorithms for supervised learning or reinforcement learning, this is the place to start. We have created a list of seven tutorials, labeled A–G, which may be helpful before running your own Seldonian algorithms. We recommend starting with "The Basics," tutorials A–C, regardless of which track you choose. Reinforcement learning is a more advanced topic than supervised learning, which is why we recommend one of the supervised learning tutorials for that track as well.</p>

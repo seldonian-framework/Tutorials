@@ -30,6 +30,9 @@ next_page_name: (G) Creating your first Seldonian PyTorch model
    <p>
        In this tutorial, we will demonstrate how to integrate a model using an example. The Engine library already contains a few example Seldonian models, including models for linear regression, logistic regression (binary and multi-class), and a few neural networks. We will describe how to construct a binary logistic model as a guide for how you can implement your own models with the toolkit.
    </p>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3> Implementing a binary logistic model with the toolkit </h3>
 
 <p>
@@ -100,7 +103,9 @@ SA.run(spec)
 <p>
     In the example code above, the <code class="highlight">model</code> object is input to the spec object which is then used to run the Seldonian algorithm. In the example, <code class="highlight">...</code> represents the other input parameters that the spec object requires. See the <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url}}">Fair loans tutorial</a> for an example of how a full spec object would be specified. This model is pretty minimal. It is designed to show you the minimum required aspects of a Seldonian model. An optional method you could implement is the gradient of the <code class="highlight">predict()</code> method. By providing this in the spec object via the <code class="highlight">custom_primary_gradient_fn</code> parameter, you may be able to speed up candidate selection. The engine will automatically find the gradient if you do not provide one, but it can be slow depending on the implementation of your <code class="highlight">predict()</code> method.
 </p>
-     
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">    
 <h3>Summary</h3>
 <p>In this tutorial, we demonstrated how to integrate a machine learning model with the Seldonian toolkit. We hope the example implementation of the logistic regression model will make it easier for you to implement your own safe and fair machine learning models.  </p>
 

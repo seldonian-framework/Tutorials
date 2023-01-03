@@ -5,8 +5,8 @@ permalink: /glossary/
 
 <!-- Main Container -->
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-<h3 class="mb-3">Glossary</h3>
-<hr class="my-4" />
+<h3>Glossary</h3>
+<hr class="my-2" />
 <p>Here you will find brief definitions of commonly used terms in the Seldonian framework:</p>
 <h5 id="behavioral_constraint"> Behavioral constraints </h5>
 <p>  Criteria for fairness or safety provided by the user. Each behavioral constraint consists of a constraint function and a confidence level. In many cases, the constraint function can be constructed from a constraint string provided by the user. The Seldonian algorithm ensures that the behavioral constraints are met with probability of at least $1-\delta$, where $\delta$ is the confidence level provided by the user. </p> 
