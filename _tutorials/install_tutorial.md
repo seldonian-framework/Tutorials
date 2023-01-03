@@ -18,6 +18,10 @@ next_page_name: (C) Simple Engine tutorial
 The Seldonian Toolkit consists of two main libraries and a GUI. The two libraries are the Seldonian Engine library and the Seldonian Experiments library. While it is not necessary to do so, we recommend installing all three pieces of software in the same virtual environment. 
 </p>
 
+<p>
+    The toolkit is compatible and tested with Python versions 3.8, 3.9, and 3.10. <b>It is incompatible with Python versions lower than version 3.8</b>. We do not plan to support Python versions lower than 3.8, but we do plan to add support for Python version 3.11 soon. 
+</p>
+
 <h5> Engine installation </h5>  
 
 <p> 
