@@ -11,7 +11,8 @@ prev_page_name: (H) Introduction to reinforcement learning with the Seldonian To
 <h2 align="center" class="mb-3">Tutorial F: Creating custom base variables in behavioral constraints</h2>
 
 <hr class="my-4">
-<p> The purpose of this tutorial is to help you understand how to extend the functionality of string-based behavioral constraints to suit your custom constraints. If the answer to either of these questions is "yes" or "maybe," then keep reading:
+<p> This tutorial is currently being updated to reflect the latest changes to the Engine API. Thank you for your patience. </p>
+<!-- <p> The purpose of this tutorial is to help you understand how to extend the functionality of string-based behavioral constraints to suit your custom constraints. If the answer to either of these questions is "yes" or "maybe," then keep reading:
 <ul>
     <li>Does your constraint involve a statistical function (such as "precision") that is not currently supported by the engine? </li>
     <li>Do you have an alternative method for bounding a base variable in the constraint that is not currently supported by the engine? </li>
@@ -750,4 +751,4 @@ which will produce a plot like this:
     In this tutorial, we demonstrated two methods for customizing your behavioral constraints. The first method was to create a new measure function. We demonstrated how to implement this using precision as an example measure function that is not already implemented in the library. When one uses a measure function in their constraint, they are assuming that the high-confidence bounds are calculated on the mean of that function over the provided data. We showed a second method, creating a custom base variable, where that assumption does not have to hold. To illustrate this alternative method, we implemented a constraint that uses the conditional value at risk (CVaR) of the squared residual in a regression problem. We showed how to create a custom base variable to support this type of custom constraint. Finally, we used our new custom base variable in a Seldonian algorithm.  
 </p>
 
-</div>
+</div> -->

@@ -14,12 +14,36 @@ next_page_name: (E) Science paper GPA tutorial
 
 <hr class="my-4">
 
-<h3>Introduction</h3>
+<!-- Table of contents -->
+<h3> Contents </h3>
+<ul>
+    <li> <a href="#intro">Introduction</a> </li>
+    <li> <a href="#outline">Outline</a> </li>
+    <li> <a href="#dataset_prep">Dataset preparation</a></li>
+    <li> <a href="#formulate">Formulate the Seldonian ML problem</a> </li>
+    <li> <a href="#spec_object">Creating the specification object</a> </li>
+        <ul>
+            <li> <a href="#spec_from_script">Creating the specification object from a script</a> </li>
+            <li> <a href="#spec_from_gui">Creating the specification object from the Seldonian Interface GUI</a> </li>
+        </ul>
+    <li> <a href="#running_the_engine">Running the Seldonian Engine</a> </li>
+    <ul>
+            <li> <a href="#gradient_descent">Understanding and visualizing gradient descent parameters</a> </li>
+        </ul>
+    <li> <a href="#experiment">Running a Seldonian Experiment</a> </li>
+        <ul>
+            <li><a href="#modify_constraint">Modifying the constraint to line up with Fairlearn's constraint</a></li>
+        </ul>
+    <li> <a href="#summary">Summary</a> </li>
+</ul>
+<hr class="my-4">
+
+<h3 id="intro">Introduction</h3>
 
 <p>This tutorial is intended to provide an end-to-end use case of the Seldonian Toolkit. The engine supports regression and <i>binary</i> classification Seldonian algorithms in the supervised learning regime (multiclass classification will be supported in the near future). We will be using the <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)">UCI Statlog (German Credit Data) Data Set</a>, which contains 20 attributes for a set of 1000 people and a binary-valued label column describing whether they are a high (value=1) or low credit risk (value=0). If someone is a high credit risk, a bank is less likely to provide them with a loan. Our goal in this tutorial will be to use the Seldonian Toolkit to create a model that makes predictions about credit risks that are fair with respect to gender (for this tutorial we consider the simplified binary gender setting). We will use several definitions of fairness, and we stress that these definitions may not be the correct ones to use in reality. They are simply examples to help you understand how to use this toolkit. Note that due to the choice of confidence-bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
 </p>
 
-<h3>Outline</h3>
+<h3 id="outline">Outline</h3>
 
 <p>In this tutorial, you will learn how to:
 
@@ -55,7 +79,7 @@ next_page_name: (E) Science paper GPA tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Formulate the Seldonian ML problem</h3>
+<h3 id="formulate">Formulate the Seldonian ML problem</h3>
 
 <p>
     As in the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we first need to define the standard machine learning problem in the absence of constraints. The decision of whether to deem someone as being a high or low credit risk is a binary classification problem, where the label "credit_rating" is 0 if the person is a low credit risk and 1 if the person is a high credit risk. We could use logistic regression and minimize an objective function, for example the logistic loss, via gradient descent to solve this standard machine learning problem.  
@@ -81,13 +105,13 @@ Let us enforce this constraint function with a confidence of $0.95$.
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Creating the specification object</h3>
+<h3 id="spec_object">Creating the specification object</h3>
 
 <p>
     To run the Seldonian algorithm using the Seldonian Toolkit libraries, we will need to create a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a> object. We will demonstrate two different ways to create this object for our example problem. 
 </p>
 
-<h5> Creating the specification object from a script </h5>
+<h5 id="spec_from_script"> Creating the specification object from a script </h5>
 <p>
 A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set to <code class="highlight">.</code>, the current directory on my computer, so change <code class='highlight'>save_dir</code> in the code snippet below to the directory where you want to save the spec file. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
 </p>
@@ -207,7 +231,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object,
 </p>
 
 
-<h5> Creating the specification object from the Seldonian Interface GUI</h5>
+<h5 id="spec_from_gui"> Creating the specification object from the Seldonian Interface GUI</h5>
 
 <p>
     The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Once you have started up the GUI, scroll down to the "Data and metadata setup" section. Upload the data file you downloaded in the <a href="#dataset_prep"> Dataset preparation section</a> above in the "Data file" field of the form. For convenience, here is the file you need to upload: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. Then select the "supervised_learning" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
@@ -228,7 +252,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object,
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3> Running the Seldonian Engine </h3>
+<h3 id="running_the_engine"> Running the Seldonian Engine </h3>
 <p>
     We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code below into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
 
@@ -291,7 +315,7 @@ Wrote logs/candidate_selection_log0.p with candidate
 This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path displayed here will differ and instead point to somewhere on your computer. 
 </p>
 
-<h5 class='my-2'>Understanding and visualizing gradient descent parameters</h5>
+<h5 id="gradient_descent" class='my-2'>Understanding and visualizing gradient descent parameters</h5>
 <p>
 The pickle file mentioned in the previous section contains a dictionary with the values of many of the parameters relevant to gradient descent. This dictionary is also retrievable via the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.get_cs_result">SA.get_cs_result()</a> method, e.g.,
 {% highlight python %}
@@ -375,7 +399,7 @@ Visualizing candidate selection can help you tune the optimization hyperparamete
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3> Running a Seldonian Experiment </h3>
+<h3 id="experiment"> Running a Seldonian Experiment </h3>
 
 <p>
 Seldonian Experiments are a way to thoroughly evaluate the performance and safety of Seldonian algorithms, beyond what can be achieved with a single run of the engine. A Seldonian Experiment runs a Seldonian algorithm many times using variable amounts of input data and creates three plots: 1) Performance, 2) Solution rate, and 3) Failure rate as a function of the amount of data used. The <a href="https://seldonian-toolkit.github.io/Experiments"> Seldonian Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
@@ -746,7 +770,7 @@ Some minor points of these plots are:
 </ul>
 </p>
 
-<h5 class='my-2'>Modifying the constraint to line up with Fairlearn's constraint</h5>
+<h5 id="modify_constraint" class='my-2'>Modifying the constraint to line up with Fairlearn's constraint</h5>
 <p>
 We mentioned that Fairlearn cannot exactly enforce the disparate impact constraint we defined: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) ) \geq 0.9$. This is because Fairlearn's <a href="https://fairlearn.org/v0.7.0/user_guide/mitigation.html#fairness-constraints-for-binary-classification">fairness constraints for binary classification</a> only compare statistics like positive rate between a single group (such as "male") in a protected class (such as gender) and the mean of all groups in that class. The Seldonian Engine is flexible in how its constraints can be defined, and we can tweak our disparate impact constraint definition to match the Fairlearn definition. To match the Fairlearn definition, our constraint must take the form: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR}), (\text{PR}) / (\text{PR} | [\text{M}]) ) \geq 0.9$, where the only thing we have changed from our original constraint is substituting $(\text{PR} | [\text{F}])$ (positive rate, given female) in our original constraint for $(\text{PR})$, the mean positive rate. 
 </p>
@@ -819,7 +843,7 @@ We also need to point to the new spec file we created for the new constraint. Ru
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Summary</h3>
+<h3 id="summary">Summary</h3>
 <p>
 In this tutorial, we demonstrated how to use the Seldonian Toolkit to build a predictive model that enforces a variety of fairness constraints on the German Credit dataset. We covered how to format the dataset and metadata so that they can be used by the Seldonian Engine. Using the engine, we ran a Seldonian algorithm and confirmed that we were able to find a safe solution. We then ran a serires of Seldonian Experiments to evaluate the true performance and safety of our quasi-Seldonian algorithm (QSA) using different fairness definitions.
 </p>

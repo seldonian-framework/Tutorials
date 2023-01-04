@@ -11,10 +11,23 @@ next_page_name: (D) Fair loans tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial C: Running the Seldonian Engine</h2>
     <hr class="my-4">
-    <h3>Introduction</h3>
+
+    <!-- Table of contents -->
+    <h3> Contents </h3>
+    <ul>
+        <li> <a href="#intro">Introduction</a> </li>
+        <li> <a href="#outline">Outline</a> </li>
+        <li> <a href="#example">An example Seldonian machine learning problem</a></li>
+        <li> <a href="#running_the_engine">Running the Seldonian Engine</a> </li>
+        <li> <a href="#extracting">Extracting important quantities</a> </li>
+        <li> <a href="#summary">Summary</a> </li>
+    </ul>
+    <hr class="my-4">
+
+    <h3 id="intro">Introduction</h3>
     <p>The Seldonian Engine library is one of the components of the Seldonian Toolkit. The engine is the core library that implements a basic Seldonian algorithm. The Experiments library is another component of the toolkit that runs many trials of a Seldonian algorithm. In doing so, it calls the engine many times. Because the Experiments library is dependent on the Engine library, but not vice versa, we present the Engine first in these tutorials. However, once you are more familiar with these libraries and Seldonian algorithms in general, you will find that the typical workflow involves first running Seldonian Experiments with the Experiments library. Once a Seldonian model is vetted with the Experiments library, then one can run the engine a single time to obtain a safe or fair model. The process can be thought of analogously to the development/deployment process. The Experiments library is used for development, and when it is time to deploy the model, the Engine library is used. </p>
 
-    <h3>Outline</h3>
+    <h3 id="outline">Outline</h3>
     <p>In this tutorial, you will learn how to:
     <ul>
         <li>Use the engine to set up a (quasi)-Seldonian machine learning algorithm (QSA).</li>
@@ -25,7 +38,7 @@ next_page_name: (D) Fair loans tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3> An example Seldonian machine learning problem </h3>
+    <h3 id="example"> An example Seldonian machine learning problem </h3>
     <p>
         Consider a simple supervised regression problem with two continuous random variables X and Y. Let the goal be to predict the label Y using the single feature X. One approach to this problem is to use gradient descent on a linear regression model with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
     </p>
@@ -62,7 +75,7 @@ next_page_name: (D) Fair loans tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Running the Seldonian Engine</h3>
+    <h3 id="running_the_engine">Running the Seldonian Engine</h3>
     <p>
         To code this example using the engine, we need to follow these steps.
     </p>
@@ -162,7 +175,7 @@ True [0.16911355 0.1738146 ]
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Extracting important quantities</h3>
+    <h3 id="extracting">Extracting important quantities</h3>
 <p> 
     There are a few quantities of interest that are not automatically returned by <code class="highlight">SA.run()</code>. One such quantity is the value of the primary objective function (the MSE) evaluated on the safety data for the model weights returned by the algorithm, $\hat{f}(\theta_{\text{cand}},D_{\text{safety}})$. Given that the solution passed the safety test, we know that $\hat{f}(\theta,D_{\text{safety}})$ will likely be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
 
@@ -203,7 +216,7 @@ More introspection to the <code class="highlight">SA</code> object is possible, 
 </p>
 </div> 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Summary</h3>
+    <h3 id="summary">Summary</h3>
     <p>In this tutorial, we demonstrated how to:</p>
     <ul>
         <li>Use the engine to set up a Seldonian machine learning algorithm.</li>

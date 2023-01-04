@@ -14,12 +14,32 @@ next_page_name: (I) Creating custom base variables in behavioral constraints
 
 <hr class="my-4">
 
-<h3>Introduction</h3>
+<h3> Contents </h3>
+    <ul>
+        <li> <a href="#intro">Introduction</a> </li>
+        <li> <a href="#outline">Outline</a> </li>
+        <li> <a href="#background">RL background</a> </li>
+        <li> <a href="#env_and_policy">Define the environment and policy</a> </li>
+            <ul>
+                <li><a href="#environment">Defining the environment</a></li>
+                <li><a href="#policy">Defining the policy</a></li>
+            </ul>
+        <li> <a href="#formulate">Formulate the Seldonian ML problem</a> </li>
+            <ul> <li> <a href="#supervised_to_rl">From supervised learning to reinforcement learning</a> </li>
+            </ul>
+        <li> <a href="#spec_object">Creating the specification object</a> </li>
+        <li> <a href="#running_the_engine">Running the Seldonian Engine</a> </li>
+        <li> <a href="#experiments">Running a Seldonian Experiment</a> </li>
+        <li> <a href="#summary">Summary</a> </li>
+    </ul>
+    <hr class="my-4">
+
+<h3 id="intro">Introduction</h3>
 <p>
 The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL) Seldonian algorithms. In the RL setting, the user must provide data (the observations, actions, and rewards from past episodes), a policy parameterization (similar to a <i>model</i> in the supervised learning regime), and the desired behavioral constraints. Seldonian algorithms that are implemented via the engine search for a new policy that simultaneously optimizes a primary objective function (e.g., expected discounted return) and satisfies the behavioral constraints with high confidence. This tutorial builds on the previous supervised learning tutorials, so we suggest familiarizing yourself with those, in particular the <a href="{{ "/tutorials/simple_engine_tutorial" | relative_url }}">Getting started with the Seldonian Engine tutorial</a>. Note that due to the choice of confidence-bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs).
 </p>
 
-<h3>Outline</h3>
+<h3 id="outline">Outline</h3>
 
 <p>In this tutorial, after reviewing RL notation and fundamentals, you will learn how to:</p>
 
@@ -63,12 +83,12 @@ The Seldonian Toolkit supports offline (batch) <i>reinforcement learning</i> (RL
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3 id="dataset_prep"> Define the environment and policy </h3>
+<h3 id="env_and_policy"> Define the environment and policy </h3>
 <p> 
 The first steps in setting up an RL Seldonian algorithm are to select an environment of interest and then to specify the policy parameterization the agent should use. That is, how does $\theta$ change the policy $\pi_\theta$? For example, when using a neural network, this corresponds to determining the network architecture and how the network's outputs specify the probability of each possible action.
 </p>
 
-<h5> Defining the environment </h5>
+<h5 id="environment"> Defining the environment </h5>
 <p>
 In this tutorial, we will consider a 3x3 gridworld environment as shown in the figure below.
 
@@ -80,7 +100,7 @@ In this tutorial, we will consider a 3x3 gridworld environment as shown in the f
 </div>
 </p>
 
-<h5> Defining the policy </h5>
+<h5 id="policy"> Defining the policy </h5>
 <p>
 The toolkit is compatible with a wide range of possible policy parameterizations, and even allows you to introduce your own environment-specific policy representation. For this example, we will use a tabular softmax policy. This policy stores one policy parameter (weight) for every possible observation-action pair. Let $\theta_{o,a}$ be the parameter for observation $o$ and action $a$. A tabular softmax policy can then be expressed as:
 $$ \begin{equation}
@@ -93,7 +113,7 @@ So, given the current observation $O_t$, the agent chooses an action by drawing 
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Formulate the Seldonian ML problem</h3>
+<h3 id="formulate">Formulate the Seldonian ML problem</h3>
 <p>
     Consider the offline RL problem of finding a policy for the 3x3 gridworld that has the largest expected return possible (primary objective) subject to the safety constraint that the expected return is at least $-0.25$ (this might be the performance of the current policy). In this tutorial, we simulate this process, generating many episodes of data using a behavior policy (current policy) and then feeding this data to our Seldonian algorithm with the tabular softmax policy parameterization. We include a behavioral constraint that requires the performance of the new policy to be at least $-0.25$ with probability at least $0.95$. In later tutorials, we show how safety constraints can be defined in terms of additional reward functions (as in constrained Markov decision processes [MDPs]).
 </p>
@@ -111,20 +131,20 @@ So, given the current observation $O_t$, the agent chooses an action by drawing 
     where $J\_{\text{pi_new}}$ is an RL-specific <a href="/Tutorials/glossary/#measure_function">measure function</a>, which means that the engine is programmed to interpret $J\_{\text{pi_new}}$ as the performance of the new policy. The performance of the new policy is calculated using per-decision importance sampling with data generated by the behavior policy. 
 </p>
 
-<h5> From supervised learning to reinforcement learning</h5>
+<h5 id="supervised_to_rl"> From supervised learning to reinforcement learning</h5>
 <p>
     From the toolkit's perspective, there are few differences between the supervised learning and reinforcement learning regimes. The algorithm overview remains unchanged: the Seldonian algorithm still has candidate selection and safety test modules. It still uses gradient descent using the KKT conditions (or black box optimization) to find the candidate solutions and uses statistical tools like Student's $t$-test to compute confidence intervals. Though there are some differences in the code (as shown in the example below), the core conceptual differences are:
     <ul>
         <li>The parameterized "model" is replaced with a parameterized "policy." However, this is mostly just a terminology change (both take an input and provide a distribution over possible outputs).</li>
         <li>Though both still use a parse tree to represent the behavioral constraints, in the RL regime the base variables (leaf nodes of the parse tree that are not constants) use <i>importance sampling</i> variants to estimate what would happen if a new policy were to be used. More precisely, they provide unbiased estimates of the expected discounted return of the new policy, and this expected discounted return can use additional rewards defined to capture the safety of the new policy. The importance sampling estimates correspond to the $\hat z$ functions described in the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url }}">Algorithm details tutorial</a>.</li>
         <li>The data consist of $m$ episodes in the RL regime as opposed to $m$ data points in the supervised learning regime. </li>
-        <li>In the Experiments library, the default way of generating ground truth data in the RL regime is to run additional episodes using a behavior policy. We will see this played out in the <a href="#Experiments">Running a Seldonian Experiment</a> section.</li>
+        <li>In the Experiments library, the default way of generating ground truth data in the RL regime is to run additional episodes using a behavior policy. We will see this played out in the <a href="#experiments">Running a Seldonian Experiment</a> section.</li>
     </ul>
 </p>
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Creating the specification object</h3>
+<h3 id="spec_object">Creating the specification object</h3>
 <p>
 Our goal is to create an <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.RLSpec.html?highlight=rlspec#seldonian.spec.RLSpec">RLSpec</a> object, which will consist of everything we will need to run a Seldonian algorithm using the engine. Creating this object involves defining the behavior dataset, policy parameterization, any environment-specific parameters, and the behavioral constraints. 
 </p>
@@ -227,7 +247,7 @@ will create a file called <code>spec.pkl</code> in whatever directory you ran th
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3> Running the Seldonian Engine </h3>
+<h3 id="running_the_engine"> Running the Seldonian Engine </h3>
 <p>
 Now that we have the spec file, running the Seldonian algorithm is simple. You may need to change the path to <code class='highlight'>specfile</code> if your spec file is saved in a location other than the current directory. We will also change some of the defaults of the optimization process; namely, we will set the number of iterations to $10$ and set the learning rates of $\theta$ and $\lambda$ to $0.01$.
 {% highlight python %}
@@ -277,7 +297,7 @@ As we can see, the solution returned by candidate selection passed the safety te
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3 id="Experiments"> Running a Seldonian Experiment </h3>
+<h3 id="experiments"> Running a Seldonian Experiment </h3>
 <p>
 Now that we have successfully run the Seldonian algorithm once with the engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policy. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
@@ -555,7 +575,7 @@ The performance of the obtained policy increases steadily with increasing number
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Summary</h3>
+<h3 id="summary">Summary</h3>
 <p>
 In this tutorial, we demonstrated how to run a quasi-Seldonian offline reinforcement learning algorithm with the Seldonian Toolkit. We defined the Seldonian machine learning problem in the context of a simple gridworld environment with a softmax policy parameterization. The behavioral constraint we set out to enforce was that the performance of the new policy must be at least as good as a uniform random policy. Running the algorithm using the Seldonian Engine, we found that the solution we obtained passed the safety test and was therefore deemed safe. To explore the behavior of the algorithm in more detail, we ran a Seldonian Experiment. We produced the three plots, performance, solution rate, and failure rate as a function of the number of episodes used to run the algorithm. We found the expected behavior of the algorithm: the performance of the obtained policy parameterization improved as more episodes were used. When small amounts of data were provided to the algorithm, the uncertainty in the safety constraint was large, preventing the algorithm from guaranteeing safety. With enough data, though, the algorithm returned a solution it guaranteed to be safe. Importantly, the algorithm never returned a solution it deemed to be safe that actually was not safe according to a ground truth dataset.
 </p>

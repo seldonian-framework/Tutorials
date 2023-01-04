@@ -11,7 +11,17 @@ next_page_name: (G) Creating your first Seldonian PyTorch model
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial F: Creating a new Seldonian supervised learning model </h2>
     <hr class="my-4">
-    <h3>Introduction</h3>
+
+    <!-- Table of contents -->
+    <h3> Contents </h3>
+    <ul>
+        <li> <a href="#intro">Introduction</a> </li>
+        <li> <a href="#log_model">Implementing a binary logistic model with the toolkit</a> </li>
+        <li> <a href="#summary">Summary</a> </li>
+    </ul>
+    <hr class="my-4">
+
+    <h3 id="intro">Introduction</h3>
     <p>
         This tutorial is intended to help you understand how to integrate a supervised machine learning model with the Seldonian Toolkit. As you may have noticed from the <a href="{{ "/overview/#algorithm" | relative_url}}">Overview</a> page, Seldonian algorithms are very general. They are, at least in principle, compatible with any machine learning model. The Seldonian Toolkit implements a particular Seldonian algorithm, and the current implementation of this algorithm is such that the machine learning model one adopts must meet these two requirements.
     </p>
@@ -33,7 +43,7 @@ next_page_name: (G) Creating your first Seldonian PyTorch model
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3> Implementing a binary logistic model with the toolkit </h3>
+<h3 id="log_model"> Implementing a binary logistic model with the toolkit </h3>
 
 <p>
     <a href="https://en.wikipedia.org/wiki/Logistic_regression#Model">Logistic regression</a> is used for classification, a sub-regime of supervised learning. It is binary in the sense that the two possible label classes are 0 and 1. You might wonder why we cannot simply use <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression">Scikit-learn's logistic regression model</a> in the toolkit. We could, but the reason why we do not will become apparent shortly.
@@ -106,7 +116,7 @@ SA.run(spec)
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">    
-<h3>Summary</h3>
+<h3 id="summary">Summary</h3>
 <p>In this tutorial, we demonstrated how to integrate a machine learning model with the Seldonian toolkit. We hope the example implementation of the logistic regression model will make it easier for you to implement your own safe and fair machine learning models.  </p>
 
 </div> 

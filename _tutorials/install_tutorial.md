@@ -11,18 +11,26 @@ next_page_name: (C) Simple Engine tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h2 align="center" class="mb-3">Tutorial B: Installing the Seldonian Toolkit libraries</h2>
 <hr class="my-4">
+<h3> Contents </h3>
+    <ul>
+        <li> <a href="#overview">Toolkit structure</a> </li>
+        <li><a href="#engine">Engine installation</a></li>
+        <li><a href="#experiments">Experiments installation</a></li>
+        <li><a href="#gui">GUI installation</a></li>
+    </ul>
+    <hr class="my-4">
 
-<h3> Installation </h3>
+<h3 id="overview"> Toolkit structure </h3>
 
 <p>
-The Seldonian Toolkit consists of two main libraries and a GUI. The two libraries are the Seldonian Engine library and the Seldonian Experiments library. While it is not necessary to do so, we recommend installing all three pieces of software in the same virtual environment. 
+The Seldonian Toolkit consists of two Python libraries and a GUI. The two libraries are the Seldonian Engine library and the Seldonian Experiments library. We recommend always installing the libraries in the same virtual environment. If using the GUI, install that in the same environment as well. 
 </p>
 
 <p>
     The toolkit is compatible and tested with Python versions 3.8, 3.9, and 3.10. <b>It is incompatible with Python versions lower than version 3.8</b>. We do not plan to support Python versions lower than 3.8, but we do plan to add support for Python version 3.11 soon. 
 </p>
 
-<h5> Engine installation </h5>  
+<h3 id="engine"> Engine installation </h3>  
 
 <p> 
     The Seldonian Engine library can be installed with a single line:
@@ -35,7 +43,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
 </p>
 
 <p>
-    This will make the "seldonian" package available for you to import in Python. To test that it worked, run this command from the command line:
+    This will make the <code class="highlight">seldonian</code> package available for you to import in Python. To test that it worked, run this command from the command line:
 </p>
 
 <p> <code>
@@ -78,7 +86,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
     on Windows systems. The "gcm" command may work instead of "where" in Powershell.
 </p>
 
-<h5> Experiments installation </h5>  
+<h3 id="experiments"> Experiments installation </h3>  
 
 <p> 
     The Seldonian Experiments library can be installed with a single line:
@@ -135,7 +143,7 @@ The Seldonian Toolkit consists of two main libraries and a GUI. The two librarie
     on Windows systems. The "gcm" command may work instead of "where" in Powershell.
 </p> 
 
-<h5> GUI installation </h5>  
+<h3 id="gui"> GUI installation </h3>  
 
 <p> 
     First, clone the GUI repo:

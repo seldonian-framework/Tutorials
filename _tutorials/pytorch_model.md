@@ -9,7 +9,10 @@ prev_page_name: (G) Reinforcement learning first tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial H: PyTorch Deep learning with the toolkit (with GPU acceleration) </h2>
     <hr class="my-4">
-    <h3>Introduction</h3>
+
+    
+
+    <h3 id="intro">Introduction</h3>
     <p>
         Deep learning is a cornerstone of modern machine learning. It is being used in nearly every industry, and it is increasingly affecting our lives. Due to the complexity of some deep learning models (e.g., <a href="https://deepai.org/machine-learning-glossary-and-terms/hidden-layer-machine-learning">hidden layers</a>), they can be opaque to the people applying them. This makes it especially important to be able to put constraints on their behavior. 
     </p>

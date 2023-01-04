@@ -11,7 +11,22 @@ next_page_name: (B) Install Toolkit tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial A: Seldonian algorithm details</h2>
     <hr class="my-4" />
-    <h3>Outline</h3>
+    <h3> Contents </h3>
+    <ul>
+        <li> <a href="#outline">Outline</a> </li>
+        <li> <a href="#overview">Seldonian algorithm overview</a> </li>
+        <li> <a href="#safety_test">Safety test</a> </li>
+            <ul>
+                <li><a href="#t_test">Student's $t$-test</a></li>
+            </ul>
+        <li> <a href="#candidate_selection">Candidate selection</a> </li>
+            <ul> <li> <a href="#kkt">Optimization using the KKT conditions
+</a> </li>
+            </ul>
+        <li> <a href="#parse_tree">Parse tree</a> </li>
+    </ul>
+    <hr class="my-4">
+    <h3 id="outline">Outline</h3>
     <p>In this tutorial, you will learn:</p>
     <ul>
         <li>How the toolkit breaks a Seldonian algorithm into <a class='glossary-term' href="{{ "/glossary/#candidate_selection" | relative_url}}">candidate selection</a> and <a class='glossary-term' href="{{ "/glossary/#safety_test" | relative_url}}">safety test</a> components</li>
@@ -51,7 +66,7 @@ next_page_name: (B) Install Toolkit tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h3>Safety test</h3>
+    <h3 id="safety_test">Safety test</h3>
     <p>
             For simplicity, we begin by considering a simplified setting that limits the set of possible definitions of \(g_i\). Later in the "parse tree" section, we show how this simplified setting can be extended to allow for more complicated definitions of \(g_i\). For now, we assume:
     </p>
@@ -70,7 +85,7 @@ next_page_name: (B) Install Toolkit tutorial
         In order to convert this English description of the <code class='glossary-term'>safety test</code> into a precise mathematical statement, we first review Student's \(t\)-test. 
     </p>
     <div class="container inset-box border border-dark border-2 p-3 my-2">
-        <h2>Student's \(t\)-test</h2>
+        <h2 id="t_test">Student's \(t\)-test</h2>
         <p>
             Let \(Z_1,\dotsc,Z_m\) be \(m\) i.i.d. random variables and let \(\bar Z = \frac{1}{m}\sum_{i=1}^m Z_i\). If \(\bar Z\) is normally distributed, then for any \(\delta \in (0,1)\):
             $$\Pr\left (\mathbf{E}[Z_1] \leq \bar Z + \frac{\hat \sigma}{\sqrt{m}}t_{1-\delta,m-1}\right ) \geq 1-\delta,$$
@@ -106,7 +121,7 @@ next_page_name: (B) Install Toolkit tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3 id="candidate_selection">Candidate selection</h3>
     <p>
-        As discussed at the end of the previous section, any off-the-shelf machine learning algorithm could be used for the <code class='glossary-term'>candidate selection</code> component. Currently the toolkit only supports <i>parametric</i> machine learning models (future versions may support non parametric models such as random forests and support vector machines). Most off-the-shelf models will tend to be ineffective, however. There are two issues. First, standard machine learning algorithms may not consider safety at all, and if they frequently return unsafe solutions, the subsequent <code class='glossary-term'>safety test</code> will frequently return NSF. Second, even when standard machine learning algorithms do consider safety, they do not account for the details of the <code class='glossary-term'>safety test</code> that will be run. A more sophisticated <code class='glossary-term'>candidate selection</code> mechanism should consider the exact form of the subsequent <code class='glossary-term'>safety test</code>, and it should return candidate solutions that are likely to pass the <code class='glossary-term'>safety test</code>.
+        As discussed at the end of the previous section, any off-the-shelf machine learning algorithm could be used for the <code class='glossary-term'>candidate selection</code> component. Currently the toolkit only supports <i>parametric</i> machine learning models (future versions may support non parametric models such as decision trees/random forests and support vector machines). Most off-the-shelf models will tend to be ineffective, however. There are two issues. First, standard machine learning algorithms may not consider safety at all, and if they frequently return unsafe solutions, the subsequent <code class='glossary-term'>safety test</code> will frequently return NSF. Second, even when standard machine learning algorithms do consider safety, they do not account for the details of the <code class='glossary-term'>safety test</code> that will be run. A more sophisticated <code class='glossary-term'>candidate selection</code> mechanism should consider the exact form of the subsequent <code class='glossary-term'>safety test</code>, and it should return candidate solutions that are likely to pass the <code class='glossary-term'>safety test</code>.
     </p>
     <p>
         In this toolkit, we provide a <code class='glossary-term'>candidate selection</code> mechanism that searches for the candidate solution \(\theta_c\) that optimizes a typical primary objective function (e.g., minimize classification loss or maximize off-policy estimates of the expected return in the reinforcement learning setting) subject to the constraint that <code class='glossary-term'>candidate selection</code> <i>predicts</i> that the solution will pass the subsequent <code class='glossary-term'>safety test</code>. <code class='glossary-term'>Candidate selection</code> cannot actually compute whether or not the <code class='glossary-term'>safety test</code> will be passed because it does not have access to \(D_\text{safety}\). Using \(\hat f(\theta,D_\text{cand})\) to denote a primary objective function that should be maximized, we can then write an expression for the candidate solution:
@@ -129,8 +144,8 @@ next_page_name: (B) Install Toolkit tutorial
     <p>
         The gradient-based optimizer uses gradient descent with adaptive step-size schedules (<a href="https://arxiv.org/pdf/1412.6980.pdf">Adam</a> by default). However, notice that we cannot directly use gradient ascent (or descent), because the problem is constrained. This can be overcome using the <a href="https://en.wikipedia.org/wiki/Karush%E2%80%93Kuhn%E2%80%93Tucker_conditions">KKT conditions</a> (a generalization of <a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange multipliers</a>). We describe our approach below.
     </p>
-    <div id="kkt" class="container inset-box border border-dark border-2 p-3 my-2">
-        <h2>Optimization using the KKT conditions</h2>
+    <div class="container inset-box border border-dark border-2 p-3 my-2">
+        <h2 id="kkt">Optimization using the KKT conditions</h2>
         <p>
             The KKT theorem states that solutions to the constrained optimization problem:
 

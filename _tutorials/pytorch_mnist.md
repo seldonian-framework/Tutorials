@@ -12,7 +12,19 @@ next_page_name: (H) Reinforcement learning first tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial G: Creating your first Seldonian PyTorch model </h2>
     <hr class="my-4">
-    <h3>Introduction</h3>
+    <h3> Contents </h3>
+    <ul>
+        <li> <a href="#intro">Introduction</a> </li>
+        <li> <a href="#cnn">Implementing a convolutional neural network with PyTorch</a> </li>
+        <li> <a href="#mnist">MNIST with a safety constraint</a> </li>
+            <ul>
+                <li><a href="#formulate">Formulate the Seldonian ML problem</a></li>
+                <li><a href="#running_the_algorithm">Running the Seldonian algorithm</a></li>
+            </ul>
+        <li> <a href="#summary">Summary</a> </li>
+    </ul>
+    <hr class="my-4">
+    <h3 id="intro">Introduction</h3>
     <p>
         Deep learning is a cornerstone of modern machine learning. It is being used in nearly every industry, and it is increasingly affecting our lives. Due to the complexity of some deep learning models (e.g., <a href="https://deepai.org/machine-learning-glossary-and-terms/hidden-layer-machine-learning">hidden layers</a>), they can be opaque to the people applying them. This makes it especially important to be able to put constraints on their behavior. 
     </p>
@@ -32,7 +44,7 @@ next_page_name: (H) Reinforcement learning first tutorial
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3> Implementing a convolutional neural network with PyTorch </h3>
+<h3 id="cnn"> Implementing a convolutional neural network with PyTorch </h3>
 
 <p>
     In this section, we will build a CNN in PyTorch that is compatible with the Seldonian Toolkit. First, make sure you have the latest version of the engine installed. </p>    
@@ -133,12 +145,12 @@ class PytorchCNN(SupervisedPytorchBaseModel):
 </div>   
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">  
-<h3> MNIST with a safety constraint </h3>
+<h3 id="mnist"> MNIST with a safety constraint </h3>
 
 <p> The Modified National Institute of Standards and Technology <a href="https://en.wikipedia.org/wiki/MNIST_database">(MNIST)</a> database is a commonly used dataset in machine learning research. It contains 60,000 training images and 10,000 testing images of the handwritten digits 0-9. Yes, there are models that are superior to the simple CNN we built in terms of accuracy (equivalently, error rate), but objective in this tutorial is to show how to create a Seldonian version of a PyTorch deep learning model, not to achieve maximum accuracy. 
 </p>
 
-<h5>Formulate the Seldonian ML problem</h5>
+<h5 id="formulate">Formulate the Seldonian ML problem</h5>
 <p>We first need to define the standard machine learning problem in the absence of constraints. We have a multiclass classification problem with 10 output classes. We could train the two-hidden-layer convolutional neural network we defined in the previous section to minimize some cost function. Specifically, we could use gradient descent to minimize the cross entropy (also called logistic loss for multiclass classification problems).  </p>
 
 <p>
@@ -153,7 +165,7 @@ class PytorchCNN(SupervisedPytorchBaseModel):
     Note that if this safety constraint is fulfilled, we can have high confidence ([$1-\delta$]-confidence) that the accuracy of the model, when applied to unseen data, is at least 0.95. This is <i>not</i> a property of even the most sophisticated models that can achieve accuracies of $\gt0.999$ on MNIST. 
 </p>
 
-<h5>Running the Seldonian algorithm</h5>
+<h5 id="running_the_algorithm">Running the Seldonian algorithm</h5>
 <p>
     If you are reading this tutorial, chances are you have already used the engine to run Seldonian algorithms. If not, please review the <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url}}">Fair loans tutorial</a>. We need to create a <code class="highlight">SupervisedSpec</code> object, consisting of everything we will need to run the Seldonian algorithm. We will write a script that does this and then runs the algorithm. First, let's define the imports that we will need. The <code class="highlight">PytorchCNN</code> model that we defined above is already part of the library, living in a module called <code>seldonian.models.pytorch_cnn</code>, so we can import the model from that module. 
 </p>
@@ -477,7 +489,7 @@ plot_gradient_descent(sol_dict,'cross entropy')
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Summary</h3>
+<h3 id="summary">Summary</h3>
 <p>In this tutorial, we demonstrated how to implement a deep learning model using Pytorch and integrate it with the Seldonian toolkit. We created a convolutional neural network and enforced a simple safety constraint on it. The safety constraint was simple only for the purposes of creating a simple example. The constraints that one can apply to this PyTorch model are no more restricted than to any other supervised learning model. We hope by providing an example implementation of a convolutional neural network, it will be easier for you to implement your own safe and fair PyTorch models.  </p>
 
 </div> 

@@ -14,11 +14,27 @@ next_page_name: (F) Creating a new Seldonian supervised learning model
 
 <hr class="my-4">
 
-<h3>Introduction</h3>
+<!-- Table of contents -->
+<h3> Contents </h3>
+<ul>
+    <li> <a href="#intro">Introduction</a> </li>
+        <ul>
+            <li><a href="#caveats">Caveats</a></li>
+        </ul>
+    <li> <a href="#outline">Outline</a> </li>
+    <li> <a href="#dataset_prep">Dataset preparation</a></li>
+    <li> <a href="#formulate">Formulate the Seldonian ML problem</a> </li>
+    <li> <a href="#spec_object">Creating the specification object</a> </li>
+    <li> <a href="#experiment">Running a Seldonian Experiment</a> </li>
+    <li> <a href="#summary">Summary</a> </li>
+</ul>
+<hr class="my-4">
+
+<h3 id="intro">Introduction</h3>
 <p>
 One of the examples presented by <a href="https://www.science.org/stoken/author-tokens/ST-119/full">Thomas et al. (2019)</a> explores enforcing five popular definitions of fairness on a classification problem. The classification problem involves predicting whether students have higher ($\geq3.0$) or lower ($<3.0$) grade point averages (GPAs) based on their scores on nine entrance examinations. Thomas et al. used custom code that predates the Seldonian Toolkit to run their Seldonian algorithms. In this tutorial, we will demonstrate how to use the Seldonian Toolkit to apply the same fairness definitions to the same dataset. Specifically, we will run Seldonian Experiments, recreating the plots in Figure 3 of their paper.  
 </p>
-<h5>Caveats</h5>
+<h5 id="caveats">Caveats</h5>
 <p> 
 <ul>
 <li> The Seldonian Toolkit currently only supports quasi-Seldonian algorithms, so we will not recreate the curves labeled "Seldonian classification" by Thomas et al. (2019) in their Figure 3.</li>
@@ -29,7 +45,7 @@ One of the examples presented by <a href="https://www.science.org/stoken/author-
 For all of these reasons, we seek to reproduce the general trends found by Thomas et al. (2019) rather than the identical results. 
 </p>
 
-<h3>Outline</h3>
+<h3 id="outline">Outline</h3>
 
 <p>In this tutorial, you will learn how to:</p>
 
@@ -51,7 +67,7 @@ For all of these reasons, we seek to reproduce the general trends found by Thoma
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Formulate the Seldonian ML problem</h3>
+<h3 id="formulate">Formulate the Seldonian ML problem</h3>
 
 Thomas et al. (2019) considered five different definitions of fairness to apply to the problem of predicting whether students would have high or low GPAs based on nine entrance examination scores. The five definitions, and their constraint strings are:
 <ol>
@@ -67,7 +83,7 @@ They applied each of these constraints independently, each with $\delta=0.05$.
 </div>  
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Creating the specification object</h3>
+<h3 id="spec_object">Creating the specification object</h3>
 <p>
 We need to create a different spec object for each constraint because we will be running five different experiments. However, every other input to the spec object is the same, so we can make five spec objects using a for loop. In the script below, set <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to where you saved the data and metadata files from above. <code class='highlight'>save_base_dir</code> is the parent directory to where five directories will be created, one holding each spec object. Change it to somewhere convenient on your machine. 
 </p>
@@ -143,7 +159,7 @@ Running this code should print out that the five spec files have been created.
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3> Running a Seldonian Experiment </h3>
+<h3 id="experiment"> Running a Seldonian Experiment </h3>
 <p>
 To produce the three plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) in the constraint in order to match Thomas et al. (2019). As a sanity check, we also included a random classifier baseline model in our experiment. The performance metric is accuracy. Here is the code we used to produce the plot for disparate impact: 
 </p>
@@ -303,7 +319,7 @@ The largest differences between our experiments and those done by Thomas et al. 
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-<h3>Summary</h3>
+<h3 id="summary">Summary</h3>
 <p>
 In this tutorial, we demonstrated how to use the Seldonian Toolkit to recreate the analysis performed by Thomas et al. (2019) using the GPA classification dataset. In particular, we sought to recreate their Figure 3. We showed how to format the dataset so that it can be used in the Seldonian Toolkit. Using the same five fairness constraints that Thomas et al. (2019) considered, we ran a Seldonian Experiment for each constraint. We produced the three plots: accuracy, solution rate, and failure rate, finding similar overall trends as Thomas et al. The quasi-Seldonian algorithms we ran slightly outperformed those run by Thomas et al. (2019), but in general were very similar. The main differences we found were in the Fairlearn models. The differences we observed are easily explained by updates to the Fairlearn API that took place since 2019. Due to compatibility issues, we were unable to use the same Fairlearn API version as Thomas et al. with the newer Python versions required by the Seldonian Toolkit.  
 </p>
