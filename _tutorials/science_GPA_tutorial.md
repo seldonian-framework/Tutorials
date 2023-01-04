@@ -55,7 +55,7 @@ For all of these reasons, we seek to reproduce the general trends found by Thoma
 
 Thomas et al. (2019) considered five different definitions of fairness to apply to the problem of predicting whether students would have high or low GPAs based on nine entrance examination scores. The five definitions, and their constraint strings are:
 <ol>
-<li>Disparate impact: 'min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) <= 0.8'</li>
+<li>Disparate impact: 'min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.8'</li>
 <li>Demographic parity: 'abs((PR | [M]) - (PR | [F])) <= 0.2'</li>
 <li>Equalized odds: 'abs((FNR | [M]) - (FNR | [F])) + abs((FPR | [M]) - (FPR | [F])) <= 0.35'</li>
 <li>Equal opportunity: 'abs((FNR | [M]) - (FNR | [F])) <= 0.2'</li>
