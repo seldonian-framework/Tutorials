@@ -23,6 +23,7 @@ next_page_name: (D) Fair loans tutorial
     Note that due to the choice of confidence-bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs). See <a href="{{ "/overview/#algorithm" | relative_url}}">the overview</a> for more details.
     </p>
 </div>
+
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3> An example Seldonian machine learning problem </h3>
     <p>
@@ -58,6 +59,10 @@ next_page_name: (D) Fair loans tutorial
     <p>
         Next, notice that here the MSE is <i>not</i> just the average squared error on the available training data. These constraints are much stronger: they are constraints on the MSE when the learned model is applied to <i>new data</i>. This is important because we don't just want machine learning models that appear to be safe or fair on the training data. We want machine learning models that are safe or fair when used to made decisions or predictions in the future.
     </p>
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
+    <h3>Running the Seldonian Engine</h3>
     <p>
         To code this example using the engine, we need to follow these steps.
     </p>
@@ -123,7 +128,7 @@ if __name__ == "__main__":
 {% endhighlight %}
 </div>
 <p>
-If you copy the above code into a file called "example.py", run the example from the command line (once inside a virtual environment where you have pip-installed the engine) by doing:
+If you copy the above code into a file called "example.py", run the example from the command line (once inside a virtual environment where you have installed the Engine library) by doing:
 </p>
 
 <p>
@@ -146,40 +151,55 @@ Passed safety test
 True [0.16911355 0.1738146 ]
 {% endhighlight %}
     </p>
+    
     <p>
-    The output shows some of the default values that were hidden in the script. For example, we are running gradient descent in "batch" mode, i.e., putting all of our candidate data (400 data points) in at once and running for 200 epochs. These settings can be changed, but we won't cover that in this tutorial. Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that cause the safety test to be passed. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+    The output shows some of the default values that were hidden in the script. For example, we are running gradient descent in "batch" mode, i.e., putting all of our candidate data (400 data points) in at once and running for 200 epochs. These settings can be changed, but we won't cover that in this tutorial.
+    </p>
+    
+    <p>
+    Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that resulted in the safety test passing. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
 </p>
-<p> Also notice that <code class="highlight">SA.run()</code> does not return what the value of the primary objective actually was on the safety test. Given that it passed the safety test, we know that it should be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
+</div>
+
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
+    <h3>Extracting important quantities</h3>
+<p> 
+    There are a few quantities of interest that are not automatically returned by <code class="highlight">SA.run()</code>. One such quantity is the value of the primary objective function (the MSE) evaluated on the safety data for the model weights returned by the algorithm, $\hat{f}(\theta_{\text{cand}},D_{\text{safety}})$. Given that the solution passed the safety test, we know that $\hat{f}(\theta,D_{\text{safety}})$ will likely be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
 
 {% highlight python %}
-# Check the value of the primary objective on the safety dataset
-st_primary_objective = SA.evaluate_primary_objective(theta=solution,
-branch='safety_test')
+st_primary_objective = SA.evaluate_primary_objective(
+    theta=solution,
+    branch='safety_test')
 print(st_primary_objective)
 {% endhighlight %}
 
-This should print a value around $1.61$, which satisfies the behavioral constraints. 
+This should print a value around $1.61$, which satisfies the behavioral constraints. We can use the same method to check the value of the primary objective function evaluated on the candidate data at this solution:
+</p>
+{% highlight python %}
+cs_primary_objective = SA.evaluate_primary_objective(
+    theta=solution,
+    branch='candidate_selection')
+print(cs_primary_objective)
+{% endhighlight %}
+<p> 
+    This should print a value of around $1.56$. While we know in this case that the safety test passed, i.e., the high-confidence upper bounds on the constraints were less than or equal to zero, we might be interested in what the actual values of those upper bounds were during the safety test. We can use the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.get_st_upper_bounds">SA.get_st_upper_bounds()</a> method for this.
+</p>
+{% highlight python %}
+>> print(SA.get_st_upper_bounds())
+{'1.25-(Mean_Squared_Error)': -0.2448558988476761, 'Mean_Squared_Error-(2.0)': -0.2710930638194431}
+{% endhighlight python %}
+
+<p>
+This returns a dictionary where the keys are the constraint strings and the values are the upper bounds. The values you see should be close to the values above, but may differ slightly. Here are some things to note about this dictionary:
+<ul>
+    <li>Both upper bounds are less than or equal to zero, as expected. </li>
+    <li>The keys of this dictionary show the constraint strings in a slightly different form than how we originally defined them. They are written in the form: $g_i \leq 0$, where $g_i$ here represents the $i$th constraint function. For example, $1.25-(\text{Mean_Squared_Error})\leq0$ is mathematically equivalent to $\text{Mean_Squared_Error} \geq 1.25$, the form we used to specify our second constraint at the beginning of the tutorial. This rearrangement is done for consistency in interpreting the upper bounds.</li>
+    <li>Because this information is returned in a dictionary, the order of the constraints is not guaranteed to be the same as the order in which we specified our constraints originally.</li>
+</ul>
 </p>
 
 <p>
-We might also wonder what the values of the primary objective and the behavioral constraint function were during the candidate selection process. All of this information and more is stored in a dictionary that is retrievable via the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.get_cs_result">SA.get_cs_result()</a> method:
-{% highlight python %}
-cs_dict = SA.get_cs_result() # returns a dictionary with a lot of quantities evaluated at each step of gradient descent
-print(cs_dict.keys())
-{% endhighlight %}
-This will print all of the keys of this dictionary:
-{% highlight python %}
-['candidate_solution', 'best_index', 'best_g', 'best_f', 'found_feasible_solution', 'theta_vals', 'f_vals', 'g_vals', 'lamb_vals', 'L_vals']
-{% endhighlight %}
-So, to get the primary objective values, we would do:
-{% highlight python %}
-print(cs_dict['f_vals'])
-{% endhighlight %}
-and to get the values of the constraint functions, $g_1$ and $g_2$, we would do:
-{% highlight python %}
-print(cs_dict['g_vals'])
-{% endhighlight %}
-Even if candidate selection returns "NSF", the <code class="highlight">cs_dict</code> stores these values.
+More introspection to the <code class="highlight">SA</code> object is possible, but it is beyond the scope of this tutorial. 
 </p>
 </div> 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
@@ -187,7 +207,8 @@ Even if candidate selection returns "NSF", the <code class="highlight">cs_dict</
     <p>In this tutorial, we demonstrated how to:</p>
     <ul>
         <li>Use the engine to set up a Seldonian machine learning algorithm.</li>
-        <li>Run the algorithm using the engine and understand its outputs.</li>
+        <li>Run the algorithm using the engine.</li>
+        <li> Extract and understand important quantities generated by the algorithm.</li>
     </ul>
 <p>
 </p>

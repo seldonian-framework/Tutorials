@@ -289,10 +289,55 @@ First, the output indicates that we have 1500 epochs and 1 batch, consistent wit
 Wrote logs/candidate_selection_log0.p with candidate 
 {% endhighlight python %}
 This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path displayed here will differ and instead point to somewhere on your computer. 
+</p>
 
-<h5 class='my-2'>Visualizing gradient descent parameters</h5>
+<h5 class='my-2'>Understanding and visualizing gradient descent parameters</h5>
+<p>
+The pickle file mentioned in the previous section contains a dictionary with the values of many of the parameters relevant to gradient descent. This dictionary is also retrievable via the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.get_cs_result">SA.get_cs_result()</a> method, e.g.,
+{% highlight python %}
+cs_dict = SA.get_cs_result() # returns a dictionary with a lot of quantities evaluated at each step of gradient descent
+{% endhighlight %}
+This will print all of the keys of this dictionary:
+{% highlight python %}
+>> print(list(cs_dict.keys()))
+['candidate_solution', 'best_index', 'best_f', 'best_g', 'best_lamb', 'best_L', 'found_feasible_solution', 'theta_vals', 'f_vals', 'lamb_vals', 'g_vals', 'L_vals', 'constraint_strs', 'batch_size', 'n_epochs']
+{% endhighlight %}
+Here we explain what each of these keys represents:
+<ul>
+    <li><code class="highlight">candidate_solution</code> contains the optimal weight vector found during candidate selection. </li>
+    <li><code class="highlight">best_index</code> is the iteration of gradient descent where the optimum was found. </li>
+    <li><code class="highlight">best_f</code> is the value of the primary objective function at the optimal gradient descent step, <code class="highlight">best_index</code>. </li>
+    <li><code class="highlight">best_g</code> is a vector containing the values of the upper bounds on the constraint functions at the optimal gradient descent step, <code class="highlight">best_index</code>. </li>
+    <li><code class="highlight">best_lamb</code> is a vector containing the values of the Lagrange multipliers at the optimal gradient descent step, <code class="highlight">best_index</code>.</li>
+    <li><code class="highlight">best_L</code> is the value of the Lagrangian at the optimal gradient descent step, <code class="highlight">best_index</code>.</li>
+    <li><code class="highlight">found_feasible_solution</code> is a Boolean indicating whether a solution was found that is predicted to pass the safety test. </li>
+    <li><code class="highlight">theta_vals</code> is an array containing the model weights $\theta_j$ at each $j$th iteration of gradient descent. </li>
+    <li><code class="highlight">f_vals</code> is an array containing the value of the primary objective function $f_j$ at each $j$th iteration of gradient descent. </li>
+    <li><code class="highlight">lamb_vals</code> is an array containing the vector of each $i$th Lagrange multiplier $\lambda_{i,j}$ at each $j$th iteration of gradient descent. </li>
+    <li><code class="highlight">g_vals</code> is an array containing the vector of each $i$th constraint function upper bound $\text{HCUB}(g_{i,j})$ at each $j$th iteration of gradient descent. </li>
+    <li><code class="highlight">L_vals</code> is an array containing the values of the Lagrangian $L_{j}$ at each $j$th iteration of gradient descent. </li>
+    <li><code class="highlight">constraint_strs</code> is a list of the constraint strings. </li>
+    <li><code class="highlight">batch_size</code> is the batch size used in gradient descent. </li>
+    <li><code class="highlight">n_epochs</code> is the number of epochs used in gradient descent. </li>
+</ul>  
 
-As part of the engine library, we provide a plotting function that is designed to help visualize the contents of this file. The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
+So, to get the primary objective values at each iteration of gradient descent, one would do:
+
+{% highlight python %}
+print(cs_dict['f_vals'])
+{% endhighlight %}
+
+Similarly, to get the values of the upper bounds on the constraint functions, $\text{HCUB}(g_1)$ and $\text{HCUB}(g_2)$, at each iteration of gradient descent, one would do:
+
+{% highlight python %}
+print(cs_dict['g_vals'])
+{% endhighlight %}
+
+If candidate selection returns "NSF", the <code class="highlight">cs_dict</code> will still store these values. Note that this particular <code class="highlight">cs_dict</code> is unique to gradient descent. Other optimization techniques will return different structures of the <code class="highlight">cs_dict</code>.
+</p>
+
+<p>
+As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this dictionary (for gradient descent only). The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
 </p>
 <div>
 
@@ -316,16 +361,16 @@ if __name__ == '__main__':
 
 </div>
 
-Running this script will generate a figure like this:
+Running this script will generate a figure like below, with one row per constraint.
 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/loan_cs.png" | relative_url}}" class="img-fluid mt-4" style="width: 75%"  alt="Candidate selection"> 
-        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the Lagrangian optimization problem changed during gradient descent on the loan fairness problem. The panels show the values of the (left) primary objective function $\hat{f}(\theta,D_\mathrm{cand})$ (in this case the log loss), (middle left) single Lagrange multiplier, ${\lambda_1}$, (middle right) predicted high-confidence upper bound (HCUB) on the disparate impact constraint function, $\hat{g}_1(\theta,D_\mathrm{cand})$, and (right) the Lagrangian $\mathcal{L}(\theta,\lambda)$. The black dotted lines in each panel indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(\hat{g}_i(\theta,D_\mathrm{cand})) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint, so $i \in \{1\}$, and the infeasible region is shown in red in the middle right plot. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - How the parameters of the <a href="{{ "/tutorials/alg_details_tutorial/#kkt" | relative_url}}">KKT optimization problem</a> changed during gradient descent on the loan fairness problem. (Left) primary objective function $\hat{f}(\theta,D_\mathrm{minibatch})$ (in this case the log loss), (middle left) single Lagrange multiplier, ${\lambda_1}$, (middle right) predicted high-confidence upper bound (HCUB) on the disparate impact constraint function, $\hat{g}_1(\theta,D_\mathrm{minibatch})$, and (right) the Lagrangian $\mathcal{L}(\theta,\boldsymbol{\lambda})$. $\boldsymbol{\lambda}$ is in bold here because it is a vector in the general case where there are $n$ constraints. The black dotted lines in each panel indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(\hat{g}_i(\theta,D_\mathrm{cand})) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint, and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
 <p>
-Visualizing candidate selection can help you tune your optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent (with the Adam optimizer) for more iterations or with different learning rates or velocity values (the beta terms in Adam). If you are still seeing NSF after hyperparameter exploration, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
+Visualizing candidate selection can help you tune the optimization hyperparameters in your spec object. For example, if $\theta$ is never escaping the infeasible region and your Seldonian algorithm is returning NSF (i.e., "No Solution Found"), then you may be able to obtain a solution by running gradient descent (with the Adam optimizer) for more iterations or with different learning rates or velocity values (the beta terms in Adam). If you are still seeing NSF after hyperparameter exploration, you may not have enough data or your constraints may be too strict. Running a Seldonian Experiment can help determine why you are not able to obtain a solution.
 </p>
 </div>
 
