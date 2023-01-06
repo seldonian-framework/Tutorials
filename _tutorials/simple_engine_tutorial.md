@@ -10,7 +10,9 @@ next_page_name: (D) Fair loans tutorial
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Tutorial C: Running the Seldonian Engine</h2>
+    <a href="https://colab.research.google.com/gist/austinhoag/b417a7d6bfd3ffc4b99c0ab0b36c11c6/tutorial-c-running-the-seldonian-engine.ipynb" target="blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
     <hr class="my-4">
+
 
     <!-- Table of contents -->
     <h3> Contents </h3>
