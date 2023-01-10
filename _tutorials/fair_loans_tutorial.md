@@ -11,7 +11,7 @@ next_page_name: (E) Science paper GPA tutorial
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
 <h2 align="center" class="mb-3">Tutorial D: Fairness for Automated Loan Approval Systems</h2>
-
+<a href="https://colab.research.google.com/github/seldonian-toolkit/Tutorials/blob/main/tutorial_d_fairness_for_automated_loan_approval_systems.ipynb" target="blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 <hr class="my-4">
 
 <!-- Table of contents -->
@@ -28,7 +28,7 @@ next_page_name: (E) Science paper GPA tutorial
         </ul>
     <li> <a href="#running_the_engine">Running the Seldonian Engine</a> </li>
     <ul>
-            <li> <a href="#gradient_descent">Understanding and visualizing gradient descent parameters</a> </li>
+            <li> <a href="#gradient_descent">Understanding and visualizing gradient descent</a> </li>
         </ul>
     <li> <a href="#experiment">Running a Seldonian Experiment</a> </li>
         <ul>
@@ -315,7 +315,7 @@ Wrote logs/candidate_selection_log0.p with candidate
 This is a pickle file containing the values of various parameters during each step of the gradient descent algorithm that was run during candidate selection. The path displayed here will differ and instead point to somewhere on your computer. 
 </p>
 
-<h5 id="gradient_descent" class='my-2'>Understanding and visualizing gradient descent parameters</h5>
+<h5 id="gradient_descent" class='my-2'>Understanding and visualizing gradient descent</h5>
 <p>
 The pickle file mentioned in the previous section contains a dictionary with the values of many of the parameters relevant to gradient descent. This dictionary is also retrievable via the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.get_cs_result">SA.get_cs_result()</a> method, e.g.,
 {% highlight python %}
@@ -351,7 +351,7 @@ So, to get the primary objective values at each iteration of gradient descent, o
 print(cs_dict['f_vals'])
 {% endhighlight %}
 
-Similarly, to get the values of the upper bounds on the constraint functions, $\text{HCUB}(g_1)$ and $\text{HCUB}(g_2)$, at each iteration of gradient descent, one would do:
+Similarly, to get the value of the upper bound on the constraint function, $\text{HCUB}(g_1)$, at each iteration of gradient descent, one would do:
 
 {% highlight python %}
 print(cs_dict['g_vals'])
@@ -835,7 +835,7 @@ fairlearn_epsilons_constraint = [0.01,0.1,0.2,1.0] # the epsilons used in the fi
 We also need to point to the new spec file we created for the new constraint. Running the experiment for this constraint, we obtain the following figure: 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/equalized_odds_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact log loss"> 
+        <img src="{{ "/assets/img/equalized_odds_log_loss.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Equalized odds log loss"> 
         <figcaption align="left"> <b>Figure 4</b> - Same as Figure 2 but enforcing equalized odds instead of disparate impact. </figcaption>
     </figure>
 </div>
