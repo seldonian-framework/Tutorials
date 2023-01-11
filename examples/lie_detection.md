@@ -76,7 +76,7 @@ In total, we have 159 features per statement. We save the dataframe as a pickle 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="spec_object" align="center" class="mb-3">Creating the specification object</h3>
 
-In <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection/blob/main/create_spec.py">createSpec.py</a>, we create a different spec object for each constraint to run 12 experiments (4 fairness definitions times 3 epsilon values). We make these spec objects using a for loop and save them in <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection/tree/main/data">data/spec</a>. 
+In <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection/blob/main/create_spec.py">createSpec.py</a>, we create a different spec object for each constraint to run 12 experiments (4 fairness definitions times 3 epsilon values). We make these spec objects using a for loop and save them in <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection/tree/main/data/spec">data/spec</a>. 
 
 Running this code should print out that the 12 spec files have been created.
 </div>
@@ -97,9 +97,9 @@ Running this code should print out that the 12 spec files have been created.
 </p>
 <div align="center">
     <figure class='mt-4'>
-        <img src="{{ "/assets/img/lie_detection/disparate_impact_0.8_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.8">
-        <img src="{{ "/assets/img/lie_detection/disparate_impact_0.9_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.9"> 
-        <img src="{{ "/assets/img/lie_detection/disparate_impact_0.95_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.9_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.95_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.95">
     </figure> 
     <figcaption><b>Figure 1</b>: Seldonian Experiments using disparate impact as the definition of fairness. Each row is the result with a different $\epsilon$. From top to bottom: $\epsilon=0.8,0.9,0.95$. </figcaption>
 </div>
@@ -107,27 +107,27 @@ Running this code should print out that the 12 spec files have been created.
 
 <div align="center">
     <figure class='mt-4'>
-        <img src="{{ "/assets/img/lie_detection/predictive_equality_0.8_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.8">
-        <img src="{{ "/assets/img/lie_detection/predictive_equality_0.9_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.9"> 
-        <img src="{{ "/assets/img/lie_detection/predictive_equality_0.95_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.95">
     </figure> 
     <figcaption><b>Figure 2</b>: Same as Figure 1, but using predictive equality as the definition of fairness. </figcaption>
 </div>
 
 <div align="center">
     <figure class='mt-4'>
-        <img src="{{ "/assets/img/lie_detection/equal_opportunity_0.8_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.8">
-        <img src="{{ "/assets/img/lie_detection/equal_opportunity_0.9_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.9"> 
-        <img src="{{ "/assets/img/lie_detection/equal_opportunity_0.95_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.95">
     </figure> 
     <figcaption><b>Figure 3</b>: Same as Figure 1, but using equal opportunity as the definition of fairness. </figcaption>
 </div>
 
 <div align="center mb-4">
     <figure class='mt-4'>
-        <img src="{{ "/assets/img/lie_detection/overall_accuracy_equality_0.8_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.8">
-        <img src="{{ "/assets/img/lie_detection/overall_accuracy_equality_0.9_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.9"> 
-        <img src="{{ "/assets/img/lie_detection/overall_accuracy_equality_0.95_accuracy.png" | relative_url}}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.95">
     </figure> 
     <figcaption><b>Figure 4</b>: Same as Figure 1, but using overall accuracy equality as the definition of fairness. </figcaption>
 </div>
