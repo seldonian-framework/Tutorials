@@ -27,7 +27,7 @@ permalink: /examples/lie_detection/
     </p>
 
     <p>
-    	In this tutorial, we show how to use the Seldonian Toolkit to train a fair logistic regression model for text-based lie detection based on different fairness definitions. We use the dataset from the paper <a href="https://aclanthology.org/P17-2067/">"Liar, Liar Pants on Fire": A New Benchmark Dataset for Fake News Detection (Wang, ACL 2017)</a>, which contains around 12,800 political statements corresponding with a six-categories labels and 11 attributes of the speaker. Our goal is to train a binary classification model that makes a fair decision with respect to the party (Democrats and Republicans).
+    	In this example, we show how to use the Seldonian Toolkit to train a fair logistic regression model for text-based lie detection based on different fairness definitions. We use the dataset from the paper <a href="https://aclanthology.org/P17-2067/">"Liar, Liar Pants on Fire": A New Benchmark Dataset for Fake News Detection (Wang, ACL 2017)</a>, which contains around 12,800 political statements corresponding with a six-categories labels and 11 attributes of the speaker. Our goal is to train a binary classification model that makes a fair decision with respect to the party (Democrats and Republicans).
     </p>
 	</div>
 
@@ -154,5 +154,5 @@ A special case occurs when overall accuracy equality is used as the definition o
 <h3 id="summary" align="center" class="mb-3">Summary</h3>
 
 <p>
-In this tutorial, we demonstrated how to use the Seldonian Toolkit to build a predictive model that enforces a variety of fairness constraints on the text-based lie detection dataset. We covered how to construct the dataset and metadata so that they can be used by the Seldonian Experiment. We then ran Seldonian Experiments to evaluate the true performance and safety of the QSA. We found that the QSA can satisfy a range of custom-defined fairness constraints and that the model does not violate the constraints. We compared the QSA to a logistic regression model and found that the performance of the QSA approaches the performance of a logistic regression model that lacks constraints. The logistic regression model frequently violate the constraints for most of the fairness definitions. 
+In this example, we demonstrated how to use the Seldonian Toolkit to build a predictive model that enforces a variety of fairness constraints on the text-based lie detection dataset. We covered how to construct the dataset and metadata so that they can be used by the Seldonian Experiment. We then ran Seldonian Experiments to evaluate the true performance and safety of the QSA. We found that the QSA can satisfy a range of custom-defined fairness constraints and that the model does not violate the constraints. We compared the QSA to a logistic regression model and found that the performance of the QSA approaches the performance of a logistic regression model that lacks constraints. The logistic regression model frequently violate the constraints for most of the fairness definitions. 
 </p>
