@@ -97,9 +97,9 @@ Running this code should print out that the 12 spec files have been created.
 </p>
 <div align="center">
     <figure class='mt-4'>
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.8">
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.9_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.9"> 
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.95_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.2_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.1_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/disparate_impact_0.05_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Disparate impact 0.95">
     </figure> 
     <figcaption><b>Figure 1</b>: Seldonian Experiments using disparate impact as the definition of fairness. Each row is the result with a different $\epsilon$. From top to bottom: $\epsilon=0.8,0.9,0.95$. </figcaption>
 </div>
@@ -107,32 +107,32 @@ Running this code should print out that the 12 spec files have been created.
 
 <div align="center">
     <figure class='mt-4'>
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.8">
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.9"> 
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.2_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.1_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/predictive_equality_0.05_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Predictive equality 0.95">
     </figure> 
     <figcaption><b>Figure 2</b>: Same as Figure 1, but using predictive equality as the definition of fairness. </figcaption>
 </div>
 
 <div align="center">
     <figure class='mt-4'>
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.8">
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.9"> 
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.2_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.1_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/equal_opportunity_0.05_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Equal opportunity 0.95">
     </figure> 
     <figcaption><b>Figure 3</b>: Same as Figure 1, but using equal opportunity as the definition of fairness. </figcaption>
 </div>
 
 <div align="center mb-4">
     <figure class='mt-4'>
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.8">
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.9"> 
-        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.8_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.95">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.2_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.8">
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.1_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.9"> 
+        <img src="https://raw.githubusercontent.com/mhyeh/Fairness-for-Lie-Detection/main/images/overall_accuracy_equality_0.05_accuracy.png" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Overall accuracy equality 0.95">
     </figure> 
     <figcaption><b>Figure 4</b>: Same as Figure 1, but using overall accuracy equality as the definition of fairness. </figcaption>
 </div>
 
-<p>
+<p class='mt-4'>
 	For each $\epsilon$ and definition of fairness, a Seldonian Experiment creates three plots, accuracy (left), solution rate (middle), and failure rate (right). The colored points and bands in each panel show the mean (points) and standard error (uncertainty bands) over 50 trials. We compare a logistic model learned with a quasi-Seldonian algorithm (qsa, blue) to a logistic regression baseline (orange) and a random classifier (green).
 </p>
 </div>
