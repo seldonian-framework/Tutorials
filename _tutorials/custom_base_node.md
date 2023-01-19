@@ -3,12 +3,14 @@ layout: tutorial
 permalink: /tutorials/custom_base_variable_tutorial/
 prev_url: /tutorials/gridworld_RL_tutorial/
 prev_page_name: (H) Introduction to reinforcement learning with the Seldonian Toolkit
+next_url: /tutorials/efficient_deep_networks/
+next_page_name: (J) Efficiently training deep Seldonian networks
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial F: Creating custom base variables in behavioral constraints</h2>
+<h2 align="center" class="mb-3">Tutorial I: Creating custom base variables in behavioral constraints</h2>
 
 <hr class="my-4">
 <p> This tutorial is currently being updated to reflect the latest changes to the Engine API. Thank you for your patience. </p>
