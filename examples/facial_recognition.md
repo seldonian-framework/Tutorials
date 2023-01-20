@@ -75,57 +75,61 @@ permalink: /examples/facial_recognition/
 
      We used the following code to load, normalize, and shuffle the data. We then extracted the features, labels, and sensitive attributes. We used only the images for the features. The labels are the binary gender values (0=male, 1=female). The sensitive attributes are also the gender values. The toolkit requires any sensitive attributes to be one-hot encoded, so we make binary valued columns for gender - one where 1 indicates male and the other where 1 indicates female. We also clip off the last 5 data points (after shuffling) so that it will be easy to make all batches the same size when running gradient descent. 
 </p>
-    {% highlight python %}
-    # format_data.py
-    import autograd.numpy as np   # Thinly-wrapped version of Numpy
-    import pandas as pd
-    import os
 
-    from seldonian.utils.io_utils import load_pickle,save_pickle
+<div>
 
-    
-    N=23700 # Clips off 5 samples (at random) to make total divisible by 150,
-    # the desired batch size
-    
-    savename_features = './features.pkl'
-    savename_labels = './labels.pkl'
-    savename_sensitive_attrs = './sensitive_attrs.pkl'
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
+{% highlight python %}
+# format_data.py
+import autograd.numpy as np   # Thinly-wrapped version of Numpy
+import pandas as pd
+import os
 
-    print("loading data...")
-    data = pd.read_csv('../../../facial_recognition/Kaggle_UTKFace/age_gender.csv')
-    # Shuffle data since it is in order of age, then gender
-    data = data.sample(n=len(data),random_state=42).iloc[:N]
-    # Convert pixels from string to numpy array
-    print("Converting pixels to array...")
-    data['pixels']=data['pixels'].apply(lambda x:  np.array(x.split(), dtype="float32"))
+from seldonian.utils.io_utils import load_pickle,save_pickle
 
-    # normalize pixels data
-    print("Normalizing and reshaping pixel data...")
-    data['pixels'] = data['pixels'].apply(lambda x: x/255)
 
-    # Reshape pixels array
-    X = np.array(data['pixels'].tolist())
+N=23700 # Clips off 5 samples (at random) to make total divisible by 150,
+# the desired batch size
 
-    ## Converting pixels from 1D to 4D
-    features = X.reshape(X.shape[0],1,48,48)
+savename_features = './features.pkl'
+savename_labels = './labels.pkl'
+savename_sensitive_attrs = './sensitive_attrs.pkl'
 
-    # Extract gender labels
-    labels = data['gender'].values
+print("loading data...")
+data = pd.read_csv('../../../facial_recognition/Kaggle_UTKFace/age_gender.csv')
+# Shuffle data since it is in order of age, then gender
+data = data.sample(n=len(data),random_state=42).iloc[:N]
+# Convert pixels from string to numpy array
+print("Converting pixels to array...")
+data['pixels']=data['pixels'].apply(lambda x:  np.array(x.split(), dtype="float32"))
 
-    # Make one-hot sensitive feature columns
-    M=data['gender'].values
-    mask=~(M.astype("bool"))
-    F=mask.astype('int64')
-    sensitive_attrs = np.hstack((M.reshape(-1,1),F.reshape(-1,1)))
+# normalize pixels data
+print("Normalizing and reshaping pixel data...")
+data['pixels'] = data['pixels'].apply(lambda x: x/255)
 
-    # Save to pickle files
-    print("Saving features, labels, and sensitive_attrs to pickle files")
-    save_pickle(savename_features,features)
-    save_pickle(savename_labels,labels)
-    save_pickle(savename_sensitive_attrs,sensitive_attrs)
-    
-    {% endhighlight python %}
+# Reshape pixels array
+X = np.array(data['pixels'].tolist())
 
+## Converting pixels from 1D to 4D
+features = X.reshape(X.shape[0],1,48,48)
+
+# Extract gender labels
+labels = data['gender'].values
+
+# Make one-hot sensitive feature columns
+M=data['gender'].values
+mask=~(M.astype("bool"))
+F=mask.astype('int64')
+sensitive_attrs = np.hstack((M.reshape(-1,1),F.reshape(-1,1)))
+
+# Save to pickle files
+print("Saving features, labels, and sensitive_attrs to pickle files")
+save_pickle(savename_features,features)
+save_pickle(savename_labels,labels)
+save_pickle(savename_sensitive_attrs,sensitive_attrs)
+
+{% endhighlight python %}
+</div>
 <p>
     The preprocessing steps in the above code take a minute to run. We saved the features, labels and sensitive attributes to disk so that we can load these quantities from disk later, rather than recomputing them. 
 </p>
