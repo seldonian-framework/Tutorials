@@ -22,7 +22,7 @@ permalink: /examples/facial_recognition/
     <hr class="my-4">
     <h3 id="intro">Introduction</h3>
     <p>
-    	In the last decade, the use of facial recognition technology (FRT) has become widespread in society. This is largely due to companies and governments leveraging the significant improvements in accuracy that deep learning models have been able to achieve compared to previous methods. Under certain controlled conditions, for example matching a well-lit and well-aligned pictures of faces to a database of passport photos, accuracy of state-of-the-art models can reach human levels<sup><a href="#fn1" id="ref1">1</a></sup>
+    	In the last decade, the use of facial recognition technology (FRT) has become widespread in society. This is largely due to companies and governments leveraging the significant improvements in accuracy that deep learning models have been able to achieve compared to previous methods. Under certain controlled conditions, for example matching a well-lit and well-aligned picture of a face to a database of passport photos, accuracy of state-of-the-art models can reach human levels<sup><a href="#fn1" id="ref1">1</a></sup>
         . Of the many applications of FRTs, some include helping to find missing people<sup><a href="#fn2" id="ref2">2</a></sup><sup><a href="#fn3" id="ref3">,3</a></sup>, performing identity checks on people passing through international borders<sup><a href="#fn4" id="ref4">4</a></sup>
         , matching images of alleged criminals to databases of known offenders<sup><a href="#fn5" id="ref5">5</a></sup><sup><a href="#fn6" id="ref6">,6</a></sup>, "tagging" faces in social media applications, and unlocking personal smartphones and other devices.
     </p>
@@ -157,6 +157,9 @@ where $\mathrm{ACC}$ is the <a href="{{ "/glossary/#measure_function" | relative
 The engine requires a spec object to run. The spec object takes as input a model, dataset, and parse trees, among other parameters. We will use a convolutional neural network (CNN) with four convolutional layers, implemented using PyTorch. For details on how to use PyTorch models in the toolkit, see <a href="{{ "/tutorials/pytorch_mnist" | relative_url }}">Tutorial G: Creating your first Seldonian PyTorch model</a>. The code for the model is shown below, which we save in a file called <code>facial_recog_cnn.py</code> in a folder where we plan to run the Seldonian Engine:
 </p>
 
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 # facial_recog_cnn.py
 from seldonian.models.pytorch_model import SupervisedPytorchBaseModel
@@ -239,6 +242,7 @@ class PytorchFacialRecog(SupervisedPytorchBaseModel):
         """
         return FacialRecogCNNModel()
 {% endhighlight python %}
+</div>
 
 <p>
  The model class <code class="highlight">PytorchFacialRecog</code> is the Seldonian model, which is just a wrapper for the PyTorch model class <code class="highlight">FacialRecogCNNModel</code>. 
