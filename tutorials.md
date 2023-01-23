@@ -5,7 +5,7 @@ permalink: /tutorials/
 
 <div class="container mt-4" align="center">
     <a href="{{ "/overview/" | relative_url }}" class="btn btn-primary">&laquo; Previous: Overview</a>
-    <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url }}" class="btn btn-primary">Next: (A) Seldonian Algorithm Details &raquo;</a>
+    <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url }}" class="btn btn-primary">Next: (A) Seldonian algorithm details &raquo;</a>
 </div>
 
 <!-- Main Container -->
@@ -19,7 +19,7 @@ permalink: /tutorials/
 
         <ol>
             <li>
-                <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url}}">(A) Seldonian Algorithm Details</a>
+                <a href="{{ "/tutorials/alg_details_tutorial/" | relative_url}}">(A) Seldonian algorithm details</a>
             </li>
             <li>
                 <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">(B) Installing the Seldonian Toolkit</a>
@@ -35,7 +35,7 @@ permalink: /tutorials/
 
         <ol>
             <li>
-                <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for Automated Loan Approval Systems</a>
+                <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for automated loan approval systems</a>
             </li>
             <li>
                 <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">(E) Reproducing the GPA classification results from the Seldonian Science paper</a>
@@ -56,7 +56,7 @@ permalink: /tutorials/
 
         <ol>
             <li>
-                <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for Automated Loan Approval Systems</a>
+                <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for automated loan approval systems</a>
             </li>
             <li>
                 <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">(H) Introduction to reinforcement learning with the Seldonian Toolkit</a>

@@ -2,9 +2,9 @@
 layout: tutorial
 permalink: /tutorials/install_toolkit_tutorial/
 prev_url: /tutorials/alg_details_tutorial/
-prev_page_name: (A) Seldonian Algorithm details 
+prev_page_name: (A) Seldonian algorithm details 
 next_url: /tutorials/simple_engine_tutorial/
-next_page_name: (C) Simple Engine tutorial
+next_page_name: (C) Running the Seldonian Engine
 ---
 
 <!-- Main Container -->
