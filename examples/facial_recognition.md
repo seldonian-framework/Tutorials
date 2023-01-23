@@ -475,7 +475,7 @@ if __name__ == "__main__":
     <figure class='mt-4'>
         <img src="{{ "/assets/img/gender_classifier/facial_recog_Accuracy.png" | relative_url }}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Gender classifier experiment">
     </figure> 
-    <figcaption><b>Figure 3</b>: A Seldonian Experiment subject to the constraint, $g$, shown at the top of the figure. The three panels are accuracy (left), probability of solution (middle), and probability that the constraint was violated (right). In each panel, the mean (points) and standard error (uncertainty bands) over 10 trials are shown. We compare the CNN learned with a quasi-Seldonian algorithm (QSA, blue) to the same CNN learned with standard gradient descent and no constraint (orange) and a random classifier (green). </figcaption>
+    <figcaption><b>Figure 3</b>: A Seldonian Experiment subject to the constraint, $g$, shown at the top of the figure. The three panels are accuracy (left), probability of solution (middle), and probability that the constraint was violated (right). In each panel, the mean (points) and standard error (uncertainty bands) over 10 trials are shown. We compare the CNN learned with a quasi-Seldonian algorithm (QSA, blue) to the same CNN trained using standard methods without knowledge of the constraint (orange) and a random classifier (green). </figcaption>
 </div>
 </div>
 

@@ -70,7 +70,7 @@ permalink: /tutorials/
             <li>
                 <a href="{{ "/tutorials/custom_base_variable_tutorial/" | relative_url}}"> (I) Creating custom base variables in behavioral constraints</a>
             </li>
-            <!-- <li> <a href="{{ "/tutorials/efficient_deep_networks/" | relative_url}}"> (J) Efficiently training deep Seldonian networks</a></li> -->
+            <li> <a href="{{ "/tutorials/efficient_deep_networks/" | relative_url}}"> (J) Efficiently training deep Seldonian networks</a></li>
         
         </ol>
 
