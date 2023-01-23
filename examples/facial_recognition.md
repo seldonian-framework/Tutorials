@@ -52,7 +52,7 @@ permalink: /examples/facial_recognition/
 <h3 id="dataset_prep" align="center" class="mb-3">Dataset preparation</h3>
 
 <p>
-    We will train the gender classifier on the UTKFace dataset<sup><a href="#fn16" id="ref16">16</a></sup>, a public dataset consisting of over 20,000 faces with annotations for gender, race, and age. The <a href="https://susanqq.github.io/UTKFace/">UTKFace</a> webpage hosts the official dataset. The images vary in pose, facial expression, illumination, occlusion, and resolution. Like many large supervised learning datasets, the official dataset contains some mislabeling, and some images have letters and watermarks. We downloaded an aligned and cropped version of the dataset containing 23705 faces in CSV format from <a href="https://www.kaggle.com/code/erdal002/cnn-keras-and-pytorch-gender-classification/data">here</a>.
+    We will train the gender classifier on the UTKFace dataset<sup><a href="#fn16" id="ref16">16</a></sup>, a public dataset consisting of over 20,000 faces with annotations for gender, race, and age. The <a href="https://susanqq.github.io/UTKFace/">UTKFace</a> webpage hosts the official dataset. The images vary in pose, facial expression, illumination, occlusion, and resolution. Like many large supervised learning datasets, the official dataset contains some mislabeling, and some images have letters and watermarks. We downloaded an aligned and cropped version of the dataset containing 23705 faces in CSV format from <a href="https://www.kaggle.com/datasets/nipunarora8/age-gender-and-ethnicity-face-data-csv?resource=download">here</a>.
 </p>
 
 <div align="center">
@@ -473,7 +473,7 @@ if __name__ == "__main__":
 </p>
 <div align="center">
     <figure class='mt-4'>
-        <img src="{{ "/assets/img/gender_classifier/facial_recog_accuracy.png" | relative_url }}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Gender classifier experiment">
+        <img src="{{ "/assets/img/gender_classifier/facial_recog_Accuracy.png" | relative_url }}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Gender classifier experiment">
     </figure> 
     <figcaption><b>Figure 3</b>: A Seldonian Experiment subject to the constraint, $g$, shown at the top of the figure. The three panels are accuracy (left), probability of solution (middle), and probability that the constraint was violated (right). In each panel, the mean (points) and standard error (uncertainty bands) over 10 trials are shown. We compare the CNN learned with a quasi-Seldonian algorithm (QSA, blue) to the same CNN learned with standard gradient descent and no constraint (orange) and a random classifier (green). </figcaption>
 </div>
