@@ -23,27 +23,27 @@ permalink: /examples/facial_recognition/
     <h3 id="intro">Introduction</h3>
     <p>
     	In the last decade, the use of facial recognition technology (FRT) has become widespread in society. This is largely due to companies and governments leveraging the significant improvements in accuracy that deep learning models have been able to achieve compared to previous methods. Under certain controlled conditions, for example matching a well-lit and well-aligned picture of a face to a database of passport photos, accuracy of state-of-the-art models can reach human levels.<sup><a href="#fn1" id="ref1">1</a></sup> Of the many applications of FRTs, some include helping to find missing people,<sup><a href="#fn2" id="ref2">2</a></sup><sup><a href="#fn3" id="ref3">,3</a></sup> performing identity checks on people passing through international borders
-        ,<sup><a href="#fn4" id="ref4">4</a></sup> matching images of alleged criminals to databases of known offenders,<sup><a href="#fn5" id="ref5">5</a></sup><sup><a href="#fn6" id="ref6">,6</a></sup> "tagging" faces in social media applications, and unlocking personal smartphones and other devices.
+        ,<sup><a href="#fn4" id="ref4">4</a></sup> matching images of alleged criminals to databases of known offenders,<sup><a href="#fn5" id="ref5">5</a></sup><sup><a href="#fn6" id="ref6">,6</a></sup> "tagging" faces in social media applications, and unlocking smartphones and other personal devices.
     </p>
     <p>
-         While many of the applications of FRT appear to have positive or possibly neutral societal outcomes, like other machine learning technologies, FRTs have the potential to exhibit and even amplify inequalities that already exist in the world.<sup><a href="#fn7" id="ref7">7</a></sup> For example, Buolamwini & Gebru (2018) analyzed three commercial gender classification FRT systems, finding that females, in particular dark-skinned females, were misclassified more than their male counterparts.<sup><a href="#fn8" id="ref8">8</a></sup> In the worst case, the error rate for dark-skinned females was more than $34\%$ worse than that for light-skinned males. It is easy to imagine how this disparity could result in discrimination against sensitive groups through the applications of FRT.
+         While many of the applications of FRT appear to have positive or possibly neutral societal outcomes, like other machine learning (ML) technologies, FRTs have the potential to exhibit and even amplify inequalities that already exist in the world.<sup><a href="#fn7" id="ref7">7</a></sup> For example, Buolamwini & Gebru (2018) analyzed three commercial gender classification FRT systems, finding that females, in particular dark-skinned females, were misclassified more than their male counterparts.<sup><a href="#fn8" id="ref8">8</a></sup> In the worst case, the error rate for dark-skinned females was more than $34\%$ worse than that for light-skinned males. It is easy to imagine how this disparity could result in discrimination against sensitive groups through the applications of FRT.
     </p>
     <p>
         In response to the findings like those of Buolamwini & Gebru (2018), as well as mounting pressure from the American Civil Liberties Union and other civil rights organizations, several large technology companies including Amazon, IBM,  Microsoft, and Facebook have since announced that they will either temporarily cease or altogether discontinue developing and/or selling their FRTs to law enforcement departments.<sup><a href="#fn9" id="ref9">9</a></sup><sup><a href="#fn10" id="ref10">,10</a></sup><sup><a href="#fn11" id="ref11">,11</a></sup> Despite these concessions, FRTs are still widely used, with little to no federal regulation governing how they can be applied in the United States. Barring extreme federal regulation, FRTs are unlikely to disappear from society in the near future.
     </p>
 
     <p>
-        In the absence of federal regulation in the United States, some states and municipalities have already begun to adopt their own laws and restrictions.<sup><a href="#fn12" id="ref12">12</a></sup> Rather than abandon the technology altogether, some companies have invested resources towards understanding and attempting to mitigate biases present in FRT systems.<sup><a href="#fn13" id="ref13">13</a></sup><sup><a href="#fn14" id="ref14">,14</a></sup> These companies are best poised to adapt their FRTs as regulations arise.   Many of the mitigation methods rely on having a "balanced" dataset, i.e., one where the relative proportions of sensitive attributes in the dataset (e.g., race, gender) are similar. Most of the original benchmark facial recognition datasets were not balanced, so it is reasonable to rectify that imbalance. However, fixing the imbalance alone will not always sufficiently reduce bias.<sup><a href="#fn15" id="ref15">15</a></sup> It is also not always practical to have a fully balanced dataset in terms of all attributes.
+        In the absence of federal regulation in the United States, some states and municipalities have already begun to adopt their own laws and restrictions.<sup><a href="#fn12" id="ref12">12</a></sup> Rather than abandon the technology altogether, some companies have invested resources towards understanding and attempting to mitigate biases present in FRT systems.<sup><a href="#fn13" id="ref13">13</a></sup><sup><a href="#fn14" id="ref14">,14</a></sup> These companies are best poised to adapt their FRTs as regulations arise.  Many of the mitigation methods rely on having a "balanced" dataset, i.e., one where the relative proportions of sensitive attributes in the dataset (e.g., race, gender) are similar. Most of the original benchmark facial recognition datasets were not balanced, so it is reasonable to rectify that imbalance. However, fixing the imbalance alone will not always sufficiently reduce bias.<sup><a href="#fn15" id="ref15">15</a></sup> It is also not always practical to have a fully balanced dataset in terms of all attributes.
     </p>
     <p>
-        The Seldonian Toolkit is uniquely poised to mitigate biases in FRTs for three reasons:
+        The Seldonian Toolkit is uniquely poised to mitigate certain types of biases in FRTs for three reasons:
         <ol>
             <li>The toolkit does not require the dataset to be balanced, although in some cases it may be more data-efficient when the dataset is balanced.</li>
             <li>It provides high-confidence guarantees that the fairness constraints will hold on unseen data, as long as the new data comes from the same distribution as the training data. As far as we are aware, no other methods provide such a guarantee. </li>
             <li>Because fairness-aware facial recognition research is still in its infancy, it is not yet clear what the best fairness metrics are. The toolkit allows one to define custom fairness constraints, making it easy to adapt to new definitions, such as ones that might be required by new regulations. This flexibility also makes it a good tool for exploring different fairness definitions.  </li>
         </ol> 
     
-        In this example, we show how to impose fairness constraints on a gender classifier using the Seldonian Toolkit. We stress that the fairness constraints we choose are not intended to be correct or used in the real world. Instead, this example demonstrates how one could use the toolkit to apply <i>any</i> fairness constraint to <i>any</i> deep learning model used for facial recognition.  
+        In this example, we show how to enforcing statistical fairness guarantees on an example FRT in the form of a gender classification system using the Seldonian Toolkit. First, we want to stress that there are, in addition to enforcing statistical fairness guarantees, likely other challenges to overcome to make sure that FRTs are fair. In any attempt to make FRT fair, it seems likely that there will be a need for one component to ensure that trained ML models do not provide these types of bias. The toolkit is one possible example of that component. We also want to stress that the fairness constraints we choose in this example are not intended to be correct or used in the real world. Instead, this example demonstrates how one could use the toolkit to apply a wide range of statistical fairness constraints to <i>any</i> deep learning model used for facial recognition. The proper fairness definitions for FRTs should likely be determined by a team of social scientists, legislators, and members of the community. 
     </p>
 	</div>
 
@@ -173,13 +173,13 @@ class FacialRecogCNNModel(nn.Module):
     def __init__(self):
         super(FacialRecogCNNModel, self).__init__()
         # Define all layers here
-        self.cnn1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1)
-        self.cnn2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
-        self.cnn3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
-        self.cnn4 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3)
+        self.cnn1=nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1)
+        self.cnn2=nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
+        self.cnn3=nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
+        self.cnn4=nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3)
         
-        self.relu = nn.ReLU()
-        self.maxpool = nn.MaxPool2d(kernel_size=2)
+        self.relu=nn.ReLU()
+        self.maxpool=nn.MaxPool2d(kernel_size=2)
         
         self.Batch1=nn.BatchNorm2d(16)
         self.Batch2=nn.BatchNorm2d(32)
@@ -187,40 +187,40 @@ class FacialRecogCNNModel(nn.Module):
         self.Batch4=nn.BatchNorm2d(128)
         
         # Fully connected 1 (readout)
-        self.fc1 = nn.Linear(128 * 1 * 1, 128) 
+        self.fc1=nn.Linear(128 * 1 * 1, 128) 
         self.fc2=nn.Linear(128,256)
         self.fc3=nn.Linear(256,2)
-        self.softmax = nn.Softmax(dim=1)
+        self.softmax=nn.Softmax(dim=1)
 
     def forward(self, x):
         # Call all layers here. This does the forward pass.
-        out = self.cnn1(x) 
-        out = self.relu(out)
-        out = self.maxpool(out)
+        out=self.cnn1(x) 
+        out=self.relu(out)
+        out=self.maxpool(out)
         out=self.Batch1(out)
 
-        out = self.cnn2(out)
-        out = self.relu(out)
-        out = self.maxpool(out)
+        out=self.cnn2(out)
+        out=self.relu(out)
+        out=self.maxpool(out)
         out=self.Batch2(out)
         
-        out = self.cnn3(out)
-        out = self.relu(out)
-        out = self.maxpool(out)
+        out=self.cnn3(out)
+        out=self.relu(out)
+        out=self.maxpool(out)
         out=self.Batch3(out)
         
-        out = self.cnn4(out)
-        out = self.relu(out)
-        out = self.maxpool(out)
+        out=self.cnn4(out)
+        out=self.relu(out)
+        out=self.maxpool(out)
         out=self.Batch4(out)
         
         # Resize
         # Original size: (100, 32, 7, 7)
         # New out size: (100, 32*7*7)
-        out = torch.flatten(out,start_dim=1)
+        out=torch.flatten(out,start_dim=1)
 
         # Linear functions (readout)
-        out = self.fc1(out)
+        out=self.fc1(out)
         out=self.fc2(out)
         out=self.fc3(out)
 
@@ -252,7 +252,7 @@ class PytorchFacialRecog(SupervisedPytorchBaseModel):
 </p>
 
 <p>
-We will use this model, along with a dataset and parse trees to create the full specification object. We also specify the optimization strategy, mini-batch gradient descent with a batch size of 237 and 40 epochs. The candidate data have $23,700*0.5 = 11,850$ datapoints, so all 50 batches will be of equal size with a batch size of 237. We also define the primary objective function to be the binary logistic loss. We create the spec object and then run the engine in a file called <code>run_engine.py</code>. Note that in this file, we import the model class we just defined from the file above. The model file must be in the same folder as this script in order for the import to work. 
+We will use this model, along with a dataset and parse trees to create the full specification object. Parse trees are objects created from the behavioral constraints. In our case, we have a single fairness constraint, so we create a single parse tree. We also specify the optimization strategy, mini-batch gradient descent with a batch size of 237 and 40 epochs. The candidate data have $23,\!700*0.5 = 11,\!850$ datapoints, so all 50 batches will be of equal size with a batch size of 237. We also define the primary objective function to be the binary logistic loss. We create the spec object and then run the engine in a file called <code>run_engine.py</code>. Note that in this file, we import the model class we just defined from the file above. The model file must be in the same folder as this script in order for the import to work. 
 </p>
 {% highlight python %}
 # run_engine.py
@@ -265,7 +265,7 @@ from seldonian.seldonian_algorithm import SeldonianAlgorithm
 from seldonian.parse_tree.parse_tree import (
     make_parse_trees_from_constraints)
 
-
+sub_regime = "classification"
 N=23700
 print("Loading features,labels,sensitive_attrs from file...")
 features = load_pickle(savename_features)
@@ -454,7 +454,7 @@ if __name__ == "__main__":
         plot_generator.run_baseline_experiment(
             model_name='facial_recog_cnn',verbose=True)
 
-        Seldonian experiment
+        # Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
 
@@ -483,7 +483,7 @@ if __name__ == "__main__":
 <h3 id="discussion" align="center" class="mb-3">Discussion</h3>
 
 <p>
-The experiment plots show that if we train the CNN in the standard way without using any constraints, it violates the fairness constraint frequently (right panel of Figure 3). The fairness constraint is not all that restrictive - it only requires that the accuracies between males and females be within $20\%$ of each other. The CNN without the constraint is therefore quite biased in terms of its accuracy for faces of different genders. Using the Seldonian toolkit to create a quasi-Seldonian CNN trained subject to the fairness constraint, we achieve a model that never violates the constraint. The quasi-Seldonian model takes around 5,000 points before it will return a solution every time. With less data, the algorithm returns "No Solution Found," meaning that it was unable to find a safe solution. The accuracy of the quasi-Seldonian CNN approaches the accuracy of the CNN without the constraint, with only a difference of $\sim4\%$. We stress that we did not perform rigorous hyperparameter tuning to achieve this result. It is likely that this gap could be narrowed further with tuning during candidate selection. We included the random classifier to show that baseline performance. The random classifier never violates the constraint because it has the same prediction function regardless of input. 
+The experiment plots show that if we train the CNN in the standard way without using any constraints, it violates the fairness constraint frequently (right panel of Figure 3). The fairness constraint is not all that restrictive - it only requires that the accuracies between males and females be within $20\%$ of each other. The CNN without the constraint is therefore quite biased in terms of its accuracy for faces of different genders. Using the Seldonian toolkit to create a quasi-Seldonian CNN trained subject to the fairness constraint, we achieve a model that never violates the constraint. The quasi-Seldonian model takes around 5,000 points before it will return a solution every time. With less data, the algorithm returns "No Solution Found," meaning that it was unable to find a safe solution. The accuracy of the quasi-Seldonian CNN approaches the accuracy of the CNN without the constraint, with a difference of $\sim4\%$. We stress that we did not perform rigorous hyperparameter tuning to achieve this result. It is likely that this gap could be narrowed further with tuning during candidate selection. We included the random classifier to show that baseline performance. The random classifier never violates the constraint because it has the same prediction function regardless of input. 
 </p>
 
 </div>
@@ -496,7 +496,7 @@ In this example, we demonstrated how to use the Seldonian Toolkit to build a gen
 </p>
 
 <p>
-    We want to stress that the dataset, model and fairness constraint we used in this example are all interchangable. The toolkit supports any supervised PyTorch model, as long as it is differentiable. Likewise, the fairness constraint we used is not intended to be <i>correct</i> or reused elsewhere. It was chosen as an example of how one could define their own fairness constraint or to adopt an existing one. One could even define multiple fairness constraints that they want to hold simultaneously. We hope this example helps to illustrate how to use to the Seldonian Toolkit to apply fairness constraints to a deep learning model and to evaluate how the performance, data-efficiency, and safety trade off. 
+    We intended this example to illustrate how to use to the Seldonian Toolkit to apply fairness constraints to a deep learning model and to evaluate how the performance, data-efficiency, and safety trade off. We want to stress that the dataset, model and fairness constraint we used are all interchangable. The toolkit supports any supervised learning model, as long as it is implemented in PyTorch or Tensorflow and it is differentiable. Also, the fairness constraint we used is not intended to be <i>correct</i> or reused elsewhere. It was chosen as an example of how one could define their own fairness constraints or adopt existing ones. Enforcing this fairness constraint, or perhaps <i>any</i>, statistical fairness constraint(s) may not address all of the issues related to the fairness of facial recognition systems. There are other issues that go beyond enforcing statistical fairness constraints, such as concerns about consent from people whose faces are used to train the model and concerns about the use of facial recognition at all. Instead, we hope that the toolkit can be one piece of a more holistic solution. 
 </p>
 
 </div>
