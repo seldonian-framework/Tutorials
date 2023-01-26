@@ -25,16 +25,16 @@ next_page_name: (G) Creating your first Seldonian PyTorch model
     <p>
         This tutorial is intended to help you understand how to integrate a supervised machine learning model with the Seldonian Toolkit. As you may have noticed from the <a href="{{ "/overview/#algorithm" | relative_url}}">Overview</a> page, Seldonian algorithms are very general. They are, at least in principle, compatible with any machine learning model. The Seldonian Toolkit implements a particular Seldonian algorithm, and the current implementation of this algorithm is such that the machine learning model one adopts must meet these two requirements.
     </p>
-    <ul>
+    <ol>
         <li>
             The model must be parametric, meaning that it is described by a fixed, finite number of parameters independent of the size of the dataset. 
         </li>
         <li>
             The model must be differentiable. Specifically, the model's forward pass (or "predict" function) must be differentiable.
         </li>
-    </ul>
+    </ol>
     <p> 
-        The reason for these requirements is that we use gradient descent to find solutions that solve the optimization problem with added behavioral constraints (see the <a href="{{ "/tutorials/alg_details_tutorial" | relative_url}}">Algorithm details tutorial</a> for details). Examples of parametric and differentiable supervised learning models include linear models like those used in linear regression, logistic models like those used in logistic regression and many neural networks. Tree-based models like decision trees and random forests are examples of nonparametric models, according to our definition of parametric above. Linear support vector machines are non-differentiable because they predict a binary value, i.e., whether a data point is on one side or the other of the proposed hyperplane. For classification models, if the output of the model is a probability, such as in logistic regression, then generally that model is differentiable. 
+        The reason for these requirements is that we use gradients to find solutions that solve the optimization problem with added behavioral constraints (see the <a href="{{ "/tutorials/alg_details_tutorial" | relative_url}}">Algorithm details tutorial</a> for details). Examples of parametric and differentiable supervised learning models include linear models like those used in linear regression, logistic models like those used in logistic regression and many neural networks. Tree-based models like decision trees and random forests are examples of nonparametric models, according to our definition of parametric above. Linear support vector machines are non-differentiable because they predict a binary value, i.e., whether a data point is on one side or the other of the proposed hyperplane. For classification models, if the output of the model is a probability, such as in logistic regression, then generally that model is differentiable. 
     </p>
    
    <p>
@@ -46,7 +46,7 @@ next_page_name: (G) Creating your first Seldonian PyTorch model
 <h3 id="log_model"> Implementing a binary logistic model with the toolkit </h3>
 
 <p>
-    <a href="https://en.wikipedia.org/wiki/Logistic_regression#Model">Logistic regression</a> is used for classification, a sub-regime of supervised learning. It is binary in the sense that the two possible label classes are 0 and 1. You might wonder why we cannot simply use <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression">Scikit-learn's logistic regression model</a> in the toolkit. We could, but the reason why we do not will become apparent shortly.
+    <a href="https://en.wikipedia.org/wiki/Logistic_regression#Model">Logistic regression</a> is used for classification, a sub-regime of supervised learning. <i>Binary</i> logistic regression refers to the fact that there are two possible output classes, typically 0 and 1. Now let's implement this model using the toolkit.
 </p>   
 <p>
 First, make sure you have the latest version of the engine installed. </p>    
@@ -55,16 +55,18 @@ $ pip install --upgrade seldonian-engine
 {% endhighlight javascript %}
 
 <p>
-    Models are implemented as Python classes in the toolkit. There are two basic requirements for creating a new Seldonian model class:
+    Models are implemented as Python classes in the toolkit. There are three basic requirements for creating a new Seldonian model class:
     <ol>
         <li>The class must inherit from the appropriate model base class: <code class="highlight">seldonian.models.RegressionModel</code> for regression-based models and <code class="highlight">seldonian.models.ClassificationModel</code> for classification-based models. The class must call the init method of the parent class in its own init method. </li>
         
         <li>The class must have a <code class="highlight">predict()</code> method in which it takes as input a weight vector, <code class="highlight">theta</code>, and a feature matrix, <code class="highlight">X</code>, and outputs the predicted continuous-valued label (for regression) or the probabilities of the predicted classes (for classification) for each sample row in <code class="highlight">X</code>. For the special case of binary classification, the model should output the probability of predicting the positive class for each input sample. This method is often referred to as the "forward pass" for a neural network. </li>
+
+        <li>The <code class="highlight">predict()</code> method must be differentiable by <a href="https://github.com/HIPS/autograd">autograd</a>. Effectively, this means that <code class="highlight">predict()</code> must be implemented in pure Python or autograd's wrapped version of NumPy. There is a way to bypass this requirement to enable support for other Python libraries, which we briefly describe below.  </li>
     </ol> 
-    The second requirement is why we do not use Scikit-learn's logistic regression model. Their model's <code class="highlight">predict()</code> method does not take the model weights as an input, but instead uses the model's internally set weights to do the prediction. Their model weights get set when the model is trained. There is not a way, as far as we are aware, to manually set the weights of the Scikit-learn model.
+The third requirement may seem overly restrictive. Autograd is the automatic differentiation engine we use in the toolkit, and it is what allows us to support custom-defined behavioral constraints. However, it has limited out-of-the-box support for non-native Python libraries. As stated above, it can be bypassed, but this must be done for each external library independently. We have added support for PyTorch models (see <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url}}">Tutorial G: Creating your first Seldonian PyTorch model</a>), and we are in the process of adding support for scikit-learn and Tensorflow models. If you would like to request support for other external model libraries, please do so on the <a href="https://github.com/seldonian-toolkit/Engine/issues">Engine GitHub Issues page</a>. 
 </p>
 <p>
-    Given these two requirements, the bulk of the work in creating a new Seldonian model class is typically in defining the <code class="highlight">predict()</code> method. For logistic regression, there is a straightforward equation for predicting the probability of the positive class: $$\hat{Y}(\theta,X) = \sigma\left(\theta^{T}X\right) + b,$$
+    Our implementation will be done using NumPy, so requirement three will be met without any additional work. Given these three requirements, the bulk of the work in creating a new Seldonian model class is typically in defining the <code class="highlight">predict()</code> method. For logistic regression, there is a straightforward equation for predicting the probability of the positive class: $$\hat{Y}(\theta,X) = \sigma\left(\theta^{T}X\right) + b,$$
     where $\hat{Y}$ are the predicted probabilities of the positive class, $\sigma(x) = \frac{1}{1+e^{-x}}$ is the sigmoid function, $\theta$ are the model weights, $X$ are the features, and $b$ is the intercept term (also called bias term). We now have everything we need to code up our new model class, which we will name <code class="highlight">MyBinaryLogisticRegressionModel</code>.
 </p>
 
