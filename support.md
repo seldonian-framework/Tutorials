@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /support/
+title: Seldonian \| Support
 ---
 
 <!-- Main Container -->

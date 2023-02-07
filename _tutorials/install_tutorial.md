@@ -5,6 +5,7 @@ prev_url: /tutorials/alg_details_tutorial/
 prev_page_name: (A) Seldonian algorithm details 
 next_url: /tutorials/simple_engine_tutorial/
 next_page_name: (C) Running the Seldonian Engine
+title: Seldonian \| Tutorial B
 ---
 
 <!-- Main Container -->

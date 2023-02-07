@@ -3,6 +3,7 @@ layout: tutorial
 permalink: /tutorials/efficient_deep_networks/
 prev_url: /tutorials/custom_base_variable_tutorial/
 prev_page_name: (I) Creating custom base variables in behavioral constraints
+title: Seldonian \| Tutorial J
 ---
 
 <!-- Main Container -->
@@ -586,7 +587,6 @@ model = PytorchFacialRecogHead(cpu_device)
 # gender classifier example.
 initial_solution_fn = model.get_model_params
 primary_objective_fn = objectives.binary_logistic_loss
-
 
 # Make the spec object and save it
 spec = SupervisedSpec(

@@ -5,6 +5,7 @@ prev_url: /tutorials/pytorch_mnist/
 prev_page_name: (G) Creating your first Seldonian PyTorch model
 next_url: /tutorials/custom_base_variable_tutorial/
 next_page_name: (I) Creating custom base variables in behavioral constraints
+title: Seldonian \| Tutorial H
 ---
 
 <!-- Main Container -->

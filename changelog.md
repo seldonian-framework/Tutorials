@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /changelog/
+title: Seldonian \| Changelog
 ---
 
 <!-- Main Container -->

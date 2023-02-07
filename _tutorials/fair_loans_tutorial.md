@@ -5,6 +5,7 @@ prev_url: /tutorials/simple_engine_tutorial/
 prev_page_name: (C) Running the Seldonian Engine
 next_url: /tutorials/science_GPA_tutorial/
 next_page_name: (E) Reproducing the GPA classification results from the Seldonian Science paper
+title: Seldonian \| Tutorial D
 ---
 
 <!-- Main Container -->

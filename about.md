@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /about/
+title: Seldonian \| About
 ---
 
 <!-- Main Container -->

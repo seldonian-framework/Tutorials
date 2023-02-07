@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /faq/
+title: Seldonian \| FAQ
 ---
 
 <!-- Main Container -->

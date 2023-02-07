@@ -5,6 +5,7 @@ prev_url: /tutorials
 prev_page_name: Getting started
 next_url: /tutorials/install_toolkit_tutorial/
 next_page_name: (B) Installing the Seldonian Toolkit
+title: Seldonian \| Tutorial A
 ---
 
 <!-- Main Container -->

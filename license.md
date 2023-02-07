@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /license/
+title: Seldonian \| License
 ---
 
  <!-- Main License Container -->

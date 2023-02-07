@@ -1,6 +1,7 @@
 ---
 layout: example
 permalink: /examples/facial_recognition/
+title: Seldonian \| Facial recognition example
 ---
 
 <!-- Main Container -->

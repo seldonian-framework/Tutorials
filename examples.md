@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /examples/
+title: Seldonian \| Examples
 ---
 
 <!-- Main Container -->

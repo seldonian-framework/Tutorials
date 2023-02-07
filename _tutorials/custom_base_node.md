@@ -5,6 +5,7 @@ prev_url: /tutorials/gridworld_RL_tutorial/
 prev_page_name: (H) Introduction to reinforcement learning with the Seldonian Toolkit
 next_url: /tutorials/efficient_deep_networks/
 next_page_name: (J) Efficiently training deep Seldonian networks
+title: Seldonian \| Tutorial I
 ---
 
 <!-- Main Container -->

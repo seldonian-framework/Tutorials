@@ -1,6 +1,7 @@
 ---
 layout: example
 permalink: /examples/lie_detection/
+title: Seldonian \| Lie detection example
 ---
 
 <!-- Main Container -->

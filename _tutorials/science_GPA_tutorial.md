@@ -5,6 +5,7 @@ prev_url: /tutorials/fair_loans_tutorial/
 prev_page_name: (D) Fairness for automated loan approval systems
 next_url: /tutorials/new_supervised_model/
 next_page_name: (F) Creating a new Seldonian supervised learning model
+title: Seldonian \| Tutorial E
 ---
 
 <!-- Main Container -->

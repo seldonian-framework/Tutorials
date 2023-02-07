@@ -1,8 +1,8 @@
 ---
 layout: home
 permalink: /overview/
+title: Seldonian \| Overview
 ---
-
 <div class="container mt-4" align="center">
     <a href="{{ "/" | relative_url }}" class="btn btn-primary">&laquo; Previous: Home</a>
     <a href="{{ "/tutorials/" | relative_url }}" class="btn btn-primary">Next: Getting started &raquo;</a>

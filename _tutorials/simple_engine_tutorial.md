@@ -5,6 +5,7 @@ prev_url: /tutorials/install_toolkit_tutorial/
 prev_page_name: (B) Installing the Seldonian Toolkit
 next_url: /tutorials/fair_loans_tutorial/
 next_page_name: (D) Fairness for automated loan approval systems
+title: Seldonian \| Tutorial C
 ---
 
 <!-- Main Container -->

@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /glossary/
+title: Seldonian \| Glossary
 ---
 
 <!-- Main Container -->

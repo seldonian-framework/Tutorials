@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /coming_soon/
+title: Seldonian \| Coming soon
 ---
 
 <!-- Main Container -->

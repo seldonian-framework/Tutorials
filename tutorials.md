@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /tutorials/
+title: Seldonian \| Tutorials
 ---
 
 <div class="container mt-4" align="center">

@@ -5,7 +5,7 @@ prev_url: /tutorials/new_supervised_model/
 prev_page_name: (F) Creating a new Seldonian supervised learning model
 next_url: /tutorials/gridworld_RL_tutorial/
 next_page_name: (H) Introduction to reinforcement learning with the Seldonian Toolkit
-
+title: Seldonian \| Tutorial G
 ---
 
 <!-- Main Container -->

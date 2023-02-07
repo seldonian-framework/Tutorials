@@ -1,6 +1,7 @@
 ---
 layout: home
 permalink: /v_alpha/
+title: Seldonian \| Version alpha
 ---
 
 <!-- Main Container -->
