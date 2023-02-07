@@ -191,7 +191,7 @@ candidate_dataloader=torch.utils.data.DataLoader(
 safety_dataset=torch.utils.data.TensorDataset(
     features_safety_tensor,labels_safety_tensor) 
 safety_dataloader=torch.utils.data.DataLoader(
-    candidate_dataset,batch_size=batch_size,shuffle=False) 
+    safety_dataset,batch_size=batch_size,shuffle=False) 
 loaders = {
     'candidate' : candidate_dataloader,
     'safety'  : safety_dataloader
@@ -204,9 +204,10 @@ loaders = {
 Let's define the full network below.
 </p>
 {% highlight python %}
-class CNNModel(nn.Module):
+class CNNModelNoSoftmax(nn.Module):
     def __init__(self):
-        super(CNNModel, self).__init__()
+        # Model used for training in Pytorch only. No droputs, no softmax
+        super(CNNModelNoSoftmax, self).__init__()
 
         self.cnn1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1)
         self.relu = nn.ReLU()
@@ -218,10 +219,7 @@ class CNNModel(nn.Module):
         self.Batch2=nn.BatchNorm2d(32)
         self.Batch3=nn.BatchNorm2d(64)
         self.Batch4=nn.BatchNorm2d(128)
-        
-        self.Drop1=nn.Dropout(0.2)
-        self.Drop2=nn.Dropout(0.5)
-
+    
 
         self.cnn2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
         self.cnn3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
@@ -237,51 +235,41 @@ class CNNModel(nn.Module):
         out = self.cnn1(x) 
         out = self.relu(out)
         out = self.maxpool(out)
-        out=self.Batch1(out)
-        out=self.Drop1(out)
+        out = self.Batch1(out)
  
         out = self.cnn2(out)
         out = self.relu(out)
         out = self.maxpool(out)
-        out=self.Batch2(out)
-        out=self.Drop1(out)
+        out = self.Batch2(out)
         
         out = self.cnn3(out)
         out = self.relu(out)
         out = self.maxpool(out)
-        out=self.Batch3(out)
-        out=self.Drop1(out)
+        out = self.Batch3(out)
         
         out = self.cnn4(out)
         out = self.relu(out)
         out = self.maxpool(out)
-        out=self.Batch4(out)
-        out=self.Drop1(out)
+        out = self.Batch4(out)
         
+
         # Resize
         # Original size: (100, 32, 7, 7)
         # out.size(0): 100
         # New out size: (100, 32*7*7)
         out = out.view(out.size(0), -1)
-
         # Linear function (readout)
         out = self.fc1(out)
+        out = self.fc2(out)
+        out = self.fc3(out)
         
-        out=self.Drop2(out)
-        
-        out=self.fc2(out)
-        
-        out=self.Drop2(out)
-        
-        out=self.fc3(out)
-
         return out
 {% endhighlight python %}
 <p>
     Next, we instantiate the model, and put it on the GPU.
 </p>
 {% highlight python %}
-cnn = CNNModel()
+cnn = CNNModelNoSoftmax()
 cnn.to(device) # puts it on the GPU
 {% endhighlight python %}
 
@@ -325,20 +313,27 @@ def train(num_epochs, cnn, loaders):
 {% endhighlight python %}
 
 <p>
-    Let's train for five epochs.
+    Let's train for ten epochs.
 </p>
 {% highlight python %}
-num_epochs = 5
+num_epochs = 10
 train(num_epochs, cnn, loaders)
 {% endhighlight python %}
 <p>Running that code produces the following output:</p>
 
 {% highlight javascript %}
-Epoch [1/5], Step [100/119], Loss: 0.4428
-Epoch [2/5], Step [100/119], Loss: 0.4274
-Epoch [3/5], Step [100/119], Loss: 0.3633
-Epoch [4/5], Step [100/119], Loss: 0.4447
-Epoch [5/5], Step [100/119], Loss: 0.3604
+Training model on full CNN with 10 epochs
+Epoch [1/10], Step [100/119], Loss: 0.3644
+Epoch [2/10], Step [100/119], Loss: 0.2790
+Epoch [3/10], Step [100/119], Loss: 0.2157
+Epoch [4/10], Step [100/119], Loss: 0.1937
+Epoch [5/10], Step [100/119], Loss: 0.2020
+Epoch [6/10], Step [100/119], Loss: 0.2036
+Epoch [7/10], Step [100/119], Loss: 0.1336
+Epoch [8/10], Step [100/119], Loss: 0.0666
+Epoch [9/10], Step [100/119], Loss: 0.0720
+Epoch [10/10], Step [100/119], Loss: 0.0973
+done.
 {% endhighlight javascript %}
 
 <p>
@@ -366,7 +361,7 @@ test()
     Running that code produces the following output:
 </p>
 {% highlight python %}
-Test set: Accuracy: 10626/11850 (90%)
+Test set: Accuracy: 10195/11850 (86%)
 {% endhighlight python %}
 
 <p>
@@ -384,6 +379,7 @@ sd_after_training = cnn.state_dict()
 {% highlight python %}
 # Defines the body-only a.k.a "headless" model
 class CNNHeadlessModel(nn.Module):
+    # Model for creating latent features. No dropouts, no final fc3 layer and no softmax
     def __init__(self):
         super(CNNHeadlessModel, self).__init__()
 
@@ -397,16 +393,12 @@ class CNNHeadlessModel(nn.Module):
         self.Batch2=nn.BatchNorm2d(32)
         self.Batch3=nn.BatchNorm2d(64)
         self.Batch4=nn.BatchNorm2d(128)
-        
-        self.Drop1=nn.Dropout(0.2)
-        self.Drop2=nn.Dropout(0.5)
-
 
         self.cnn2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
         self.cnn3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
         self.cnn4 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3)
 
-        # Fully connected layers
+        # Fully connected 1 (readout)
         self.fc1 = nn.Linear(128 * 1 * 1, 128) 
         self.fc2=nn.Linear(128,256)
 
@@ -416,27 +408,22 @@ class CNNHeadlessModel(nn.Module):
         out = self.relu(out)
         out = self.maxpool(out)
         out=self.Batch1(out)
-        out=self.Drop1(out)
  
         out = self.cnn2(out)
         out = self.relu(out)
         out = self.maxpool(out)
         out=self.Batch2(out)
-        out=self.Drop1(out)
         
         out = self.cnn3(out)
         out = self.relu(out)
         out = self.maxpool(out)
         out=self.Batch3(out)
-        out=self.Drop1(out)
         
         out = self.cnn4(out)
         out = self.relu(out)
         out = self.maxpool(out)
         out=self.Batch4(out)
-        out=self.Drop1(out)
         
-
         # Resize
         # Original size: (100, 32, 7, 7)
         # out.size(0): 100
@@ -446,14 +433,7 @@ class CNNHeadlessModel(nn.Module):
         # Linear function (readout)
         out = self.fc1(out)
         
-        out=self.Drop2(out)
-        
         out=self.fc2(out)
-        
-        out=self.Drop2(out)
-
-        # Notice that we exclude the final fully connected layer 
-        # and the softmax from the "full network"
 
         return out
 {% endhighlight python %}
@@ -583,7 +563,7 @@ print("done")
 <h4 id="step9" class="mb-2">Step 9. Run the Seldonian Engine/Experiments as normal, except now the model is a simple linear model instead of a deep network</h4>
 
 <p>
-    As we will see, using the head-only in the toolkit will be much faster than using the full network as we did in the <a href="{{ "/examples/facial_recognition/" | relative_url }}">Gender bias in facial recognition example</a>. Let's set up the spec object we need to run the Engine. We already have the dataset object, so we just need the parse trees and a few other things.
+    As we will see, using the head-only in the toolkit will be much faster than using the full network as we did in the <a href="{{ "/examples/facial_recognition/" | relative_url }}">Gender bias in facial recognition example</a>. Let's set up the spec object we need to run the Engine. We already have the dataset object, so we just need the parse trees and the hyperparameters for the optimization. Note that we don't need to use mini-batches in gradient descent/ascent because the model is now a small linear model and no longer a deep network.
 </p>
 
 {% highlight python %}
@@ -626,15 +606,12 @@ spec = SupervisedSpec(
             'alpha_lamb'    : 0.01,
             'beta_velocity' : 0.9,
             'beta_rmsprop'  : 0.95,
-            'use_batches'   : True,
-            'batch_size'    : 237,
-            'n_epochs'      : 20,
+            'use_batches'   : False,
             'num_iters'     : 1200,
             'gradient_library': "autograd",
             'hyper_search'  : None,
             'verbose'       : True,
-        },
-        batch_size_safety=2000
+        }
     )
 save_pickle('./spec.pkl',spec,verbose=True)
 
@@ -663,7 +640,7 @@ fig=plot_gradient_descent(sol_dict,primary_objective_name='cross entropy',plot_r
 
 <div align="center">
     <figure>
-        <img src="{{ "/assets/img/efficient_deep_networks/gradient_descent.png" | relative_url}}" class="img-fluid my-2" style="width: 75%"  alt="Candidate selection"> 
+        <img src="{{ "/assets/img/efficient_deep_networks/gradient_descent_headless.png" | relative_url}}" class="img-fluid my-2" style="width: 75%"  alt="Candidate selection"> 
         <figcaption align="left"> <b>Figure 1</b> - How the parameters of the <a href="{{ "/tutorials/alg_details_tutorial/#kkt" | relative_url}}">KKT optimization problem</a> changed during gradient descent on the fair gender classifier example, using the linear head-only model. (Left) cross-entropy value in each mini-batch, (middle left) single Lagrange multiplier (middle right) predicted high-confidence upper bound (HCUB) on the disparate impact constraint function, $\hat{g}_1(\theta,D_\mathrm{minibatch})$, and (right) the Lagrangian $\mathcal{L}(\theta,\boldsymbol{\lambda})$. The black dotted lines in each panel indicate where the optimum was found. The optimum is defined as the feasible solution with the lowest value of the primary objective. A feasible solution is one where $\mathrm{HCUB}(\hat{g}_i(\theta,D_\mathrm{cand})) \leq 0, i \in \{1 ... n\}$. In this example, we only have one constraint, and the infeasible region is shown in red in the middle right plot. </figcaption>
     </figure>
 </div>
