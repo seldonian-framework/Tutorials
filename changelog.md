@@ -7,12 +7,24 @@ title: Seldonian \| Changelog
 <!-- Main Container -->
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h5 class="mb-3"><b>Changelog</b></h5>
-    <p>Here we list noteworthy changes to the Engine and Experiments APIs. Some minor versions are skipped here as they did not include noteworthy changes. For a full release version history see <a href="https://pypi.org/project/seldonian-engine/#history">https://pypi.org/project/seldonian-engine/#history</a>. </p>
+    <p>Here we list noteworthy changes to the Engine and Experiments APIs. Some minor versions are skipped here as they did not include noteworthy changes. For full release version histories see <a href="https://pypi.org/project/seldonian-engine/#history">Engine release history</a> and <a href="https://pypi.org/project/seldonian-experiments/#history">Experiments release history</a> </p>
     <hr class="my-4">
    
-    <h5>Engine (since alpha version release):</h5>
+    <h5>Engine (since initial alpha release in September, 2022):</h5>
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.3/">0.7.6</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.8/">0.7.8</a></h5>
+    <ul>
+        <li> Add support for scikit-learn models; adds a base class and a linear regressor template. </li>
+        
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.7/">0.7.7</a></h5>
+    <ul>
+        <li> Add method for extracting value of upper bounds on constraint functions after having run the safety test. </li>
+        
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.6/">0.7.6</a></h5>
     <ul>
         <li> Allow sensitive attributes in RL datasets. </li>
         <li> Better logging for gradient descent. </li>
@@ -21,24 +33,24 @@ title: Seldonian \| Changelog
         <li> Add PyTorch facial recognition example. </li>
     </ul>
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.3/">0.7.5</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.5/">0.7.5</a></h5>
     <ul>
         <li> PyTorch forward/backward passes made more efficient. </li>
     </ul>
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.3/">0.7.4</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.4/">0.7.4</a></h5>
     <ul>
         <li> Add support for Tensorflow models. </li>
         <li> Add option to batch safety data for the safety test. </li>
     </ul>
 
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.3/">0.7.3</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.3/">0.7.3</a></h5>
     <ul>
         <li> RL environment specified as object in hyperparam dict </li>
     </ul>
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.3/">0.7.1</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.1/">0.7.1</a></h5>
     <ul>
         <li> Add support for PyTorch models. </li>
         <li> Create example demonstrating PyTorch CNN on MNIST. </li>
@@ -67,13 +79,27 @@ title: Seldonian \| Changelog
     </li>
     </ul>
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.0/">0.6.0 (alpha version)</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.6.0/">0.6.0 (initial alpha)</a></h5>
     
     <hr class="my-4">
 
-    <h5>Experiments (since alpha version release):</h5>
-        
-    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.9/">0.0.10</a></h5>
+    <h5>Experiments (since initial alpha release):</h5>
+      
+
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.12/">0.0.12</a></h5>
+    <ul>
+        <li> Add more customization to the three plots. </li>
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.11/">0.0.11</a></h5>
+    <ul>
+        <li> Add ability to mini-batch performance and g evaluation of QSA. </li>
+        <li> Add ability to mini-batch when running baselines.  </li>
+        <li> An initial attempt to modularize baselines. </li>
+        <li> Fix bug where parse tree was not resetting before g evaluation. </li>
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.10/">0.0.10</a></h5>
     <ul>
         <li> Add support for mini-batching. </li>
         <li> RL environment specified as object in hyperparam dict. </li>
@@ -98,5 +124,5 @@ title: Seldonian \| Changelog
         <li> Add linear regression baseline. </li>
     </ul>
 
-    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.7/">0.0.7 (alpha version)</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.7/">0.0.7 (initial alpha release)</a></h5>
 </div>
