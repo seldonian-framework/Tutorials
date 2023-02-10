@@ -354,59 +354,59 @@ passed_safety,solution = SA.run(debug=True,write_cs_logfile=True)
 <h3 id="experiments" name="experiments" align="center" class="mb-3">Running a Seldonian Experiment</h3>
 
 <p>
-	We run a Seldonian Experiment, comparing the quasi-Seldonian model to two baseline models. The first baseline is the same CNN without the constraint, and the second is a random classifier that predicts that an image is of a man with $p=0.5$, regardless of input. The performance metric is accuracy. We use 10 trials and a data fraction array of: <code class="highlight">[0.001,0.005,0.01,0.1,0.33,0.66,1.0]</code>. The full code to run the experiment is below:
+	Here we run a Seldonian Experiment, comparing the quasi-Seldonian model to two baseline models. The first baseline is the same CNN without the constraint, and the second is a weighted-random classifier that predicts that an image is of a woman with probability $p=\frac{N_{\text{women}}}{N_{\text{men}}} \simeq 0.477$, where $N_{\text{women}}$ and $N_{\text{men}}$ are the number of women and men in the entire dataset, respectively. This is done to establish a worst-case baseline for the performance. Let's set up the imports for the experiment:
 </p>
-
-<div>
-
-<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
-# run_experiment.py
-import os
+import os, math
 import numpy as np 
+import torch
 
 from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
-from sklearn.metrics import log_loss,accuracy_score
+{% endhighlight python %}
+<p>
+    We will use 40 trials and a log-spaced data fraction array between 0.001 and 1.0, containing 15 distinct values. We will fix the batch size at 237 so that for a data fraction of 1.0, the number of samples in each batch will be equal, i.e., the last batch will not be smaller than all of the other batches. Because the number of datapoints input to the models varies with data fraction, if we left the number of epochs constant, the number of total iterations of gradient descent/ascent would be much smaller for the smaller data fractions. To keep the number of iterations of gradient descent/ascent fixed at 1200, we determine the number of epochs needed at each data fraction to do this. The <code class="highlight">batch_epoch_dict</code> contains the batch sizes (fixed at 237) and number of epochs for each data fraction. We set the number of workers to 1 in this case because on the machine we ran this we only had access to a single GPU. 
+</p>
 
-import torch
-
+{% highlight python %}
 if __name__ == "__main__":
     # Parameter setup
     run_experiments = True
     make_plots = True
-    save_plot = True
+    save_plot = False
     include_legend = True
     performance_metric = 'Accuracy'
     model_label_dict = {
-        'qsa':'quasi-Seldonian CNN',
-        'facial_recog_cnn': 'CNN (no constraints)',
-        'random_classifier': 'Random classifier'}
-    n_trials = 10
-    data_fracs = [0.001,0.005,0.01,0.1,0.33,0.66,1.0]
+        'qsa':'Quasi-Seldonian CNN',
+        'facial_recog_cnn': 'CNN baseline (no constraint)',
+        'weighted_random_classifier': 'Weighted-random classifier'}
+
+    n_trials = 40
     
-    batch_epoch_dict = {
-        0.001:[24,50],
-        0.005:[119,50],
-        0.01:[237,75],
-        0.1:[237,30],
-        0.33:[237,20],
-        0.66:[237,10],
-        1.0: [237,10]
-    }
-    
+    data_fracs = np.logspace(-3,0,15)
+    niter = 1200 # how many iterations we want in each run. Overfitting happens with more than this.
+    batch_size=237
+    data_sizes=data_fracs*11850 # number of points used in candidate selectionin each data frac
+    n_batches=data_sizes/batch_size # number of batches in each data frac
+    n_batches=np.array([math.ceil(x) for x in n_batches])
+    n_epochs_arr=niter/n_batches # number of epochs needed to get to 1200 iterations in each data frac
+    n_epochs_arr = np.array([math.ceil(x) for x in n_epochs_arr])
+
+    batch_epoch_dict = {data_fracs[ii]:[batch_size,n_epochs_arr[ii]] for ii in range(len(data_fracs))}
     n_workers = 1
-    results_dir = f'../../results/facial_recog_2022Dec19'
-    plot_savename = os.path.join(results_dir,f'facial_recog_{performance_metric}.png')
 
-    verbose=True
-
-    # Load spec
-    specfile = './spec.pkl'
-    spec = load_pickle(specfile)
-
+    results_dir = f'../../results/facial_gender'
     os.makedirs(results_dir,exist_ok=True)
+    plot_savename = os.path.join(results_dir,f'facial_gender_experiment.pdf')
+    verbose=False
+{% endhighlight python %}
+    
 
+<p>
+    Next, we set up the ground truth dataset used for calculating the performance and value of the constraints. For the performance metric we use the probabilistic accuracy, which is equivalent to $1-\text{error rate}$. We also batch the computations of the performance and constraints (this is for memory efficiency and does not change the results). We also set the PyTorch device for the experiment to be the same device that we used in the Engine, i.e., the Mac M1 GPU. 
+</p>
+
+{% highlight python %}
     # Use entire original dataset as ground truth for test set
     dataset = spec.dataset
     test_features = dataset.features
@@ -416,12 +416,13 @@ if __name__ == "__main__":
     # of the performance evaluation function
 
     def perf_eval_fn(y_pred,y,**kwargs):
-        if performance_metric == 'log_loss':
-            return log_loss(y,y_pred)
-        elif performance_metric == 'Accuracy':
-            return accuracy_score(y,y_pred > 0.5)
+        if performance_metric == 'Accuracy':
+            # 1 - error rate
+            v = np.where(y!=1.0,1.0-y_pred,y_pred)
+            return sum(v)/len(v)
+
+    # Use same torch device as we used for running the Engine
     device = spec.model.device
-    
     perf_eval_kwargs = {
         'X':test_features,
         'y':test_labels,
@@ -432,6 +433,138 @@ if __name__ == "__main__":
     constraint_eval_kwargs = {
         'eval_batch_size':2000
         }
+
+{% endhighlight python %}
+
+<p>
+    Although using the CPU will be much slower than the GPU for a <i>single</i> trial, if you have access to many CPUs and only one GPU, it could be faster to run the entire experiment across many CPUs. To do that, you would need to change <code class="highlight">n_workers</code> above to the number of CPUs you want to use, and then replace the line <code class="highlight">device = spec.model.device</code> above with the following two lines of code:
+</p>
+{% highlight python %}
+device = torch.device('cpu')
+model.to(device)
+{% endhighlight python %}
+<p>
+    We have not tested the experiments library with multiple GPUs, and we suspect that additional development work will be needed to enable distributing experiments across them. Next, we set up the plot generator needed to run the experiments. 
+</p>
+{% highlight python %}
+plot_generator = SupervisedPlotGenerator(
+    spec=spec,
+    n_trials=n_trials,
+    data_fracs=data_fracs,
+    n_workers=n_workers,
+    datagen_method='resample',
+    perf_eval_fn=perf_eval_fn,
+    constraint_eval_fns=[],
+    constraint_eval_kwargs=constraint_eval_kwargs,
+    results_dir=results_dir,
+    perf_eval_kwargs=perf_eval_kwargs,
+    batch_epoch_dict=batch_epoch_dict
+    )
+{% endhighlight python %}
+
+<p>
+    With the plot generator in hand, we are ready to run the baseline experiments and the quasi-Seldonian experiment.
+</p>
+{% highlight python %}
+    # Baseline models first, then Seldonian
+    if run_experiments:
+        plot_generator.run_baseline_experiment(
+            model_name='weighted_random_classifier',verbose=verbose)
+
+        plot_generator.run_baseline_experiment(
+            model_name='facial_recog_cnn',verbose=verbose)
+
+        # quasi-Seldonian experiment
+        plot_generator.run_seldonian_experiment(verbose=verbose)
+{% endhighlight python %}
+
+<p>
+    Once those experiments are finished running, we can plot the results.
+</p>
+
+{% highlight python %}
+    if make_plots:  
+        plot_generator.make_plots(
+            model_label_dict=model_label_dict,fontsize=12,legend_fontsize=8,
+            performance_label=performance_metric,
+            performance_ylims=[0,1],
+            show_title=True,
+            custom_title=r'Constraint: $\operatorname{min}\left(\frac{ACC|[M]}{ACC|[F]},\frac{ACC|[F]}{ACC|[M]}\right) \geq 0.8$',
+            include_legend=include_legend,
+            savename=plot_savename if save_plot else None)
+{% endhighlight python %}
+<p>
+    Below is the whole script altogether.
+</p>
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
+{% highlight python %}
+import os, math
+import numpy as np 
+import torch
+
+from experiments.generate_plots import SupervisedPlotGenerator
+from seldonian.utils.io_utils import load_pickle
+
+if __name__ == "__main__":
+    # Parameter setup
+    run_experiments = True
+    make_plots = True
+    save_plot = False
+    include_legend = True
+    performance_metric = 'Accuracy'
+    model_label_dict = {
+        'qsa':'Quasi-Seldonian CNN',
+        'facial_recog_cnn': 'CNN baseline (no constraint)',
+        'weighted_random_classifier': 'Weighted-random classifier'}
+
+    n_trials = 40
+    
+    data_fracs = np.logspace(-3,0,15)
+    niter = 1200 # how many iterations we want in each run. Overfitting happens with more than this.
+    batch_size=237
+    data_sizes=data_fracs*11850 # number of points used in candidate selectionin each data frac
+    n_batches=data_sizes/batch_size # number of batches in each data frac
+    n_batches=np.array([math.ceil(x) for x in n_batches])
+    n_epochs_arr=niter/n_batches # number of epochs needed to get to 1200 iterations in each data frac
+    n_epochs_arr = np.array([math.ceil(x) for x in n_epochs_arr])
+
+    batch_epoch_dict = {data_fracs[ii]:[batch_size,n_epochs_arr[ii]] for ii in range(len(data_fracs))}
+    n_workers = 1
+
+    results_dir = f'../../results/facial_gender'
+    os.makedirs(results_dir,exist_ok=True)
+    plot_savename = os.path.join(results_dir,f'facial_gender_experiment.pdf')
+    verbose=False
+
+    # Use entire original dataset as ground truth for test set
+    dataset = spec.dataset
+    test_features = dataset.features
+    test_labels = dataset.labels
+
+    # Setup performance evaluation function and kwargs 
+    # of the performance evaluation function
+
+    def perf_eval_fn(y_pred,y,**kwargs):
+        if performance_metric == 'Accuracy':
+            # 1 - error rate
+            v = np.where(y!=1.0,1.0-y_pred,y_pred)
+            return sum(v)/len(v)
+
+    # Use same torch device as we used for running the Engine
+    device = spec.model.device
+    perf_eval_kwargs = {
+        'X':test_features,
+        'y':test_labels,
+        'device':device,
+        'eval_batch_size':2000
+        }
+
+    constraint_eval_kwargs = {
+        'eval_batch_size':2000
+        }
+
 
     plot_generator = SupervisedPlotGenerator(
         spec=spec,
@@ -444,26 +577,27 @@ if __name__ == "__main__":
         constraint_eval_kwargs=constraint_eval_kwargs,
         results_dir=results_dir,
         perf_eval_kwargs=perf_eval_kwargs,
-        batch_epoch_dict=batch_epoch_dict,
+        batch_epoch_dict=batch_epoch_dict
         )
 
-    # # Baseline models
+    # Baseline models first, then Seldonian
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='random_classifier',verbose=True)
+            model_name='weighted_random_classifier',verbose=verbose)
 
         plot_generator.run_baseline_experiment(
-            model_name='facial_recog_cnn',verbose=True)
+            model_name='facial_recog_cnn',verbose=verbose)
 
-        # Seldonian experiment
+        # quasi-Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
-
-    if make_plots:
+    if make_plots:  
         plot_generator.make_plots(
-            model_label_dict=model_label_dict,
-            fontsize=12,legend_fontsize=8,
+            model_label_dict=model_label_dict,fontsize=12,legend_fontsize=8,
             performance_label=performance_metric,
+            performance_ylims=[0,1],
+            show_title=True,
+            custom_title=r'Constraint: $\operatorname{min}\left(\frac{ACC|[M]}{ACC|[F]},\frac{ACC|[F]}{ACC|[M]}\right) \geq 0.8$',
             include_legend=include_legend,
             savename=plot_savename if save_plot else None)
 {% endhighlight python %}
@@ -473,9 +607,10 @@ if __name__ == "__main__":
 </p>
 <div align="center">
     <figure class='mt-4'>
-        <img src="{{ "/assets/img/gender_classifier/facial_recog_Accuracy.png" | relative_url }}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Gender classifier experiment">
+        <img src="{{ "/assets/img/gender_classifier/facial_gender_experiment4tutorials.png" | relative_url }}" class="img-fluid mx-auto d-block rounded shadow p-3 mb-2 bg-white" style="width: 65%"  alt="Gender classifier experiment">
     </figure> 
-    <figcaption><b>Figure 3</b>: A Seldonian Experiment subject to the constraint, $g$, shown at the top of the figure. The three panels are accuracy (left), probability of solution (middle), and probability that the constraint was violated (right). In each panel, the mean (points) and standard error (uncertainty bands) over 10 trials are shown. We compare the CNN learned with a quasi-Seldonian algorithm (QSA, blue) to the same CNN trained using standard methods without knowledge of the constraint (orange) and a random classifier (green). </figcaption>
+    <figcaption><b>Figure 3</b>:  The left plot shows the accuracy (1 - error rate) of the model trained in this example (blue), a weighted-random classifier (green), and a baseline CNN trained in the absence of the constraint (orange). The middle plot shows the probability that the model will return a solution. The right plot shows the probability that the model’s predictions will violate the fairness constraint (shown at the top). Each plot’s horizontal axis is the amount of input data, which we varied in 15 log-spaced intervals from $0.001m$ to $m$, where $m$ = 23,700. We ran 40 trials at each amount of input data, plotting the mean and the standard error. The middle plot shows that the QSA returned NSF for all 40 trials for the smallest three amounts of data, so no accuracy is reported for those input data amounts. All other models always returned a solution. The black horizontal dashed line on the right plot indicates $\delta = 0.05$, the maximum probability we tolerate for the fairness constraint to be violated ($1 − 0.95 = \delta$). 
+ </figcaption>
 </div>
 </div>
 
@@ -484,7 +619,7 @@ if __name__ == "__main__":
 <h3 id="discussion" align="center" class="mb-3">Discussion</h3>
 
 <p>
-The experiment plots show that if we train the CNN in the standard way without using any constraints, it violates the fairness constraint frequently (right panel of Figure 3). The fairness constraint is not all that restrictive - it only requires that the accuracies between males and females be within $20\%$ of each other. The CNN without the constraint is therefore quite biased in terms of its accuracy for faces of different genders. Using the Seldonian toolkit to create a quasi-Seldonian CNN trained subject to the fairness constraint, we achieve a model that never violates the constraint. The quasi-Seldonian model takes around 5,000 points before it will return a solution every time. With less data, the algorithm returns "No Solution Found," meaning that it was unable to find a safe solution. The accuracy of the quasi-Seldonian CNN approaches the accuracy of the CNN without the constraint, with a difference of $\sim4\%$. We stress that we did not perform rigorous hyperparameter tuning to achieve this result. It is likely that this gap could be narrowed further with tuning during candidate selection. We included the random classifier to show that baseline performance. The random classifier never violates the constraint because it has the same prediction function regardless of input. 
+The experiment plots show that if we train the CNN in the standard way without using any constraints, it violates the fairness constraint frequently (right panel of Figure 3). Importantly, that model does not become more fair as more data are used to train it. The fairness constraint is not all that restrictive - it only requires that the accuracies between males and females be within $20\%$ of each other. The CNN without the constraint is therefore quite biased in terms of its accuracy for faces of different genders. Using the Seldonian toolkit to create a quasi-Seldonian CNN trained subject to the fairness constraint, we achieve a model that never violates the constraint. The quasi-Seldonian model takes around 10,000 points before it will return a solution every time. With less data, the algorithm returns "No Solution Found," meaning that it was unable to find a safe solution. The accuracy of the quasi-Seldonian CNN approaches the accuracy of the CNN without the constraint, with a difference of $\sim4\%$. We stress that we did not perform rigorous hyperparameter tuning to achieve this result. It is likely that this gap could be narrowed further with tuning during candidate selection. The random classifier never violates the constraint because it has the same probability of predicting male or female regardless of the input image. 
 </p>
 
 </div>
@@ -493,11 +628,11 @@ The experiment plots show that if we train the CNN in the standard way without u
 <h3 id="summary" align="center" class="mb-3">Summary</h3>
 
 <p>
-In this example, we demonstrated how to use the Seldonian Toolkit to build a gender classifier that satisfies a custom-defined fairness constraint. We covered how to format the dataset and metadata so that they are compatible with the toolkit. We ran the Seldonian Engine once to show that the model is capable of passing the safety test and to understand how the model is trading off its primary loss function with the constraint function. We then ran a Seldonian Experiment to evaluate the true performance and safety of the QSA and to compare it to baseline models. We found that the QSA performs almost as well as the CNN without any constraints after it has enough data to return a solution. Critically, the QSA never violates the constraint, whereas the CNN without constraints frequently violates it. The constraint is not all that restrictive, only requiring that the model's accuracy should not differ by more than $20\%$ when predicting male versus female faces. 
+In this example, we demonstrated how to use the Seldonian Toolkit to build a gender classifier that satisfies a custom-defined fairness constraint. We covered how to format the dataset and metadata so that they are compatible with the toolkit. We ran the Seldonian Engine once to show that the model is capable of passing the safety test and to understand how the model is trading off its primary loss function with the constraint function. We then ran a Seldonian Experiment to evaluate the true performance and safety of the QSA and to compare it to baseline models. We found that the QSA performs almost as well as the CNN without any constraints after it has enough data to return a solution. Critically, the QSA never violates the constraint, whereas the CNN without constraints frequently violates it. The constraint is not all that restrictive, only requiring that the model's accuracy should not differ by more than $20\%$ when predicting one gender compared to the other. 
 </p>
 
 <p>
-    We intended this example to illustrate how to use to the Seldonian Toolkit to apply fairness constraints to a deep learning model and to evaluate how the performance, data-efficiency, and safety trade off. We want to stress that the dataset, model and fairness constraint we used are all interchangable. The toolkit supports any supervised learning model, as long as it is implemented in PyTorch or Tensorflow and it is differentiable. Also, the fairness constraint we used is not intended to be <i>correct</i> or reused elsewhere. It was chosen as an example of how one could define their own fairness constraints or adopt existing ones. Enforcing this fairness constraint, or perhaps <i>any</i>, statistical fairness constraint(s) may not address all of the issues related to the fairness of facial recognition systems. There are other issues that go beyond enforcing statistical fairness constraints, such as concerns about consent from people whose faces are used to train the model and concerns about the use of facial recognition at all. Instead, we hope that the toolkit can be one piece of a more holistic solution. 
+    We provide this example to show how to use to the Seldonian Toolkit to apply fairness constraints to a deep learning model and to evaluate how the performance, data-efficiency, and safety trade off. We want to stress that the dataset, model and fairness constraint we used are all interchangable. The toolkit supports <i>any</i> supervised deep learning model (as long as it is implemented in one of the supported libraries) and it is differentiable. Also, the fairness constraint we used is not intended to be <i>correct</i> or reused elsewhere. It was chosen as an example of how one could define their own fairness constraints or adopt existing ones. Enforcing this fairness constraint, or perhaps any, statistical fairness constraint(s) may not address all of the issues related to the fairness of facial recognition systems. There are other issues that go beyond enforcing statistical fairness constraints, such as concerns about consent from people whose faces are used to train the model and concerns about the use of facial recognition at all. Instead, we hope that the toolkit can be one piece of a more holistic solution that addresses these issues.
 </p>
 
 </div>
