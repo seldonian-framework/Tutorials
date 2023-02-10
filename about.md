@@ -6,6 +6,7 @@ title: Seldonian \| About
 
 <!-- Main Container -->
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
+<h1 class="mb-3">Team</h1>
 <h5 class="mb-3">This open source project is a collaboration between the community and several primary contributors listed below. We thank the many students and volunteers who have contributed to this library, though they are not listed below.</h5>
 
 <hr class="my-2">
