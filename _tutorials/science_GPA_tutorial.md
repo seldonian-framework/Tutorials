@@ -162,7 +162,7 @@ Running this code should print out that the five spec files have been created.
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="experiment"> Running a Seldonian Experiment </h3>
 <p>
-To produce the three plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) in the constraint in order to match Thomas et al. (2019). As a sanity check, we also included a random classifier baseline model in our experiment. The performance metric is accuracy. Here is the code we used to produce the plot for disparate impact: 
+To produce the three plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) in the constraint in order to match Thomas et al. (2019). As a sanity check, we also included a random classifier baseline model in our experiment. We used the same performance metric as Thomas et al. (2019), deterministic accuracy, i.e, $1-\frac{1}{m}\sum_{i=1}^{m}(\hat{y}_i(\theta,X) \neq Y_i)$, where $m$ is the number of data points in the entire dataset, $Y_i$ is the label for the $i$th data point and $\hat{y}_i(\theta,X_i)$ is the model prediction for the $i$th data point, given the data point $X_i$ and the model parameters $\theta$. Here is the code we used to produce the plot for disparate impact: 
 </p>
 
 <div>
