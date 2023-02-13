@@ -403,10 +403,10 @@ Visualizing candidate selection can help you tune the optimization hyperparamete
 <h3 id="experiment"> Running a Seldonian Experiment </h3>
 
 <p>
-Seldonian Experiments are a way to thoroughly evaluate the performance and safety of Seldonian algorithms, beyond what can be achieved with a single run of the engine. A Seldonian Experiment runs a Seldonian algorithm many times using variable amounts of input data and creates three plots: 1) Performance, 2) Solution rate, and 3) Failure rate as a function of the amount of data used. The <a href="https://seldonian-toolkit.github.io/Experiments"> Seldonian Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
+Seldonian Experiments are a way to thoroughly evaluate the performance and safety of Seldonian algorithms, beyond what can be achieved with a single run of the engine. A Seldonian Experiment runs a Seldonian algorithm many times using variable amounts of input data and creates three plots: 1) Performance, 2) Probability of solution, and 3) Probability that the solution violates the constraint as a function of the amount of data used. The <a href="https://seldonian-toolkit.github.io/Experiments"> Seldonian Experiments library</a> was designed to help implement Seldonian Experiments. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
 
-<p> To calculate performance and failure rate for any given experimental trial, we need a ground truth dataset. To approximate ground truth, we bootstrap resample from our original dataset and assume that the bootstrap data distribution is the ground truth distribution. While this does not tell you what the performance rate or failure rate will be on your actual problem, it does give a reasonable estimate.
+<p> To calculate performance and the probability that the solution violates the constraint for any given experimental trial, we need a ground truth dataset. To approximate ground truth, we bootstrap resample from our original dataset and assume that the bootstrap data distribution is the ground truth distribution. While this does not tell you what the performance rate or failure rate will be on your actual problem, it does give a reasonable estimate.
 </p>
 
 <p>
@@ -420,7 +420,14 @@ Seldonian Experiments are a way to thoroughly evaluate the performance and safet
     </ul>
 </p>
 <p>
-We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that predicts the positive class with probability $p=0.5$ regardless of the input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. We will describe the Fairlearn model in more detail below. Each model requires its own experiment, but the main parameters of the experiment, such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same three plots. 
+We will run this experiment for the Seldonian algorithm as well as for three other models. Two are baseline models: 1) a random classifier that predicts the positive class with probability $p=0.5$ regardless of the input, 2) a simple logistic regression model with no behavioral constraints. The third model comes from another fairness-aware machine learning library called <a href="https://fairlearn.org/">Fairlearn</a>. Fairlearn is not installed by default with the toolkit, for this tutorial we need to install it: 
+</p>
+{% highlight python %}
+pip install fairlearn==0.7.0
+{% endhighlight python %}
+
+<p>
+We will describe the Fairlearn model we use in more detail below. Each model requires its own experiment, but the main parameters of the experiment, such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same three plots. 
 </p>
 <p>
     Now, we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code class='highlight'>PlotGenerator</code> class, and in our particular example, the <code class='highlight'>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
