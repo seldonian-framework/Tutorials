@@ -8,7 +8,7 @@ title: Seldonian \| Version alpha
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
 <h3 class="mb-2">How to install version alpha?</h3>
 <p>
-    We released version alpha of the Seldonian Toolkit on September 29, 2022. We instead recommend installing the latest version of the libraries in the toolkit: 
+    The Seldonian Toolkit is currently in the alpha stage of development. To install the latest version of the libraries in the toolkit: 
 </p>
 {% highlight bash %}
 pip install --upgrade seldonian-engine
