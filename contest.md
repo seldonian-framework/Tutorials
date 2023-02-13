@@ -83,7 +83,7 @@ title: Seldonian \| Competition
         After selecting an application, teams should apply the Seldonian Toolkit. In almost all cases, teams should use the Experiments component of the toolkit to show how effective the Seldonian Toolkit is for their application. The Experiments component is described in <a href="https://seldonian.cs.umass.edu/Tutorials/tutorials/fair_loans_tutorial/">this</a> tutorial. It provides plots that show how accurate the learned models are, how much data was required before the system could reliably return solutions, and how often the system violated the desired safety or fairness constraints. 
     </p>
     <p>
-        Next, teams should put together a report describing their application, its importance, how the Seldonian Toolkit was applied, and the resulting performance of their system. This report should be provided as a markdown (.md) file in a GitHub repository. This markdown file should clearly indicate the team name somewhere near the top. Each team should then fill out the submission form linked below, which asks for a link to the GitHub repository. <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection">This</a> is an example of what a team might submit. 
+        Next, teams should put together a report describing their application, its importance, how the Seldonian Toolkit was applied, and the resulting performance of their system. This report should be provided as a markdown (.md) file in a GitHub repository that contains the source code for the project. The markdown file should clearly indicate the team name somewhere near the top. Each team should then fill out the submission form linked below, which asks for a link to the GitHub repository. <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection">This</a> is an example of what a team might submit. 
     </p>
     <div class="col-md-12 text-center"> 
         <a href="https://forms.gle/VXGZ7ynk42hBVS5c9" class="btn btn-primary center-block">Submission Form</a>
@@ -93,7 +93,7 @@ title: Seldonian \| Competition
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h3 class="mb-3" id="framework">Awards and Evaluation Criteria</h3>
     <hr class="my-4" />
-    <p> Awards will be provided for the following topics. Evaluation will be subjective and performed by a panel of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum) and Stanford University (Professor Emma Brunskill). Teams can only win one award. Submissions are automatically considered for all awards for which the submitting team is eligible.</p>
+    <p> Awards will be provided for the following topics. Evaluation will be subjective and performed by a panel of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum) and Stanford University (Professor Emma Brunskill). Teams can only win one award. Submissions are automatically considered for all awards for which the submitting team is eligible. Submissions using unethically acquired data will be disqualified. </p>
     <ul>
         <li><b>Best Overall Project [$600]</b> Projects will be evaluated based on the potential positive impacts of the proposed application, the performance of the trained system, the feasibility of the proposed application to the real-world, and the clarity and quality of the submitted report and code. All teams are eligible for this award.</li>
         <li><b>Best Overall Project (Undergraduate) [$500]</b> This award is similar to the Best Overall Project, but is restricted to teams that include only undergraduate students. If the winner of the Best Overall Project includes only undergraduate students, the second best project from an all-undergraduate team will win this award.</li>
@@ -119,6 +119,4 @@ title: Seldonian \| Competition
     <h3 class="mb-3" id="framework">Sponsors</h3>
     <hr class="my-4" />
     <p> This contest is a collaboration between the Autonomous Learning Laboratory (ALL) at the University of Massachusetts and the Berkeley Existential Risk Initiative (BERI). The awards will be provided by BERI.</p>
-</div>
-
 </div>
