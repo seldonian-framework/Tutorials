@@ -37,10 +37,6 @@ title: Seldonian \| Tutorial G
         In this tutorial, you will learn how to build and run a GPU-accelerated convolutional neural network (CNN) on the MNIST database of handwritten digits with a simple safety constraint.
     </p>
 
-    <p>
-        <b>Note:</b> To enable GPU acceleration, you will need to have the proper setup for your machine. For example, CUDA needs to be enabled if you have an NVIDIA graphics card. The good news is that even if you don't have access to a GPU, you will still be able to run the model on your CPU. To learn more about GPU-acceleration for PyTorch, see the "Install Pytorch" section of this page: <a href="https://pytorch.org/">https://pytorch.org/</a>
-  
-    </p> 
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
@@ -52,14 +48,17 @@ title: Seldonian \| Tutorial G
 $ pip install --upgrade seldonian-engine
 {% endhighlight javascript %}
 <p>
-    This will ensure that you have an updated version of the PyTorch Python library installed.
+    Next, install the PyTorch and torchvision Python packages. These packages are not installed as part of the Seldonian Engine. Usually, one can just do:
 </p>
-    <p>
-        You will also need the <code>torchvision</code> Python package if you want to run the example below, and this package is not included when you install the Seldonian Engine library:
-    </p>
+    
 {% highlight javascript %}
+$ pip install torch
 $ pip install torchvision
 {% endhighlight javascript %}
+<p>
+    <b>Note:</b> To enable GPU acceleration, you will need to have the proper setup for your machine. For example, CUDA needs to be enabled if you have an NVIDIA graphics card. This may require more than simply doing <code class="highlight">pip install torch</code>. The good news is that even if you don't have access to a GPU, you will still be able to run the model on your CPU. To learn more about GPU-acceleration for PyTorch, see the "Install Pytorch" section of this page: <a href="https://pytorch.org/">https://pytorch.org/</a>
+</p>
+
 <p>
     It is important to make a clear distinction when referring to "models" throughout this tutorial. We will use the term "Seldonian model" to refer to the highest level model abstraction in the toolkit. The Seldonian model is the thing that communicates with the rest of the toolkit. The Seldonian model we will build in this tutorial consists of a "PyTorch model," a term which we will use to refer to the actual PyTorch implementation of the neural network. The PyTorch model <i>does not</i> communicate with the other pieces of the Seldonian Toolkit, whereas the Seldonian model does. 
 </p>
