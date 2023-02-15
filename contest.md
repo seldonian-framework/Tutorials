@@ -14,7 +14,7 @@ title: Seldonian \| Competition
     </div>
 <hr class="my-2">
 <div class="my-4 text-center"> 
-    <a href="https://forms.gle/EtpiUtbyGBHiJTPr8" class="btn btn-primary center-block">Register Now</a>
+    <a href="https://forms.gle/ffcp9kBaxprjEya76" class="btn btn-primary center-block">Register Now</a>
 </div>
 <p>
         <b>Announcement.</b> We are happy to announce the first Seldonian Toolkit Competition, a contest that allows undergraduate and graduate students in the US and Canada to learn about and develop safe and fair machine learning algorithms using the recently launched Seldonian Toolkit. This toolkit was created to make it easier for data scientists to apply machine learning responsibly: with high-confidence safety and fairness constraints on the machine learning system's behavior.
@@ -48,7 +48,7 @@ title: Seldonian \| Competition
                     <b>[Early Registration] March 2, 2023</b>: Participating teams should register by midnight (anywhere on Earth) on March 2, 2023. Registration is free and non-binding. Teams can register right now by clicking the button below and filling out the provided form.
                 </p>
                 <div class="my-4 text-center"> 
-                    <a href="https://forms.gle/EtpiUtbyGBHiJTPr8" class="btn btn-primary center-block">Register Now</a>
+                    <a href="https://forms.gle/ffcp9kBaxprjEya76" class="btn btn-primary center-block">Register Now</a>
                 </div>
             </li>
             <li style="margin: 10px 0;"><b>[Kick-Off Event] March 6, 2023</b>: This event will consist of:
@@ -93,7 +93,7 @@ title: Seldonian \| Competition
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h3 class="mb-3" id="framework">Awards and Evaluation Criteria</h3>
     <hr class="my-4" />
-    <p> Awards will be provided for the following topics. Evaluation will be subjective and performed by a panel of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum) and Stanford University (Professor Emma Brunskill). Teams can only win one award. Submissions are automatically considered for all awards for which the submitting team is eligible. Submissions using unethically acquired data will be disqualified. </p>
+    <p> Awards will be provided for the following topics. Evaluation will be subjective and performed by a panel of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum), Stanford University (Professor Emma Brunskill), and Brown University (Professor George Konidaris). Teams can only win one award. Submissions are automatically considered for all awards for which the submitting team is eligible. Submissions using unethically acquired data will be disqualified. </p>
     <ul>
         <li><b>Best Overall Project [$600]</b> Projects will be evaluated based on the potential positive impacts of the proposed application, the performance of the trained system, the feasibility of the proposed application to the real-world, and the clarity and quality of the submitted report and code. All teams are eligible for this award.</li>
         <li><b>Best Overall Project (Undergraduate) [$500]</b> This award is similar to the Best Overall Project, but is restricted to teams that include only undergraduate students. If the winner of the Best Overall Project includes only undergraduate students, the second best project from an all-undergraduate team will win this award.</li>
