@@ -1,12 +1,12 @@
 ---
 layout: home
 permalink: /cite_us/
-title: Seldonian \| How to cite 
+title: Seldonian \| Citing our work
 ---
 
 <!-- Main Container -->
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
-<h1 class="mb-3">How to cite us</h1>
+<h1 class="mb-3">Citing our work</h1>
 <hr class="my-4">
 <p>
     If you use the Seldonian Toolkit for a publication, please cite the following paper: 
