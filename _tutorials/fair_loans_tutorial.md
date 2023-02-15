@@ -62,8 +62,8 @@ title: Seldonian \| Tutorial D
     We created a <a href="https://github.com/seldonian-toolkit/Engine/blob/main/examples/loan_tutorial/loan_dataset_preprocessing.ipynb">Jupyter notebook</a> implementing the steps described in this section. If you would like to skip this section, you can find the correctly reformatted dataset and metadata file that are the end product of the notebook here: 
 </p>
 <ul>
-    <li>Data file: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. </li>
-    <li>Metadata file: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json</a>. </li>
+    <li>Data file: <a href="https://raw.githubusercontent.com/seldonian-toolkit/Engine/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. </li>
+    <li>Metadata file: <a href="https://raw.githubusercontent.com/seldonian-toolkit/Engine/main/static/datasets/supervised/german_credit/metadata_german_loan.json">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/metadata_german_loan.json</a>. </li>
 </ul>
 
 <p>
@@ -71,7 +71,7 @@ title: Seldonian \| Tutorial D
 </p>
 
 <p> 
-    Next, we one-hot encoded all thirteen categorical features, including the sex feature that we created in the previous step. We applied a standard scaler to the remaining numerical 7 features. The one-hot encoding step created an additional 39 columns, resulting in 59 total features. The final column in the dataset is the label, which we will refer to as "credit_rating" hereafter. We mapped the values of this column as such: (1,2) -> (0,1) so that they would behave well in our binary classification models. We combined the 59 features and the single label column into a single pandas dataframe and saved the file as a CSV file, which can be found <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">here</a>.
+    Next, we one-hot encoded all thirteen categorical features, including the sex feature that we created in the previous step. We applied a standard scaler to the remaining numerical 7 features. The one-hot encoding step created an additional 39 columns, resulting in 59 total features. The final column in the dataset is the label, which we will refer to as "credit_rating" hereafter. We mapped the values of this column as such: (1,2) -> (0,1) so that they would behave well in our binary classification models. We combined the 59 features and the single label column into a single pandas dataframe and saved the file as a CSV file, which can be found <a href="https://raw.githubusercontent.com/seldonian-toolkit/Engine/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">here</a>.
 </p>
 
 <p> 
@@ -235,7 +235,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object,
 <h5 id="spec_from_gui"> Creating the specification object from the Seldonian Interface GUI</h5>
 
 <p>
-    The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Once you have started up the GUI, scroll down to the "Data and metadata setup" section. Upload the data file you downloaded in the <a href="#dataset_prep"> Dataset preparation section</a> above in the "Data file" field of the form. For convenience, here is the file you need to upload: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. Then select the "supervised_learning" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
+    The instructions for using the Seldonian Interface GUI are described: <a href="https://seldonian-toolkit.github.io/GUI/build/html/index.html">here</a>. Once you have started up the GUI, scroll down to the "Data and metadata setup" section. Upload the data file you downloaded in the <a href="#dataset_prep"> Dataset preparation section</a> above in the "Data file" field of the form. For convenience, here is the file you need to upload: <a href="https://raw.githubusercontent.com/seldonian-toolkit/Engine/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv">https://github.com/seldonian-toolkit/Engine/blob/main/static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv</a>. Then select the "supervised_learning" regime and "classification" sub-regime from the drop-downs in that section. Copy and paste the following text string into the "All attributes" field: 
 </p>
 <p>
     <code>
