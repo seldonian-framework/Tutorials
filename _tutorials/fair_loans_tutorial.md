@@ -444,7 +444,7 @@ import numpy as np
 
 from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
-from sklearn.metrics import log_loss,accuracy_score
+from sklearn.metrics import log_loss
 {% endhighlight %}
 </p>
 <p>
@@ -511,8 +511,6 @@ We need to define what function <code class='highlight'>perf_eval_fn</code> we w
     def perf_eval_fn(y_pred,y,**kwargs):
         if performance_metric == 'log_loss':
             return log_loss(y,y_pred)
-        elif performance_metric == 'accuracy':
-            return accuracy_score(y,y_pred > 0.5)
 
     perf_eval_kwargs = {
         'X':test_features,
@@ -645,7 +643,7 @@ import numpy as np
 
 from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
-from sklearn.metrics import log_loss,accuracy_score
+from sklearn.metrics import log_loss
 
 
 if __name__ == "__main__":
@@ -684,8 +682,6 @@ if __name__ == "__main__":
     def perf_eval_fn(y_pred,y,**kwargs):
         if performance_metric == 'log_loss':
             return log_loss(y,y_pred)
-        elif performance_metric == 'accuracy':
-            return accuracy_score(y,y_pred > 0.5)
 
     perf_eval_kwargs = {
         'X':test_features,
