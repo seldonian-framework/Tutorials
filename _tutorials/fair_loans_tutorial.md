@@ -650,9 +650,9 @@ from sklearn.metrics import log_loss,accuracy_score
 
 if __name__ == "__main__":
     # Parameter setup
-    run_experiments = False
+    run_experiments = True
     make_plots = True
-    save_plot = False
+    save_plot = True
     constraint_name = 'disparate_impact'
     fairlearn_constraint_name = constraint_name
     fairlearn_epsilon_eval = 0.9 # the epsilon used to evaluate g, needs to be same as epsilon in our definition
