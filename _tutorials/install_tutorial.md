@@ -37,51 +37,41 @@ The Seldonian Toolkit consists of two Python libraries and a GUI. The two librar
     The Seldonian Engine library can be installed with a single line:
 </p>
 
-<p>
-    <code>
-    $ python -m pip install --upgrade seldonian-engine --no-warn-script-location
-    </code>
-</p>
+{% highlight javascript %}
+$ python -m pip install --upgrade seldonian-engine --no-warn-script-location
+{% endhighlight javascript %}
 
 <p>
     This will make the <code class="highlight">seldonian</code> package available for you to import in Python. To test that it worked, run this command from the command line:
 </p>
 
-<p> <code>
-    $  python -c "from seldonian.seldonian_algorithm import SeldonianAlgorithm"
-    </code>  
-    If it worked, there will be nothing printed to the command line. 
-    </p>
-
+{% highlight javascript %}
+$  python -c "from seldonian.seldonian_algorithm import SeldonianAlgorithm"
+{% endhighlight javascript %}
+    
 <p>
-    If you get this error:
+    If it worked, there will be nothing printed to the command line. If you get this error:
 </p>
 
-<p>
-    <code> 
-    ModuleNotFoundError: No module named 'seldonian'
-    </code>
-</p> 
+{% highlight python %}
+ModuleNotFoundError: No module named 'seldonian'
+{% endhighlight python %}
 
 <p>
     then make sure that the Python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your Python command by running:
 </p>
 
-<p>
-    <code>
-    $ which python 
-    </code>
-</p>
+{% highlight javascript %}
+$ which python 
+{% endhighlight javascript %}
 
 <p>
     on Unix systems or:
 </p>
 
-<p>
-    <code>
-    $ where python 
-    </code>
-</p>
+{% highlight javascript %}
+$ where python 
+{% endhighlight javascript %}
 
 <p>
     on Windows systems. The "gcm" command may work instead of "where" in Powershell.
@@ -90,55 +80,45 @@ The Seldonian Toolkit consists of two Python libraries and a GUI. The two librar
 <h3 id="experiments"> Experiments installation </h3>  
 
 <p> 
-    The Seldonian Experiments library can be installed with a single line:
+    The Seldonian Engine library is a dependency of the Seldonian Experiments library. If you know you are planning to use the Experiments library, then you can skip the above steps of installing the Engine because it will be automatically installed when the Experiments library is installed. The Experiments library can be installed with a single line:
 </p>
 
-<p>
-    <code>
-    $ python -m pip install --upgrade seldonian-experiments --no-warn-script-location
-    </code>
-</p>
+{% highlight javascript %}
+$ python -m pip install --upgrade seldonian-experiments --no-warn-script-location
+{% endhighlight javascript %}
 
 <p>
     This will make the "experiments" package available for you to import in Python. To test that it worked, run this command from the command line:
 </p>
 
-<p> 
-    <code>
-    $ python -c "from experiments.generate_plots import SupervisedPlotGenerator"
-    </code>  
-    If it worked, there will be nothing printed to the command line. 
-</p>
+{% highlight javascript %}
+$ python -c "from experiments.generate_plots import SupervisedPlotGenerator"
+{% endhighlight javascript %}
 
 <p>
-    If you get this error:
+If it worked, there will be nothing printed to the command line. If you get this error:
 </p>
 
-<p>
-    <code> 
-    ModuleNotFoundError: No module named 'experiments'
-    </code>
-</p> 
+{% highlight python %}
+ModuleNotFoundError: No module named 'experiments'
+{% endhighlight python %}
 
 <p>
     then make sure that the Python executable you are using to run this command is the same one you used to do the "pip install" command above. You can see the full path of your Python command by running:
 </p>
 
-<p>
-    <code>
-    $ which python 
-    </code>
-</p>
+
+{% highlight javascript %}
+$ which python 
+{% endhighlight javascript %}
 
 <p>
     on Unix systems or:
 </p>
 
-<p>
-    <code>
-    $ where python 
-    </code>
-</p>
+{% highlight javascript %}
+$ where python 
+{% endhighlight javascript %}
 
 <p>
     on Windows systems. The "gcm" command may work instead of "where" in Powershell.
@@ -150,33 +130,28 @@ The Seldonian Toolkit consists of two Python libraries and a GUI. The two librar
     First, clone the GUI repo:
 </p>
 
-<p>
-    <code>
-    $ git clone https://github.com/seldonian-toolkit/GUI.git
-    </code>
-</p>
+{% highlight bash %}
+$ git clone https://github.com/seldonian-toolkit/GUI.git
+{% endhighlight bash %}
 
 <p>
     This will create a folder called "GUI" wherever you ran the above command. Enter that folder, and run the following from the command line (after entering your virtual environment, if relevant): 
 </p>
 
-<p> 
-    <code>
-    $ pip install -r requirements.txt
-    </code>  
-</p>
+{% highlight javascript %}
+$ pip install -r requirements.txt
+{% endhighlight javascript %}  
 
 <p>
-    You can test that the installation worked by running the GUI:
+    The Engine library is one of the requirements of the GUI, so you may seem some output about it already being reinstalled. You can test that the installation worked by running the GUI:
 </p>
-<p>
-    <code> 
-    $ python run.py
-    </code>
-</p> 
+
+{% highlight javascript %}
+$ python run.py
+{% endhighlight javascript %}
 
 <p>
-    This will start a webserver running at localhost:5001 on your local machine. Go to that address in your browser, and you should see a page displaying something like the following: 
+    This will start a webserver running at <a href="localhost:5001">localhost:5001</a> on your local machine. Go to that address in your browser, and you should see a page like the following: 
 </p>
 
 <div align="center">
