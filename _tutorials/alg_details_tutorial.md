@@ -27,6 +27,9 @@ title: Seldonian \| Tutorial A
         <li> <a href="#parse_tree">Parse tree</a> </li>
     </ul>
     <hr class="my-4">
+    <h3 id="outline">Note</h3>
+    <p><b>This page provides additional technical insight into how this toolkit works. Though this page provides information useful for modifying or improving the toolkit, you do <i>not</i> need to review or understand the content on this page in order the <i>use</i> the toolkit.</b></p>
+    <hr class="my-4">
     <h3 id="outline">Outline</h3>
     <p>In this tutorial, you will learn:</p>
     <ul>
