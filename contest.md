@@ -41,7 +41,7 @@ title: Seldonian \| Competition
         To summarize, any application of the toolkit that includes a high-confidence constraint falls within the scope of this competition!
     </p>
     <p> 
-        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we will be inviting speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness. Tentative speakers include <a href="https://vaelgates.com/">Vael Gates</a>, <a href="https://people.umass.edu/yzick/">Yair Zick</a>, and Krisztina Filep from University Analytics and Institutional Research at UMass Amherst.
+        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we will be inviting speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness. Tentative speakers include <a href="https://vaelgates.com/">Dr. Vael Gates</a>, <a href="https://people.umass.edu/yzick/">Yair Zick</a>, and Krisztina Filep from University Analytics and Institutional Research at UMass Amherst.
     </p>
     <p>
         <b>Important Dates.</b>
