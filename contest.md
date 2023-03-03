@@ -40,6 +40,9 @@ title: Seldonian \| Competition
     <p>
         To summarize, any application of the toolkit that includes a high-confidence constraint falls within the scope of this competition!
     </p>
+    <p> 
+        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we will be inviting speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness. Tentative speakers include <a href="https://vaelgates.com/">Vael Gates</a>, <a href="https://people.umass.edu/yzick/">Yair Zick</a>, and Krisztina Filep from University Analytics and Institutional Research at UMass Amherst.
+    </p>
     <p>
         <b>Important Dates.</b>
         <ul>
@@ -56,7 +59,7 @@ title: Seldonian \| Competition
                 <li>Prof. Philip Thomas providing a high-level introduction to AI safety and fairness topics using Seldonian algorithms. </li>
                 <li>Dr. Austin Hoag providing coding examples of how the Seldonian Toolkit can be used. </li>
             </ul>  
-            This event will primarily be held on Zoom, though participants are welcome to attend in-person at UMass Amherst. Further details for this event will be provided to all teams that register by the early registration deadline.</li>
+            This event will be held from 5:30pm - 7:00pm Eastern Time on Zoom (<a href="https://umass-amherst.zoom.us/j/99288787234">link</a>), though participants are welcome to attend in-person at UMass Amherst (CS Building Room 151).</li>
             <li style="margin: 10px 0;">
                 <b>[Late Registration] March 10, 2023</b>: Participating teams <b>must</b> register by midnight (anywhere on Earth) on March 10, 2023 in order to be eligible for any awards. Registration is free and non-binding. We strongly encourage teams to register before the March 2 deadline so that they can receive information about the timing and location of the Kick-Off Event. However, registration by March 10 is sufficient to participate in the contest.
             </li>
