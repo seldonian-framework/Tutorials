@@ -66,7 +66,7 @@ title: Seldonian \| Competition
             <li style="margin: 10px 0;"><b>[Early-Contest Q&A] March 15, 2023</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. Further details for this event will be provided to all registered teams.</li>
             <li style="margin: 10px 0;"><b>[Mid-Contest Q&A] March 27, 2023</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. Further details for this event will be provided to all registered teams.</li>
             <li style="margin: 10px 0;"><b>[Invited Talk: <a href="https://vaelgates.com/">Dr. Vael Gates</a>] March 28, 2023, 5pm Eastern</b>: Check back for more information closer to the date!</li>
-            <li style="margin: 10px 0;"><b>[Late-Contest Q&A] April 8, 2023</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. Further details for this event will be provided to all registered teams.</li>
+            <li style="margin: 10px 0;"><b>[Late-Contest Q&A] April 12, 2023</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. Further details for this event will be provided to all registered teams.</li>
             <li style="margin: 10px 0;">
                 <b>[Final Submissions] April 21, 2023</b>: Final submissions are due at midnight (anywhere on Earth) on April 21, 2023. See the "Submissions" section below for more information about what should be submitted.
             </li>
