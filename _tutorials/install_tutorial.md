@@ -38,11 +38,11 @@ The Seldonian Toolkit consists of two Python libraries and a GUI. The two librar
 </p>
 
 {% highlight javascript %}
-$ python -m pip install --upgrade seldonian-engine --no-warn-script-location
+$ python -m pip install --upgrade seldonian-engine 
 {% endhighlight javascript %}
 
 <p>
-    This will make the <code class="highlight">seldonian</code> package available for you to import in Python. To test that it worked, run this command from the command line:
+    This will make the <code class="highlight">seldonian</code> package available for you to import in Python. Warnings about scripts not being in PATH can be ignored. To turn off these warnings in the future, one can add <code class="highlight">--no-warn-script-location</code> to the pip install command. To test that the install worked, run this command from the command line:
 </p>
 
 {% highlight javascript %}
@@ -84,7 +84,7 @@ $ where python
 </p>
 
 {% highlight javascript %}
-$ python -m pip install --upgrade seldonian-experiments --no-warn-script-location
+$ python -m pip install --upgrade seldonian-experiments 
 {% endhighlight javascript %}
 
 <p>
