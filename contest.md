@@ -41,7 +41,7 @@ title: Seldonian \| Competition
         To summarize, any application of the toolkit that includes a high-confidence constraint falls within the scope of this competition!
     </p>
     <p> 
-        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we will be inviting speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness. Tentative speakers include <a href="https://vaelgates.com/">Dr. Vael Gates</a>, <a href="https://people.umass.edu/yzick/">Yair Zick</a>, and Krisztina Filep from University Analytics and Institutional Research at UMass Amherst.
+        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we will be inviting speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness.
     </p>
     <p>
         <b>Important Dates.</b>
@@ -68,6 +68,7 @@ title: Seldonian \| Competition
             <li style="margin: 10px 0;"><b>[Mid-Contest Q&A] March 27, 2023</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. Further details for this event will be provided to all registered teams.</li>
             <li style="margin: 10px 0;"><b>[Invited Talk: <a href="https://vaelgates.com/">Dr. Vael Gates</a>] March 28, 2023, 5pm Eastern</b>: Check back for more information closer to the date!</li>
             <li style="margin: 10px 0;"><b>[Late-Contest Q&A] April 12, 2023</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. Further details for this event will be provided to all registered teams.</li>
+            <li style="margin: 10px 0;"><b>[Invited Talk: <a href="https://www.thomaskrendlgilbert.com/">Dr. Thomas Gilbert</a>] April 19, 2023, 4pm Eastern</b>: Check back for more information closer to the date!</li>
             <li style="margin: 10px 0;">
                 <b>[Final Submissions] April 21, 2023</b>: Final submissions are due at midnight (anywhere on Earth) on April 21, 2023. See the "Submissions" section below for more information about what should be submitted.
             </li>
