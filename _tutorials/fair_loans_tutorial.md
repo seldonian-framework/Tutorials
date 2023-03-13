@@ -4,7 +4,7 @@ permalink: /tutorials/fair_loans_tutorial/
 prev_url: /tutorials/simple_engine_tutorial/
 prev_page_name: (C) Running the Seldonian Engine
 next_url: /tutorials/science_GPA_tutorial/
-next_page_name: (E) Reproducing the GPA classification results from the Seldonian Science paper
+next_page_name: (E) Predicting student GPAs from application materials with fairness guarantees
 title: Seldonian \| Tutorial D
 ---
 

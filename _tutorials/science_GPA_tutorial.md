@@ -11,7 +11,7 @@ title: Seldonian \| Tutorial E
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial E: Reproducing the GPA classification results from the Seldonian Science paper  </h2>
+<h2 align="center" class="mb-3">Tutorial E: Predicting student GPAs from application materials with fairness guarantees </h2>
 
 <hr class="my-4">
 

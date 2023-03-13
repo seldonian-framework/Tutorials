@@ -2,7 +2,7 @@
 layout: tutorial
 permalink: /tutorials/new_supervised_model/
 prev_url: /tutorials/science_GPA_tutorial/
-prev_page_name: (E) Reproducing the GPA classification results from the Seldonian Science paper
+prev_page_name: (E) Predicting student GPAs from application materials with fairness guarantees
 next_url: /tutorials/pytorch_mnist/
 next_page_name: (G) Creating your first Seldonian PyTorch model
 title: Seldonian \| Tutorial F

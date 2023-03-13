@@ -39,7 +39,7 @@ title: Seldonian \| Tutorials
                 <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">(D) Fairness for automated loan approval systems</a>
             </li>
             <li>
-                <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">(E) Reproducing the GPA classification results from the Seldonian Science paper</a>
+                <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}">(E) Predicting student GPAs from application materials with fairness guarantees</a>
             </li>
 
             <li>
