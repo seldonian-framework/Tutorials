@@ -1,8 +1,12 @@
 <div class="container my-4" align="center">
-  {% if page.prev_url %}
-    <a href="{{ page.prev_url | relative_url }}" class="btn btn-primary">&laquo; Previous: {{page.prev_page_name}}</a>
-  {% endif %}
-  {% if page.next_url %}
-    <a href="{{ page.next_url | relative_url }}" class="btn btn-primary">Next: {{page.next_page_name}} &raquo;</a>
-  {% endif %}
+  <div class="row">
+    <div class='col-xs-12 button-wrapper'>
+      {% if page.prev_url %}
+        <a href="{{ page.prev_url | relative_url }}" class="btn btn-primary mr-4">&laquo; Previous: {{page.prev_page_name}}</a>
+      {% endif %}
+      {% if page.next_url %}
+        <a href="{{ page.next_url | relative_url }}" class="btn btn-primary">Next: {{page.next_page_name}} &raquo;</a>
+      {% endif %}
+    </div>
+  </div>
 </div>

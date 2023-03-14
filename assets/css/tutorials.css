@@ -39,3 +39,7 @@
     /*background-color: #cfcfcf;*/
     background-color: #dbdbdb;
 }
+
+.button-wrapper .btn {
+    margin-bottom:5px;
+}
