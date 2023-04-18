@@ -100,7 +100,7 @@ title: Seldonian \| Tutorial A
         <p>
             To ground this abstract definition, consider an example. Imagine that we randomly selected \(m=30\) people from Earth (with replacement), and we measured their height in meters. Let these measurements be \(Z_1,\dotsc,Z_m\). These can be thought of as \(m\) i.i.d. samples of a random variable \(Z\) that corresponds to a randomly selected human's height. Student's \(t\)-test as described here would then provide a high-confidence upper bound on the average human height, \(\mathbf{E}[Z]\). However, it relies on the assumption that \(\frac{1}{m}\sum_{i=1}^m Z_i\) is normally distributed. This assumption is likely false, but it is reasonable due to the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem">central limit theorem</a>. If the average height measurement is \(\bar Z=1.76m\) and the sample standard deviation of the measured heights is \(\hat \sigma=0.07m\), then we can apply Student's \(t\)-test to obtain a \(1-\delta\) confidence upper bound on the true (unknown because we only measured the heights of 30 people) average human height. Using \(\delta=0.1\) we obtain a \(0.9\)-confidence upper bound on the average human height of 
             $$
-                \bar Z + \frac{\hat \sigma}{\sqrt{m}}t_{1-\delta,m-1} \approx 1.77m + \frac{0.07m}{\sqrt{30}}1.7 \approx 1.79m,
+                \bar Z + \frac{\hat \sigma}{\sqrt{m}}t_{1-\delta,m-1} \approx 1.76m + \frac{0.07m}{\sqrt{30}}1.31 \approx 1.78m,
             $$
             where \(\approx\) is used when real numbers (like the value of \(t_{0.9,29}\)) are rounded. So, from this experiment, we could conclude with confidence \(0.9\) that the average human height is at most 1.79 meters.
         </p>
