@@ -28,13 +28,20 @@ title: Seldonian \| Tutorial C
     <hr class="my-4">
 
     <h3 id="intro">Introduction</h3>
-    <p>The Seldonian Engine library is one of the components of the Seldonian Toolkit. The engine is the core library that implements a basic Seldonian algorithm. The Experiments library is another component of the toolkit that runs many trials of a Seldonian algorithm. In doing so, it calls the engine many times. Because the Experiments library is dependent on the Engine library, but not vice versa, we present the Engine first in these tutorials. However, once you are more familiar with these libraries and Seldonian algorithms in general, you will find that the typical workflow involves first running Seldonian Experiments with the Experiments library. Once a Seldonian model is vetted with the Experiments library, then one can run the engine a single time to obtain a safe or fair model. The process can be thought of analogously to the development/deployment process. The Experiments library is used for development, and when it is time to deploy the model, the Engine library is used. </p>
+    <p>The Seldonian Engine library is the core library of the Seldonian Toolkit. The engine implements a Seldonian algorithm that can be used to train ML models (supervised learning and offline reinforcement learning) subject to high-confidence fairness and/or safety constraints. In this tutorial, we demonstrate how to use the engine to learn a simple linear model which satisfies two safety constraints simultaneously. 
+    </p>
+
+    <p>
+        There is another library in the Seldonian Toolkit called the Experiments library, which is used to evaluate the performance, data-efficiency, and safety of  Seldonian algorithms in more detail than can be done with the Engine alone. The Experiments library is is not covered in this tutorial, but see the <a href="{{ "/tutorials/fair_loans_tutorial/" | relative_url}}">next tutorial</a> for how to use it. 
+    </p>
 
     <h3 id="outline">Outline</h3>
     <p>In this tutorial, you will learn how to:
     <ul>
-        <li>Use the engine to set up a (quasi)-Seldonian machine learning algorithm (QSA).</li>
-        <li>Run the algorithm using the engine and understand its output.</li>
+        <li>Set up a Seldonian algorithm using the engine. </li>
+        <li>Provide safety constraints.</li>
+        <li>Run the Seldonian algorithm to obtain a model that satisfies the safety constraints. </li>
+        <li>Understand the outputs of the engine.</li>
     </ul>
     Note that due to the choice of confidence-bound method used in this tutorial (Student's $t$-test), the algorithms in this tutorial are technically quasi-Seldonian algorithms (QSAs). See <a href="{{ "/overview/#algorithm" | relative_url}}">the overview</a> for more details.
     </p>
@@ -43,7 +50,7 @@ title: Seldonian \| Tutorial C
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3 id="example"> An example Seldonian machine learning problem </h3>
     <p>
-        Consider a simple supervised regression problem with two continuous random variables X and Y. Let the goal be to predict the label Y using the single feature X. One approach to this problem is to use gradient descent on a linear regression model with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
+        Consider a simple regression problem with two continuous random variables X and Y. Let the goal be to predict the label Y using the single feature X. One approach to this problem is to use gradient descent on a linear regression model with the <i>mean squared error</i> (MSE) as the objective function. Recall that the mean squared error of predictions $\hat Y$ is the expected squared difference between the actual value of $Y$ and the prediction $\hat Y$, i.e., $\mathbf{E}[(Y-\hat Y)^2]$. We can approximate an optimal solution by minimizing the objective function with respect to the weights of the model, ${\theta}$, which in this case are just the intercept and slope of the line.
     </p>
     <p>
         Now, let's suppose we want to add the following two constraints into the problem:
@@ -53,7 +60,7 @@ title: Seldonian \| Tutorial C
         <li>Ensure that the MSE is <i>greater than or equal to</i> $1.25$ with a probability of at least $0.9$.</li>
     </ol> 
     <p>
-        Notice that this second constraint conflicts with the primary objective of minimizing the MSE. Though this particular constraint is contrived, it models the common setting of interest wherein safety and fairness constraints conflict with the primary objective.
+        Notice that this second constraint conflicts with the primary objective of minimizing the MSE. Though this particular constraint is contrived, it models the common setting of interest wherein safety and/or fairness constraints conflict with the primary objective.
     </p>
     <p>
         This problem can now be fully formulated as a Seldonian machine learning problem:
@@ -70,7 +77,7 @@ title: Seldonian \| Tutorial C
         </li>
     </ul>
     <p>
-        First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective, the MSE. If it cannot find a solution that satisfies the constraints at the confidence levels provided, it will return "NSF", i.e., "No Solution Found". 
+        First, notice that the values of ${\delta}_1$ and ${\delta}_2$ are both $0.1$. This is because in the <a href="{{ "/tutorials/alg_details_tutorial/#overview" | relative_url}}">Seldonian algorithm framework</a> constraints are enforced with a probability of at least $1-{\delta}$, and we stated that the constraints should be enforced with a probability of at least $0.9$. The Seldonian algorithm will attempt to satisfy both of these constraints simultaneously, while also minimizing the primary objective, the MSE. If it cannot find a solution that satisfies the constraints at the confidence levels provided, it will return "NSF", i.e., "No Solution Found". 
     </p>
     <p>
         Next, notice that here the MSE is <i>not</i> just the average squared error on the available training data. These constraints are much stronger: they are constraints on the MSE when the learned model is applied to <i>new data</i>. This is important because we don't just want machine learning models that appear to be safe or fair on the training data. We want machine learning models that are safe or fair when used to made decisions or predictions in the future.
@@ -101,7 +108,7 @@ title: Seldonian \| Tutorial C
 # example.py
 import autograd.numpy as np   # Thinly-wrapped version of Numpy
 from seldonian.models.models import LinearRegressionModel
-from seldonian.spec import SupervisedSpec
+from seldonian.spec import createSimpleSupervisedSpec
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
 from seldonian.utils.tutorial_utils import (
     make_synthetic_regression_dataset)
@@ -111,33 +118,29 @@ from seldonian.parse_tree.parse_tree import (
 if __name__ == "__main__":
     np.random.seed(0)
     num_points=1000  
-    # 1. Define the data - X ~ N(0,1), Y ~ X + N(0,1)
+    """ 1. Define the data - X ~ N(0,1), Y ~ X + N(0,1) """
     dataset = make_synthetic_regression_dataset(
         num_points=num_points)
 
-    # 2. Create parse trees from the behavioral constraints 
-    # constraint strings:
-    constraint_strs = ['Mean_Squared_Error >= 1.25','Mean_Squared_Error <= 2.0']
-    # confidence levels: 
-    deltas = [0.1,0.1] 
+    """ 2. Specify safety constraints """
+    constraint_strs = ['Mean_Squared_Error >= 1.25',
+        'Mean_Squared_Error <= 2.0']
+    deltas = [0.1,0.1] # confidence levels
 
-    parse_trees = make_parse_trees_from_constraints(
-        constraint_strs,deltas)
-
-    # 3. Define the underlying machine learning model
+    """ 3. Define the underlying machine learning model """
     model = LinearRegressionModel()
 
     """4. Create a spec object, using some
     hidden defaults we won't worry about here
     """
-    spec = SupervisedSpec(
+    spec = createSimpleSupervisedSpec(
         dataset=dataset,
-        model=model,
-        parse_trees=parse_trees,
+        constraint_strs=constraint_strs,
+        deltas=deltas,
         sub_regime='regression',
     )
 
-    # 5. Run seldonian algorithm using the spec object
+    """ 5. Run seldonian algorithm using the spec object """
     SA = SeldonianAlgorithm(spec)
     passed_safety,solution = SA.run()
     print(passed_safety,solution)
@@ -163,7 +166,6 @@ Epoch: 2, batch iteration 0
 Epoch: 3, batch iteration 0
 Epoch: 4, batch iteration 0
 ...
-Passed safety test
 True [0.16911355 0.1738146 ]
 {% endhighlight %}
     </p>
@@ -173,14 +175,14 @@ True [0.16911355 0.1738146 ]
     </p>
     
     <p>
-    Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that resulted in the safety test passing. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator.
+    Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that resulted in the safety test passing. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator. These numbers represent the y-intercept and slope of the line that the Seldonian algorithm found. 
 </p>
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3 id="extracting">Extracting important quantities</h3>
 <p> 
-    There are a few quantities of interest that are not automatically returned by <code class="highlight">SA.run()</code>. One such quantity is the value of the primary objective function (the MSE) evaluated on the safety data for the model weights returned by the algorithm, $\hat{f}(\theta_{\text{cand}},D_{\text{safety}})$. Given that the solution passed the safety test, we know that $\hat{f}(\theta,D_{\text{safety}})$ will likely be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
+    There are a few quantities of interest that are not automatically returned by <code class="highlight">SA.run()</code>. One such quantity is the value of the primary objective function (the MSE, in this case) evaluated on the safety data for the model weights returned by the algorithm, $\hat{f}(\theta_{\text{cand}},D_{\text{safety}})$. Given that the solution passed the safety test, we know that $\hat{f}(\theta,D_{\text{safety}})$ will likely be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
 
 {% highlight python %}
 st_primary_objective = SA.evaluate_primary_objective(
