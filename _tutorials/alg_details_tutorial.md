@@ -102,7 +102,7 @@ title: Seldonian \| Tutorial A
             $$
                 \bar Z + \frac{\hat \sigma}{\sqrt{m}}t_{1-\delta,m-1} \approx 1.76m + \frac{0.07m}{\sqrt{30}}1.31 \approx 1.78m,
             $$
-            where \(\approx\) is used when real numbers (like the value of \(t_{0.9,29}\)) are rounded. So, from this experiment, we could conclude with confidence \(0.9\) that the average human height is at most 1.79 meters.
+            where \(\approx\) is used when real numbers (like the value of \(t_{0.9,29}\)) are rounded. So, from this experiment, we could conclude with confidence \(0.9\) that the average human height is at most 1.78 meters.
         </p>
     </div>
     <p>
