@@ -101,8 +101,8 @@ title: Seldonian \| Competition
     <hr class="my-4" />
     <p> The panel of judges, consisting of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum), Stanford University (Professor Emma Brunskill), and Brown University (Professor George Konidaris), selected the following two submissions as a tie for the "Best Overall Student Project" award (each will receive $600).</p>
     <ul>
-        <li><b>Fairness for Breast Cancer Recurrence Prediction</b> by Derek Lacy: <a href="https://github.com/d1lacy/Fairness-for-Breast-Cancer-Recurrence-Prediction">Link</a>. 
-        <li><b>Fairness in Student Course Completion Based on Student Data</b> by Sahil Yerawar, Pranay Reddy, and Varad Pimpalkhute: <a href="https://github.com/pranay-ar/UnfairSlayers_Seldonian_oulad">Link</a>.
+        <li><b>Fairness for Breast Cancer Recurrence Prediction</b> by Derek Lacy: <a href="https://github.com/d1lacy/Fairness-for-Breast-Cancer-Recurrence-Prediction">Link</a>.</li>
+        <li><b>Fairness in Student Course Completion Based on Student Data</b> by Sahil Yerawar, Pranay Reddy, and Varad Pimpalkhute: <a href="https://github.com/pranay-ar/UnfairSlayers_Seldonian_oulad">Link</a>.</li>
     </ul>
     These projects will be further highlighted on this website in the coming weeks.
 </div>
