@@ -176,6 +176,10 @@ from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
 from sklearn.metrics import log_loss,accuracy_score
 
+from experiments.baselines.logistic_regression import BinaryLogisticRegressionBaseline
+from experiments.baselines.random_classifiers import (
+    UniformRandomClassifierBaseline)
+
 if __name__ == "__main__":
     # Parameter setup
     run_experiments = True
@@ -236,10 +240,10 @@ if __name__ == "__main__":
     # # Baseline models
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='random_classifier',verbose=True)
+            baseline_model=UniformRandomClassifierBaseline,verbose=True)
 
         plot_generator.run_baseline_experiment(
-            model_name='logistic_regression',verbose=True)
+            baseline_model=BinaryLogisticRegressionBaseline,verbose=True)
 
         # Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)

@@ -441,10 +441,15 @@ We will describe the Fairlearn model we use in more detail below. Each model req
 {% highlight python %}
 import os
 import numpy as np 
+from sklearn.metrics import log_loss
+
+from seldonian.utils.io_utils import load_pickle
 
 from experiments.generate_plots import SupervisedPlotGenerator
-from seldonian.utils.io_utils import load_pickle
-from sklearn.metrics import log_loss
+from experiments.baselines.logistic_regression import BinaryLogisticRegressionBaseline
+from experiments.baselines.random_classifiers import (
+    UniformRandomClassifierBaseline)
+from experiments.baselines.random_forest import RandomForestClassifierBaseline
 {% endhighlight %}
 </p>
 <p>
@@ -544,10 +549,10 @@ We will first run our two baseline experiments, which we can do by calling the <
     # Baseline models
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='random_classifier',verbose=verbose)
+            baseline_model=UniformRandomClassifierBaseline,verbose=verbose)
 
         plot_generator.run_baseline_experiment(
-            model_name='logistic_regression',verbose=verbose)
+            baseline_model=BinaryLogisticRegressionBaseline,verbose=verbose)
 
 {% endhighlight python %}
 </p>
@@ -703,10 +708,10 @@ if __name__ == "__main__":
     if run_experiments:
         # Baseline models
         plot_generator.run_baseline_experiment(
-            model_name='random_classifier',verbose=verbose)
+            baseline_model=UniformRandomClassifierBaseline,verbose=verbose)
 
         plot_generator.run_baseline_experiment(
-            model_name='logistic_regression',verbose=verbose)
+            baseline_model=BinaryLogisticRegressionBaseline,verbose=verbose)
 
         # Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)

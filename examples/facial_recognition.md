@@ -363,6 +363,10 @@ import torch
 
 from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
+
+from experiments.baselines.random_classifiers import (
+    WeightedRandomClassifierBaseline)
+from experiments.baselines.facial_recog_cnn import PytorchFacialRecogBaseline
 {% endhighlight python %}
 <p>
     We will use 40 trials and a log-spaced data fraction array between 0.001 and 1.0, containing 15 distinct values. We will fix the batch size at 237 so that for a data fraction of 1.0, the number of samples in each batch will be equal, i.e., the last batch will not be smaller than all of the other batches. Because the number of datapoints input to the models varies with data fraction, if we left the number of epochs constant, the number of total iterations of gradient descent/ascent would be much smaller for the smaller data fractions. To keep the number of iterations of gradient descent/ascent fixed at 1200, we determine the number of epochs needed at each data fraction to do this. The <code class="highlight">batch_epoch_dict</code> contains the batch sizes (fixed at 237) and number of epochs for each data fraction. We set the number of workers to 1 in this case because on the machine we ran this we only had access to a single GPU. 
@@ -467,12 +471,30 @@ plot_generator = SupervisedPlotGenerator(
 </p>
 {% highlight python %}
     # Baseline models first, then Seldonian
+    # First, set up CNN baseline
+    niter_min_baseline=25 # how many iterations we want in each run. Overfitting happens with more than this.
+    N_candidate_max=11850
+    batch_size_baseline=100
+    num_repeats=4
+    batch_epoch_dict_baseline = make_batch_epoch_dict_min_sample_repeat(
+        niter_min_baseline,
+        data_fracs,
+        N_candidate_max,
+        batch_size_baseline,
+        num_repeats)
+    facial_recog_baseline = PytorchFacialRecogBaseline(
+        device=torch.device('mps'),
+        learning_rate = 0.001,
+        batch_epoch_dict=batch_epoch_dict_baseline
+        )
+
+    wr_baseline = WeightedRandomClassifierBaseline(weight=0.477)
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='weighted_random_classifier',verbose=verbose)
+            baseline_model=wr_baseline,verbose=verbose)
 
         plot_generator.run_baseline_experiment(
-            model_name='facial_recog_cnn',verbose=verbose)
+            baseline_model=facial_recog_baseline,verbose=verbose)
 
         # quasi-Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)
@@ -506,6 +528,10 @@ import torch
 
 from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
+
+from experiments.baselines.random_classifiers import (
+    WeightedRandomClassifierBaseline)
+from experiments.baselines.facial_recog_cnn import PytorchFacialRecogBaseline
 
 if __name__ == "__main__":
     # Parameter setup
@@ -581,16 +607,33 @@ if __name__ == "__main__":
         )
 
     # Baseline models first, then Seldonian
+    # First, set up CNN baseline
+    niter_min_baseline=25 # how many iterations we want in each run. Overfitting happens with more than this.
+    N_candidate_max=11850
+    batch_size_baseline=100
+    num_repeats=4
+    batch_epoch_dict_baseline = make_batch_epoch_dict_min_sample_repeat(
+        niter_min_baseline,
+        data_fracs,
+        N_candidate_max,
+        batch_size_baseline,
+        num_repeats)
+    facial_recog_baseline = PytorchFacialRecogBaseline(
+        device=torch.device('mps'),
+        learning_rate = 0.001,
+        batch_epoch_dict=batch_epoch_dict_baseline
+        )
+
+    wr_baseline = WeightedRandomClassifierBaseline(weight=0.477)
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            model_name='weighted_random_classifier',verbose=verbose)
+            baseline_model=wr_baseline,verbose=verbose)
 
         plot_generator.run_baseline_experiment(
-            model_name='facial_recog_cnn',verbose=verbose)
+            baseline_model=facial_recog_baseline,verbose=verbose)
 
         # quasi-Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)
-
     if make_plots:  
         plot_generator.make_plots(
             model_label_dict=model_label_dict,fontsize=12,legend_fontsize=8,
