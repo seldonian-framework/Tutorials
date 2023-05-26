@@ -12,6 +12,12 @@ title: Seldonian \| Changelog
    
     <h5>Engine (since initial alpha release in September, 2022):</h5>
 
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.9/">0.7.9</a></h5>
+    <ul>
+        <li> Make PyTorch an optional dependency. </li>
+        
+    </ul>
+
     <h5><a href="https://pypi.org/project/seldonian-engine/0.7.8/">0.7.8</a></h5>
     <ul>
         <li> Add support for scikit-learn models; adds a base class and a linear regressor template. </li>
@@ -84,7 +90,31 @@ title: Seldonian \| Changelog
     <hr class="my-4">
 
     <h5>Experiments (since initial alpha release):</h5>
-      
+    
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.2.0/">0.2.0</a></h5>
+    <ul>
+        <li> Record each g value (the value of the constraint function) for each constraint separately in trial output files.  </li>
+        <li> In three plots, each constraint gets its own row with its own g plot. </li>
+        <li> Start testing examples. </li>
+        <li> Baselines are now objects, no longer hardcoded. User can easily provide custom baseline. </li>
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.1.1/">0.1.1</a></h5>
+    <ul>
+        <li> Add parameters to three plots to allow for more customization. </li>
+        
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.1.0/">0.1.0</a></h5>
+    <ul>
+        <li> Examples are now class-based and can all be run from a single master script. </li>
+        <li> Get basic headless example working. </li>
+    </ul>
+
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.13/">0.0.13</a></h5>
+    <ul>
+        <li> Add (uniform) random classifier baseline. </li>
+    </ul>
 
     <h5><a href="https://pypi.org/project/seldonian-experiments/0.0.12/">0.0.12</a></h5>
     <ul>
