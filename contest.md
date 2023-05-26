@@ -13,35 +13,14 @@ title: Seldonian \| Competition
             DALL-E's interpretation of "An abstract art painting with hints of technology and safety."
     </div>
 <hr class="my-2">
-<div class="my-4 text-center"> 
-    <a href="https://forms.gle/ffcp9kBaxprjEya76" class="btn btn-primary center-block">Register Now</a>
-</div>
 <p>
-        <b>Announcement.</b> We are happy to announce the first Seldonian Toolkit Competition, a contest that allows undergraduate and graduate students in the US and Canada to learn about and develop safe and fair machine learning algorithms using the recently launched Seldonian Toolkit. This toolkit was created to make it easier for data scientists to apply machine learning responsibly: with high-confidence safety and fairness constraints on the machine learning system's behavior.
+        <b>Description.</b> The first Seldonian Toolkit Competition took place in March and April 2023. The contest was designed as a way for undergraduate and graduate students in the US and Canada to learn about and develop safe and fair machine learning algorithms using the recently launched Seldonian Toolkit. This toolkit was created to make it easier for data scientists to apply machine learning responsibly: with high-confidence safety and fairness constraints on the machine learning system's behavior.
+    </p>
+    
+    <p> This competition was intentionally open ended -- any application of the toolkit that includes a high-confidence constraint was acceptable. Students picked topics that they found interesting. 
     </p>
     <p>
-        We welcome people from different fields (not just computer science!) to participate in this competition. Students will have the freedom to select the application and dataset that they work with, allowing them to tackle problems within their own discipline using our machine learning tools and with expert support.
-    </p>
-    <p>
-        <b>Eligibility.</b> Participants may participate individually or in teams of up to three people. All participants must be enrolled at an accredited college or university in the US or Canada at either the undergraduate or graduate (masters or doctoral) level.
-    </p>
-    <p>
-        <b>Fees.</b> There are no fees associated with participating in this contest.
-    </p>
-    <p>
-        <b>Prizes.</b> A prize pool of $2,000 USD will be divided into several different awards, and some of the best submissions will be featured on this website. Additional details are provided below in the section titled "Awards and Evaluation Criteria."
-    </p>
-    <p>
-        <b>Time Commitment.</b> The open-ended nature of this competition means that participants could spend a relatively small amount of time, like a weekend, putting together a submission. However, participants might also devote significant time to their project over the duration of the contest (see Important Dates below). Overall, we anticipate that the most successful teams will spend at least a couple hours per week on the project.
-    </p>
-    <p>
-        <b>Project Topics.</b> This competition is intentionally open ended. This means that instead of us picking a specific dataset or problem for you to solve, <i>you</i> get to pick a topic that you find interesting! For some examples of possible projects, we recommend reviewing the various tutorials and examples that can be found using the links at the top of this page. These include a variety of examples where fairness with respect to properties like age, race, religion, and gender is important. One can also enforce safety constraints by placing accuracy requirements on models, or by defining additional safety related constraints (see for example the safety constraints enforced on a machine learning model for type 1 diabetes treatment, as described in <a href="http://aisafety.cs.umass.edu/paper.html">this</a> paper). Though teams can use the toolkit for supervised learning (regression and classification) applications and reinforcement learning applications, we expect that most applications will focus on supervised learning settings, as the reinforcement learning components of the toolkit are still relatively nascent.
-    </p>
-    <p>
-        To summarize, any application of the toolkit that includes a high-confidence constraint falls within the scope of this competition!
-    </p>
-    <p> 
-        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we will be inviting speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness.
+        <b>Talks.</b> To help give participants a more complete view of AI safety and fairness topics, we invited speakers who are not working with Seldonian algorithms, but who are still studying issues related to safety and fairness.
     </p>
     <p>
         <b>Important Dates.</b>
@@ -50,9 +29,6 @@ title: Seldonian \| Competition
                 <p>
                     <b>[Early Registration] March 2, 2023</b>: Participating teams should register by midnight (anywhere on Earth) on March 2, 2023. Registration is free and non-binding. Teams can register right now by clicking the button below and filling out the provided form.
                 </p>
-                <div class="my-4 text-center"> 
-                    <a href="https://forms.gle/ffcp9kBaxprjEya76" class="btn btn-primary center-block">Register Now</a>
-                </div>
             </li>
             <li style="margin: 10px 0;"><b>[Kick-Off Event] March 6, 2023</b>: This event will consist of:
             <ul>
@@ -91,9 +67,6 @@ title: Seldonian \| Competition
     <p>
         Next, teams should put together a report describing their application, its importance, how the Seldonian Toolkit was applied, and the resulting performance of their system. This report should be provided as a markdown (.md) file in a GitHub repository that contains the source code for the project. The markdown file should clearly indicate the team name somewhere near the top. Each team should then fill out the submission form linked below, which asks for a link to the GitHub repository. <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection">This</a> is an example of what a team might submit. 
     </p>
-    <div class="col-md-12 text-center"> 
-        <a href="https://forms.gle/VXGZ7ynk42hBVS5c9" class="btn btn-primary center-block">Submission Form</a>
-    </div>
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
@@ -104,7 +77,7 @@ title: Seldonian \| Competition
         <li><b>Fairness for Breast Cancer Recurrence Prediction</b> by Derek Lacy: <a href="https://github.com/d1lacy/Fairness-for-Breast-Cancer-Recurrence-Prediction">Link</a>.</li>
         <li><b>Fairness in Student Course Completion Based on Student Data</b> by Sahil Yerawar, Pranay Reddy, and Varad Pimpalkhute: <a href="https://github.com/pranay-ar/UnfairSlayers_Seldonian_oulad">Link</a>.</li>
     </ul>
-    These projects will be further highlighted on this website in the coming weeks.
+    These projects can now be found on the <a href="{{ "/examples/" | relative_url }}">examples</a> page.
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">

@@ -41,6 +41,20 @@ title: Seldonian \| Examples
     </div>
 
     <div class="container inset-box border border-dark border-2 p-3 my-2">
+        <h5>Competition winners </h5>
+        <p> Two winners were selected from participants in the first Seldonian Toolkit student <a href="{{ "/contest/" | relative_url }}">competition</a>:  </p>
+
+        <ol>
+            <li>
+                <a href="{{ "/examples/comp_winner_lacy" | relative_url }}">Fairness for Breast Cancer Recurrence Prediction</a> by Derek Lacy.
+            </li>
+            <li>
+                <a href="{{ "/examples/comp_winner_yerawar" | relative_url }}">Fairness in Student Course Completion Based on Student Data</a> by Sahil Yerawar, Pranay Reddy, and Varad Pimpalkhute.
+            </li>
+        </ol>
+    </div>
+
+    <div class="container inset-box border border-dark border-2 p-3 my-2">
         <h5>Potential business use cases </h5>
 
         <ol>
