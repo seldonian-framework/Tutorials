@@ -68,7 +68,7 @@ title: Seldonian \| Competition
             <li style="margin: 10px 0;"><b>[Mid-Contest Q&A] March 27, 2023, 4pm Eastern</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. This event will take place at 4pm Eastern at <a href="https://umass-amherst.zoom.us/j/97492091365">this Zoom link</a>.</li>
             <li style="margin: 10px 0;"><b>[Invited Talk: <a href="https://vaelgates.com/">Dr. Vael Gates</a>] March 28, 2023, 5pm Eastern</b>: Dr. Gates will present at <a href="https://stanford.zoom.us/j/8124240568?pwd=R21wcHkwZ0NIOXJVUCtyaUJrVVViUT09">this Zoom link</a>.</li>
             <li style="margin: 10px 0;"><b>[Late-Contest Q&A] April 13, 2023, 4pm Eastern</b>: Prof. Philip Thomas and Dr. Austin Hoag will host an open Q&A session for participating teams. This event will take place at 4pm Eastern at <a href="https://umass-amherst.zoom.us/j/98566248497">this Zoom link</a>.</li>
-            <li style="margin: 10px 0;"><b>[Invited Talk: <a href="https://www.thomaskrendlgilbert.com/">Dr. Thomas Gilbert</a>] April 19, 2023, 4pm Eastern</b>: Check back for more information closer to the date!</li>
+            <li style="margin: 10px 0;"><b>[Invited Talk: <a href="https://www.thomaskrendlgilbert.com/">Dr. Thomas Gilbert</a>] April 19, 2023, 4pm Eastern</b>: Dr. Thomas Gilbert will present a talk titled "Reward Reports for Reinforcement Learning" at <a href="https://umass-amherst.zoom.us/j/93438890163">this Zoom link</a></li>
             <li style="margin: 10px 0;">
                 <b>[Final Submissions] April 21, 2023</b>: Final submissions are due at midnight (anywhere on Earth) on April 21, 2023. See the "Submissions" section below for more information about what should be submitted.
             </li>
@@ -99,14 +99,12 @@ title: Seldonian \| Competition
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
     <h3 class="mb-3" id="framework">Awards and Evaluation Criteria</h3>
     <hr class="my-4" />
-    <p> Awards will be provided for the following topics. Evaluation will be subjective and performed by a panel of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum), Stanford University (Professor Emma Brunskill), and Brown University (Professor George Konidaris). Teams can only win one award. Submissions are automatically considered for all awards for which the submitting team is eligible. Submissions using unethically acquired data will be disqualified. </p>
+    <p> The panel of judges, consisting of AI faculty from UMass Amherst (Professors Philip S. Thomas, Bruno Castro da Silva, and Scott Niekum), Stanford University (Professor Emma Brunskill), and Brown University (Professor George Konidaris), selected the following two submissions as a tie for the "Best Overall Student Project" award (each will receive $600).</p>
     <ul>
-        <li><b>Best Overall Project [$600]</b> Projects will be evaluated based on the potential positive impacts of the proposed application, the performance of the trained system, the feasibility of the proposed application to the real-world, and the clarity and quality of the submitted report and code. All teams are eligible for this award.</li>
-        <li><b>Best Overall Project (Undergraduate) [$500]</b> This award is similar to the Best Overall Project, but is restricted to teams that include only undergraduate students. If the winner of the Best Overall Project includes only undergraduate students, the second best project from an all-undergraduate team will win this award.</li>
-        <li><b>Most Creative Project [$300]</b> Projects will be evaluated based on the same criteria as the Best Overall Project award, but with a significant emphasis placed on the creativity and novelty of the proposed application. The panel of reviewers each have decades of experience working on AI research and have seen many uses of AI and machine learning. Submissions that are competitive for this award will involve applications that the review panel have not seen before, or which are less common in the AI and ML literature.</li>
-        <li><b>Best Runner-Up Application with Fairness Considerations [$300]</b> Projects will be evaluated based on the same criteria as the Best Overall Project award. This award is restricted to projects related to fairness and equality.</li>
-        <li><b>Best Runner-Up Application with Safety Considerations [$300]</b> Projects will be evaluated based on the same criteria as the Best Overall Project award. This award is restricted to projects with safety constraints not related to fairness and equality.</li>
+        <li><b>Fairness for Breast Cancer Recurrence Prediction</b> by Derek Lacy: <a href="https://github.com/d1lacy/Fairness-for-Breast-Cancer-Recurrence-Prediction">Link</a>.</li>
+        <li><b>Fairness in Student Course Completion Based on Student Data</b> by Sahil Yerawar, Pranay Reddy, and Varad Pimpalkhute: <a href="https://github.com/pranay-ar/UnfairSlayers_Seldonian_oulad">Link</a>.</li>
     </ul>
+    These projects will be further highlighted on this website in the coming weeks.
 </div>
 
 <div class="container p-3 my-5 border" style="background-color: #f3f4fc;">
