@@ -30,7 +30,7 @@ title: Seldonian \| Fairness in student course completion based on student data
     </p>
 
     <p>
-    	In this tutorial, we show how Seldonian algorithm can be used in this context to build a fair online education system which is fair across various student demographics. We use the [OULAD dataset](https://analyse.kmi.open.ac.uk/open_dataset) here, which contains information about 32,593 students and their demographic data, used in predicting whether a student is likely to pass the courses offered by Open University. Open University is a public British University that also has the highest number of undergraduate students in the UK. The data presented here is sourced from the Open University's Online Learning platform.
+    	In this tutorial, we show how Seldonian algorithm can be used in this context to build a fair online education system which is fair across various student demographics. We use the <a href="https://analyse.kmi.open.ac.uk/open_dataset">OULAD dataset</a>, which contains information about 32,593 students and their demographic data, used in predicting whether a student is likely to pass the courses offered by Open University. Open University is a public British University that also has the highest number of undergraduate students in the UK. The data presented here is sourced from the Open University's Online Learning platform.
     </p>
 	</div>
 
@@ -42,14 +42,14 @@ title: Seldonian \| Fairness in student course completion based on student data
 
 <ul>
     <li> Firstly, we dropped the columns like student ID which have no importance in the predicition pipeline. </li>
-    <li> Secondly, we manipulated the columns like highest education where we grouped divisions like A level or equivalent, post grads, and HE qualification to be a boolean 1 whereas lower than A level and no formal quals to be 0. This is done in order to make <code class="highlight">higher_ed</code> attribute to be binary valued, which is used for further analysis.</li>
+    <li> Secondly, we manipulated the columns like highest education where we grouped divisions like A level or equivalent, post grads, and HE qualification to be a boolean 1 whereas lower than A level and no formal quals to be 0. This is done in order to make <code class='codesnippet'>higher_ed</code> attribute to be binary valued, which is used for further analysis.</li>
     <li> We also converted columns like distinction to binaries. </li>
     <li> The next step is to convert the categorical variables into numerical values. This is done using the LabelEncoder function of the scikit-learn library. The LabelEncoder function assigns a numerical value to each unique categorical value in the column.</li>
     <li> After converting the categorical variables, the next step is to standardize the numerical variables. This is done using the StandardScaler function of the scikit-learn library. The StandardScaler function standardizes the numerical variables by subtracting the mean and dividing by the standard deviation.</li>
 </ul>
 
 <p>
-    Once the preprocessing steps are complete, we save the dataframe and the meta data which is later used in training and experimentation. The preprocessing step is necessary because we want to work upon the attributes of <code class="highlight">gender</code>, <code class="highlight">disability</code> and <code class="highlight">higher_education</code> to assess whether the predictions are unfair on these attributes.
+    Once the preprocessing steps are complete, we save the dataframe and the meta data which is later used in training and experimentation. The preprocessing step is necessary because we want to work upon the attributes of <code class='codesnippet'>gender</code>, <code class='codesnippet'>disability</code> and <code class='codesnippet'>higher_education</code> to assess whether the predictions are unfair on these attributes.
 </p>
 
 </div>
@@ -58,7 +58,7 @@ title: Seldonian \| Fairness in student course completion based on student data
 <h3 id="experiments" name="experiments" align="center" class="mb-3">Seldonian Experiments</h3>
 
 <p>
-	<code>exp.py</code> takes care of running the seldonian experiments across various spec objects. The file takes two command line inputs: <code class="highlight">attribute</code> which is the name of the attribute to be considered for analysis (<code class="highlight">[gender,higher_ed,disability]</code>) and <code class="highlight">constraint_type</code> which is the nature of the constraint string used to create the spec object (<code class="highlight">[disp,eq]</code>).
+	<code>exp.py</code> takes care of running the seldonian experiments across various spec objects. The file takes two command line inputs: <code class='codesnippet'>attribute</code> which is the name of the attribute to be considered for analysis (<code class='codesnippet'>[gender,higher_ed,disability]</code>) and <code class='codesnippet'>constraint_type</code> which is the nature of the constraint string used to create the spec object (<code class='codesnippet'>[disp,eq]</code>).
 </p>
 
 <p>
@@ -156,5 +156,5 @@ These are various fairness metrics that can be used to evaluate the fairness of 
 <h3 id="summary" align="center" class="mb-3">Summary</h3>
 
 <p>
-In this tutorial, we implemented the Seldonian Toolkit on the OULAD dataset, building a classifier which predicts the success of a student in a given course. We played around with a variety of constraints, both differing in constraint format and the attribute considered for fairness. We compared the performance of the Seldonian Algorithm with respect to that of a random classifier and a logistic regression model with the help of the <code>experiments</code> library. For the case of <code class="highlight">higher_ed</code>, as the performance of the Seldonian Algorithm approaches that of a logistic regression model without constraints, the logistic regression model violates the fairness constraints very often, while the QSA algorithm always respects the fairness bounds and delivering similar performance.
+In this tutorial, we implemented the Seldonian Toolkit on the OULAD dataset, building a classifier which predicts the success of a student in a given course. We played around with a variety of constraints, both differing in constraint format and the attribute considered for fairness. We compared the performance of the Seldonian Algorithm with respect to that of a random classifier and a logistic regression model with the help of the <code>experiments</code> library. For the case of <code class='codesnippet'>higher_ed</code>, as the performance of the Seldonian Algorithm approaches that of a logistic regression model without constraints, the logistic regression model violates the fairness constraints very often, while the QSA algorithm always respects the fairness bounds and delivering similar performance.
 </p>

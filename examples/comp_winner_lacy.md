@@ -7,7 +7,11 @@ title: Seldonian \| Breast Cancer Recurrence example
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h2 align="center" class="mb-3">Example: Fairness for Breast Cancer Recurrence Prediction</h2>
-    <p align="center">An application of the Seldonian Machine Learning Toolkit for breast cancer recurrence prediction that is fair based on menopausal status. Contributed by Derek Lacy, and selected as one of the winners of the 2023 Seldonian Toolkit student <a href="{{ "/contest/" | relative_url}}">competition</a></p>
+    <p align="center">An application of the Seldonian Machine Learning Toolkit for breast cancer recurrence prediction that is fair based on menopausal status. 
+    </p>
+    <p align="center">
+        Contributed by Derek Lacy and selected as one of the winners of the 2023 Seldonian Toolkit student <a href="{{ "/contest/" | relative_url}}">competition</a>
+    </p>
     <p align="center">
         Minor edits by Austin Hoag.
     </p>
