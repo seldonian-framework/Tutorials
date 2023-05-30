@@ -42,7 +42,7 @@ $ python -m pip install --upgrade seldonian-engine
 {% endhighlight javascript %}
 
 <p>
-    This will make the <code class="highlight">seldonian</code> package available for you to import in Python. Warnings about scripts not being in PATH can be ignored. To turn off these warnings in the future, one can add <code class="highlight">--no-warn-script-location</code> to the pip install command. To test that the install worked, run this command from the command line:
+    This will make the <code class='codesnippet'>seldonian</code> package available for you to import in Python. Warnings about scripts not being in PATH can be ignored. To turn off these warnings in the future, one can add <code class='codesnippet'>--no-warn-script-location</code> to the pip install command. To test that the install worked, run this command from the command line:
 </p>
 
 {% highlight javascript %}

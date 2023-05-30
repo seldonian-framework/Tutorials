@@ -43,3 +43,10 @@
 .button-wrapper .btn {
     margin-bottom:5px;
 }
+
+.codesnippet {
+  color: #000000;
+  background-color: #e0e0e0;
+  padding-left:  4px;
+  padding-right:  4px;
+}

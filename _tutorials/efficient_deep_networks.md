@@ -68,12 +68,12 @@ title: Seldonian \| Tutorial J
     <u>Using the Seldonian Toolkit:</u>
     <li>The head-only model is the model you will use in the toolkit. This head-only model should be initially untrained when used in the toolkit, so don't apply the weights learned in step 2 to the head. This model needs to written in Python, either using pure Python, Numpy, PyTorch or Tensorflow. The head will often be a linear model, so you may be able to use one of the built-in toolkit models, such as the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.models.models.LinearRegressionModel.html#seldonian.models.models.LinearRegressionModel">LinearRegressionModel</a> class. </li>
     <li>The data you will use are the latent features created in step 5. </li>
-    <li>When setting up the spec object, assign the <code class="highlight">frac_data_in_safety</code> parameter to be the same split fraction as you used in step 1. For example, if you used a 50/50 split, set <code class="highlight">frac_data_in_safety=0.5</code>. It is important that the candidate data you use in the toolkit come from the dataset that you used to train the full model in step 2. In other words, <b>no safety data should come from the dataset that was used to train the full model in step 2</b> because that would invalidate the safety/fairness guarantees. The data split that the toolkit performs does not reshuffle the data, so as long as you didn't shuffle the data yourself after step 1, this requirement should be met. </li>
+    <li>When setting up the spec object, assign the <code class="codesnippet">frac_data_in_safety</code> parameter to be the same split fraction as you used in step 1. For example, if you used a 50/50 split, set <code class="codesnippet">frac_data_in_safety=0.5</code>. It is important that the candidate data you use in the toolkit come from the dataset that you used to train the full model in step 2. In other words, <b>no safety data should come from the dataset that was used to train the full model in step 2</b> because that would invalidate the safety/fairness guarantees. The data split that the toolkit performs does not reshuffle the data, so as long as you didn't shuffle the data yourself after step 1, this requirement should be met. </li>
     <li>Run the Seldonian engine/experiments as normal, except now your model is a simple (often linear) model instead of a deep network. Engine and experiment runs should be <b>much</b> faster than if you used the full network, especially if your initial network is large. </li> 
 </ol>
 
 <p>
-    <b>Note:</b> if you are starting with a pre-trained network, the steps are slightly different. In this case, you would skip steps 1 and 2. If you have access to the data that was used to train the model, you can use that for candidate selection. However, you must obtain some new data to use for the safety data that was not used to train the pre-trained model. The reason for this is described in step 8 above. If you do not have access to the data that was used to train the model, then any new data you have can be partitioned into candidate and safety data (via the <code class="highlight">frac_data_in_safety</code> parameter) however you like. 
+    <b>Note:</b> if you are starting with a pre-trained network, the steps are slightly different. In this case, you would skip steps 1 and 2. If you have access to the data that was used to train the model, you can use that for candidate selection. However, you must obtain some new data to use for the safety data that was not used to train the pre-trained model. The reason for this is described in step 8 above. If you do not have access to the data that was used to train the model, then any new data you have can be partitioned into candidate and safety data (via the <code class="codesnippet">frac_data_in_safety</code> parameter) however you like. 
 </p>
 
 </div>
@@ -558,7 +558,7 @@ print("done")
 <h4 id="step8" class="mb-2">Step 8. Assign the frac_data_in_safety parameter of the spec object to be the same split fraction as you used in step 1</h4>
 
 <p>
-    We used a 50/50 split in step 1, so we just need to set <code class="highlight">frac_data_in_safety=0.5</code>. Recall that the candidate data that we use in the toolkit must match the dataset that we used to train the full model in step 2. In other words, no safety data should come from the dataset that was used to train the full model in step 2 because that would invalidate the safety/fairness guarantees. The data split that the toolkit performs does not reshuffle the data, so the candidate data will be the first half of the data we pass to the dataset object. This is the same half on which we trained the full model. That means that the latent features that will be used as candidate data in the toolkit came from the candidate data on which we trained the full model.
+    We used a 50/50 split in step 1, so we just need to set <code class="codesnippet">frac_data_in_safety=0.5</code>. Recall that the candidate data that we use in the toolkit must match the dataset that we used to train the full model in step 2. In other words, no safety data should come from the dataset that was used to train the full model in step 2 because that would invalidate the safety/fairness guarantees. The data split that the toolkit performs does not reshuffle the data, so the candidate data will be the first half of the data we pass to the dataset object. This is the same half on which we trained the full model. That means that the latent features that will be used as candidate data in the toolkit came from the candidate data on which we trained the full model.
 </p>
 
 <h4 id="step9" class="mb-2">Step 9. Run the Seldonian Engine/Experiments as normal, except now the model is a simple linear model instead of a deep network</h4>
@@ -660,7 +660,7 @@ fig=plot_gradient_descent(sol_dict,primary_objective_name='cross entropy',plot_r
 </p>
 
 <p>
-    Now, we set up the parameters of the experiment. We will be using 10 trials with six data fractions. This setup is similar to the setup in the gender classifier example. Set <code class="highlight">n_workers</code> to the number of CPUs you want to use. Each CPU will get one trial at a time. Change <code class="highlight">results_dir</code> to where you want to save the results. 
+    Now, we set up the parameters of the experiment. We will be using 10 trials with six data fractions. This setup is similar to the setup in the gender classifier example. Set <code class="codesnippet">n_workers</code> to the number of CPUs you want to use. Each CPU will get one trial at a time. Change <code class="codesnippet">results_dir</code> to where you want to save the results. 
 </p>
 {% highlight python %}
 # Parameter setup
@@ -701,7 +701,7 @@ test_labels = dataset.labels
 {% endhighlight python %}
 
 <p>
-    Next, we define the function used for evaluating the performance and its keyword arguments. Above, we set <code class="highlight">performance_metric='Accuracy'</code>, so that's the metric we will use for the left-most plot. 
+    Next, we define the function used for evaluating the performance and its keyword arguments. Above, we set <code class="codesnippet">performance_metric='Accuracy'</code>, so that's the metric we will use for the left-most plot. 
 </p>
 
 {% highlight python %}
@@ -757,7 +757,7 @@ plot_generator.run_seldonian_experiment(verbose=verbose)
 {% endhighlight python %}
 
 <p>
-    Running the above code will produce 10 trials for each data fraction, resulting in a total of 60 files. These will be saved as CSV files in <code class="highlight">${results_dir}/qsa_results/trial_data</code>, where <code class="highlight">${results_dir}</code> is whatever you set that variable to be. We want to compare these results to the same experiment using the full deep network with the constraint as well as the full network without the constraint - these are the two curves shown in Figure 3 of the <a href="{{ "/examples/facial_recognition/" | relative_url }}">Gender bias in facial recognition example</a>. To do this, we can copy the results from that experiment into the <code class="highlight">results_dir</code> folder of this experiment. We did that, but renamed the <code>qsa_results/</code> folder from the other experiment to <code>qsa_fullmodel_results/</code> so that it wouldn't overwrite our <code>qsa_results/</code> folder. The other folder we need to copy from that experiment is the <code>facial_recog_cnn/</code> folder, which contains the results for the experiment on the full network lacking the constraint. 
+    Running the above code will produce 10 trials for each data fraction, resulting in a total of 60 files. These will be saved as CSV files in <code class="codesnippet">${results_dir}/qsa_results/trial_data</code>, where <code class="codesnippet">${results_dir}</code> is whatever you set that variable to be. We want to compare these results to the same experiment using the full deep network with the constraint as well as the full network without the constraint - these are the two curves shown in Figure 3 of the <a href="{{ "/examples/facial_recognition/" | relative_url }}">Gender bias in facial recognition example</a>. To do this, we can copy the results from that experiment into the <code class="codesnippet">results_dir</code> folder of this experiment. We did that, but renamed the <code>qsa_results/</code> folder from the other experiment to <code>qsa_fullmodel_results/</code> so that it wouldn't overwrite our <code>qsa_results/</code> folder. The other folder we need to copy from that experiment is the <code>facial_recog_cnn/</code> folder, which contains the results for the experiment on the full network lacking the constraint. 
 </p>
 <p>
     You'll notice in the parameter setup section of the current experiment that we defined the dictionary:
@@ -771,7 +771,7 @@ model_label_dict = {
 {% endhighlight python %}
 
 <p>
-    This dictionary maps the model name (the prefix to <code class="highlight">_results</code> in the model results folder path) to the name you want displayed in the legend of the plot. Let's now run the code to make the three plots for this experiment and the two experiments we copied over. 
+    This dictionary maps the model name (the prefix to <code class="codesnippet">_results</code> in the model results folder path) to the name you want displayed in the legend of the plot. Let's now run the code to make the three plots for this experiment and the two experiments we copied over. 
 </p>
 
 {% highlight python %}

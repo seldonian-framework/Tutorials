@@ -88,8 +88,8 @@ Running this code should print out that the 12 spec files have been created.
 <p>
 	In <a href="https://github.com/mhyeh/Fairness-for-Lie-Detection/blob/main/generate_experiment_plots.py">generate_experiment_plot.py</a>, we run a Seldonian Experiment with a quasi-Seldonian model, a baseline logistic regression model, and a random classifier baseline model. The performance metric is accuracy. The code takes two inputs:
 	<ol> 
-		<li>Constraint name, chosen from <code class="highlight">['disparate_impact', 'predictive_equality', 'equal_opportunity', 'overall_accuracy_equality']</code></li>
-		<li> $\epsilon$, chosen from <code class="highlight">[0.8, 0.9, 0.95]</code></li>
+		<li>Constraint name, chosen from <code class='codesnippet'>['disparate_impact', 'predictive_equality', 'equal_opportunity', 'overall_accuracy_equality']</code></li>
+		<li> $\epsilon$, chosen from <code class='codesnippet'>[0.8, 0.9, 0.95]</code></li>
 	</ol>
 </p>
 

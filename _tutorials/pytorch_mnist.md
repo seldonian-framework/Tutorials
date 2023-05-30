@@ -30,7 +30,7 @@ title: Seldonian \| Tutorial G
     </p>
 
     <p> 
-        <a href="https://pytorch.org/">PyTorch</a> is an open-source machine learning framework written in Python that is popular for deep learning. PyTorch uses objects called tensors (<code class="highlight">torch.Tensor</code>) to represent multi-dimensional arrays of data. The Seldonian toolkit uses NumPy arrays to represent data and as a whole is not written in PyTorch. Fortunately, PyTorch tensors can be converted to NumPy arrays with relative ease, and vice versa. The toolkit takes care of this conversion, allowing you to focus on implementing your PyTorch model. For now, only the Seldonian model can be written in PyTorch. The dataset must still be provided to the engine as NumPy arrays, not PyTorch objects. Currently, PyTorch is <b>only supported for supervised learning models</b>. We plan to support deep reinforcement learning policies in PyTorch in the near future. 
+        <a href="https://pytorch.org/">PyTorch</a> is an open-source machine learning framework written in Python that is popular for deep learning. PyTorch uses objects called tensors (<code class='codesnippet'>torch.Tensor</code>) to represent multi-dimensional arrays of data. The Seldonian toolkit uses NumPy arrays to represent data and as a whole is not written in PyTorch. Fortunately, PyTorch tensors can be converted to NumPy arrays with relative ease, and vice versa. The toolkit takes care of this conversion, allowing you to focus on implementing your PyTorch model. For now, only the Seldonian model can be written in PyTorch. The dataset must still be provided to the engine as NumPy arrays, not PyTorch objects. Currently, PyTorch is <b>only supported for supervised learning models</b>. We plan to support deep reinforcement learning policies in PyTorch in the near future. 
     </p>
 
     <p>
@@ -56,7 +56,7 @@ $ pip install torch
 $ pip install torchvision
 {% endhighlight javascript %}
 <p>
-    <b>Note:</b> To enable GPU acceleration, you will need to have the proper setup for your machine. For example, CUDA needs to be enabled if you have an NVIDIA graphics card. This may require more than simply doing <code class="highlight">pip install torch</code>. The good news is that even if you don't have access to a GPU, you will still be able to run the model on your CPU. To learn more about GPU-acceleration for PyTorch, see the "Install Pytorch" section of this page: <a href="https://pytorch.org/">https://pytorch.org/</a>
+    <b>Note:</b> To enable GPU acceleration, you will need to have the proper setup for your machine. For example, CUDA needs to be enabled if you have an NVIDIA graphics card. This may require more than simply doing <code class='codesnippet'>pip install torch</code>. The good news is that even if you don't have access to a GPU, you will still be able to run the model on your CPU. To learn more about GPU-acceleration for PyTorch, see the "Install Pytorch" section of this page: <a href="https://pytorch.org/">https://pytorch.org/</a>
 </p>
 
 <p>
@@ -65,11 +65,11 @@ $ pip install torchvision
 <p>
     Seldonian models are implemented as Python classes. There are three requirements for creating a new Seldonian model class with PyTorch:
     <ol>
-        <li>The class must inherit from this base class: <code class="highlight">seldonian.models.pytorch_model.SupervisedPytorchBaseModel</code>. </li>
-        <li>The class must take as input a <code class="highlight">device</code> string, which specifies the hardware (e.g. CPU vs. GPU) on which to run the model, and pass that device string to the base class's <code class="highlight">__init__</code> method.</li>
-        <li>The class must have a <code class="highlight">create_model()</code> method in which it defines the PyTorch model and returns it as an instance of <code class="highlight">torch.nn.Module</code> or <code class="highlight">torch.nn.Sequential</code>. The reason for this is that the PyTorch model must have a <code class="highlight">forward()</code> method, and these are two common model classes that have that method. </li>
+        <li>The class must inherit from this base class: <code class='codesnippet'>seldonian.models.pytorch_model.SupervisedPytorchBaseModel</code>. </li>
+        <li>The class must take as input a <code class='codesnippet'>device</code> string, which specifies the hardware (e.g. CPU vs. GPU) on which to run the model, and pass that device string to the base class's <code class='codesnippet'>__init__</code> method.</li>
+        <li>The class must have a <code class='codesnippet'>create_model()</code> method in which it defines the PyTorch model and returns it as an instance of <code class='codesnippet'>torch.nn.Module</code> or <code class='codesnippet'>torch.nn.Sequential</code>. The reason for this is that the PyTorch model must have a <code class='codesnippet'>forward()</code> method, and these are two common model classes that have that method. </li>
     </ol> 
-    We will name our new model <code class="highlight">PyTorchCNN</code> and use the network architecture described in this article: <a href="https://medium.com/@nutanbhogendrasharma/pytorch-convolutional-neural-network-with-mnist-dataset-4e8a4265e118">https://medium.com/@nutanbhogendrasharma/pytorch-convolutional-neural-network-with-mnist-dataset-4e8a4265e118</a>. This is an overview of the flow of the network: 
+    We will name our new model <code class='codesnippet'>PyTorchCNN</code> and use the network architecture described in this article: <a href="https://medium.com/@nutanbhogendrasharma/pytorch-convolutional-neural-network-with-mnist-dataset-4e8a4265e118">https://medium.com/@nutanbhogendrasharma/pytorch-convolutional-neural-network-with-mnist-dataset-4e8a4265e118</a>. This is an overview of the flow of the network: 
 </p>
 {% highlight python %}
 Sequential(
@@ -86,7 +86,7 @@ Sequential(
 {% endhighlight python %}
 
 <p>
-    This model has around 29,000 parameters. We consider the <code class="highlight">Conv2d</code>, <code class="highlight">ReLU</code>, and <code class="highlight">MaxPool2d</code> to be a single hidden layer, such that this network comprises two hidden layers, followed by a single output <code class="highlight">Linear</code>+<code class="highlight">Softmax</code> layer.
+    This model has around 29,000 parameters. We consider the <code class='codesnippet'>Conv2d</code>, <code class='codesnippet'>ReLU</code>, and <code class='codesnippet'>MaxPool2d</code> to be a single hidden layer, such that this network comprises two hidden layers, followed by a single output <code class='codesnippet'>Linear</code>+<code class='codesnippet'>Softmax</code> layer.
 </p>
 
 <p>
@@ -135,7 +135,7 @@ class PytorchCNN(SupervisedPytorchBaseModel):
         return cnn
 {% endhighlight python %}
 <p>
-    It is very important that the <code class="highlight">create_model()</code> method returns the PyTorch model object. In this implementation, we used PyTorch's <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">sequential</a> container to hold a sequence of Pytorch <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">nn.Modules</a>. This is just one pattern that PyTorch provides, and it is not required in the <code class="highlight">create_model()</code> method. As long as this method returns a PyTorch model object that has a <code class="highlight">forward()</code> method, it should be compatible with the toolkit. Also note that we applied a softmax layer at the end of the model so that the outputs of the model are probabilities instead of logits. We did this because the primary objective function we will use when we run the model in the following example expects probabilities. This might not always be the case for your use case, so be aware of what your objective function expects from your model. 
+    It is very important that the <code class='codesnippet'>create_model()</code> method returns the PyTorch model object. In this implementation, we used PyTorch's <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">sequential</a> container to hold a sequence of Pytorch <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">nn.Modules</a>. This is just one pattern that PyTorch provides, and it is not required in the <code class='codesnippet'>create_model()</code> method. As long as this method returns a PyTorch model object that has a <code class='codesnippet'>forward()</code> method, it should be compatible with the toolkit. Also note that we applied a softmax layer at the end of the model so that the outputs of the model are probabilities instead of logits. We did this because the primary objective function we will use when we run the model in the following example expects probabilities. This might not always be the case for your use case, so be aware of what your objective function expects from your model. 
 </p> 
 
 <p>
@@ -166,7 +166,7 @@ class PytorchCNN(SupervisedPytorchBaseModel):
 
 <h5 id="running_the_algorithm">Running the Seldonian algorithm</h5>
 <p>
-    If you are reading this tutorial, chances are you have already used the engine to run Seldonian algorithms. If not, please review the <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url}}">Fair loans tutorial</a>. We need to create a <code class="highlight">SupervisedSpec</code> object, consisting of everything we will need to run the Seldonian algorithm. We will write a script that does this and then runs the algorithm. First, let's define the imports that we will need. The <code class="highlight">PytorchCNN</code> model that we defined above is already part of the library, living in a module called <code>seldonian.models.pytorch_cnn</code>, so we can import the model from that module. 
+    If you are reading this tutorial, chances are you have already used the engine to run Seldonian algorithms. If not, please review the <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url}}">Fair loans tutorial</a>. We need to create a <code class='codesnippet'>SupervisedSpec</code> object, consisting of everything we will need to run the Seldonian algorithm. We will write a script that does this and then runs the algorithm. First, let's define the imports that we will need. The <code class='codesnippet'>PytorchCNN</code> model that we defined above is already part of the library, living in a module called <code>seldonian.models.pytorch_cnn</code>, so we can import the model from that module. 
 </p>
 {% highlight python %}
 #pytorch_mnist.py
@@ -185,7 +185,7 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 {% endhighlight python %}
 
-<p>Next, set a random seed so that we can reproduce the result each time we run the script, set the regime and subregime of the problem, and then fetch the data. We obtain the data using PyTorch's <code class="highlight">torchvision</code> API, which provides a copy of the MNIST dataset. We will retrieve the training and test sets using <code class="highlight">download=True</code> to download the data (64 MB) to a folder on your computer <code class="highlight">data_folder</code> the first time you run the script. If you run the script again, it will not redownload the data, but will look in your <code class="highlight">data_folder</code> for an existing copy of the data. We combine the train and test sets and then extract the features and labels from the combined data. The Seldonian algorithm will partition these into candidate and safety data according to the value of <code class="highlight">frac_data_in_safety</code> that we specify in the spec object. In this example, we will use <code class="highlight">frac_data_in_safety=0.5</code>. </p>
+<p>Next, set a random seed so that we can reproduce the result each time we run the script, set the regime and subregime of the problem, and then fetch the data. We obtain the data using PyTorch's <code class='codesnippet'>torchvision</code> API, which provides a copy of the MNIST dataset. We will retrieve the training and test sets using <code class='codesnippet'>download=True</code> to download the data (64 MB) to a folder on your computer <code class='codesnippet'>data_folder</code> the first time you run the script. If you run the script again, it will not redownload the data, but will look in your <code class='codesnippet'>data_folder</code> for an existing copy of the data. We combine the train and test sets and then extract the features and labels from the combined data. The Seldonian algorithm will partition these into candidate and safety data according to the value of <code class='codesnippet'>frac_data_in_safety</code> that we specify in the spec object. In this example, we will use <code class='codesnippet'>frac_data_in_safety=0.5</code>. </p>
 
 {% highlight python %}
 if __name__ == "__main__":
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     labels = np.array(all_targets) # these are 1D so don't need to reshape them
 {% endhighlight python %}
 
-<p>Notice that we reshaped the features, changed their data type, divided all of the pixel values by 255.0. This is all done so that the features are compliant with the input layer of the model. We also converted them to NumPy arrays, a necessary step even though they will get converted back to Tensors before they are fed into the model. The reason why we have to do this is beyond the scope of this tutorial and will be explained in a future tutorial. Next, let's create the <code class="highlight">SupervisedDataset</code> object. </p>
+<p>Notice that we reshaped the features, changed their data type, divided all of the pixel values by 255.0. This is all done so that the features are compliant with the input layer of the model. We also converted them to NumPy arrays, a necessary step even though they will get converted back to Tensors before they are fed into the model. The reason why we have to do this is beyond the scope of this tutorial and will be explained in a future tutorial. Next, let's create the <code class='codesnippet'>SupervisedDataset</code> object. </p>
 {% highlight python %}
     meta_information = {}
     meta_information['feature_col_names'] = ['img']
@@ -247,12 +247,12 @@ if __name__ == "__main__":
     model = PytorchCNN(device)
 {% endhighlight python %}
 <p>
-    In my case, I am running the script on an M1 Macbook Air that has a GPU. To specify that I want to do the model computations using this GPU, I use the device string <code class="highlight">"mps"</code>. If you have an NVIDIA chip (common on modern Windows machines), you can try the device string <code class="highlight">"cuda"</code>. The worst that will happen is you'll get an error message of the sort:
+    In my case, I am running the script on an M1 Macbook Air that has a GPU. To specify that I want to do the model computations using this GPU, I use the device string <code class='codesnippet'>"mps"</code>. If you have an NVIDIA chip (common on modern Windows machines), you can try the device string <code class='codesnippet'>"cuda"</code>. The worst that will happen is you'll get an error message of the sort:
 </p>
 {% highlight python %}
 AssertionError: Torch not compiled with CUDA enabled
 {% endhighlight python %}
-    <p> If you do not have a GPU enabled, you can run on the CPU by using the device string <code class="highlight">"cpu"</code>. If you are not sure, you can check if cuda is available by doing:
+    <p> If you do not have a GPU enabled, you can run on the CPU by using the device string <code class='codesnippet'>"cpu"</code>. If you are not sure, you can check if cuda is available by doing:
 </p>
 
 {% highlight python %}
@@ -261,7 +261,7 @@ print(torch.cuda.is_available())
 {% endhighlight python %}
 
 <p> 
-    If this prints <code class="highlight">True</code>, then you should be able to use <code class="highlight">cuda</code> as your device string. Similarly, on a mac with an M1 chip, you can check if the Metal Performance Shaders (MPS) driver is available by doing: 
+    If this prints <code class='codesnippet'>True</code>, then you should be able to use <code class='codesnippet'>cuda</code> as your device string. Similarly, on a mac with an M1 chip, you can check if the Metal Performance Shaders (MPS) driver is available by doing: 
 </p>
 {% highlight python %}
 import torch
@@ -269,10 +269,10 @@ print(torch.backends.mps.is_available())
 print(torch.backends.mps.is_built())
 {% endhighlight python %}
 <p>
-    If both are <code class="highlight">True</code>, then you should be able to use <code class="highlight">"mps"</code> as your device. If not, see this page for help setting up your environment to use the MPS driver: <a href="https://towardsdatascience.com/installing-pytorch-on-apple-m1-chip-with-gpu-acceleration-3351dc44d67c">https://towardsdatascience.com/installing-pytorch-on-apple-m1-chip-with-gpu-acceleration-3351dc44d67c</a>
+    If both are <code class='codesnippet'>True</code>, then you should be able to use <code class='codesnippet'>"mps"</code> as your device. If not, see this page for help setting up your environment to use the MPS driver: <a href="https://towardsdatascience.com/installing-pytorch-on-apple-m1-chip-with-gpu-acceleration-3351dc44d67c">https://towardsdatascience.com/installing-pytorch-on-apple-m1-chip-with-gpu-acceleration-3351dc44d67c</a>
 </p>
 
-<p> Now that the model is instantiated, we can get the randomized initial weights that PyTorch assigned to the parameters and use that as the initial values of $\theta$, the model weights, in gradient descent. We can also now specify that we want to use the cross entropy for our primary objective function, which is called <code class="highlight">multiclass_logistic_loss</code> in the toolkit: </p>
+<p> Now that the model is instantiated, we can get the randomized initial weights that PyTorch assigned to the parameters and use that as the initial values of $\theta$, the model weights, in gradient descent. We can also now specify that we want to use the cross entropy for our primary objective function, which is called <code class='codesnippet'>multiclass_logistic_loss</code> in the toolkit: </p>
 {% highlight python %}
     initial_solution_fn = model.get_initial_weights
     primary_objective_fn = objectives.multiclass_logistic_loss
@@ -311,10 +311,10 @@ print(torch.backends.mps.is_built())
     )
 {% endhighlight python %}
 <p>
-    Notice in <code class="highlight">optimization_hyperparams</code> that we are specifying <code class="highlight">'use_batches' : True</code>, indicating that we want to use batches in gradient descent. The batch size we request is <code class="highlight">150</code>, and we want to run for 5 epochs. Using batches of around this size will make gradient descent run significantly faster. If we don't use batches, we will be running every image in the candidate dataset (35,000 in this example) through the forward and backward pass of the model on every single step of gradient descent, which will be extremely slow. We should note that we had to play around with batch size, number of epochs, and the theta learning rate, <code class="highlight">alpha_theta</code>, to get gradient descent to converge appropriately. We did not perform a proper hyperparameter optimization process, which we recommend doing for a real problem.
+    Notice in <code class='codesnippet'>optimization_hyperparams</code> that we are specifying <code class='codesnippet'>'use_batches' : True</code>, indicating that we want to use batches in gradient descent. The batch size we request is <code class='codesnippet'>150</code>, and we want to run for 5 epochs. Using batches of around this size will make gradient descent run significantly faster. If we don't use batches, we will be running every image in the candidate dataset (35,000 in this example) through the forward and backward pass of the model on every single step of gradient descent, which will be extremely slow. We should note that we had to play around with batch size, number of epochs, and the theta learning rate, <code class='codesnippet'>alpha_theta</code>, to get gradient descent to converge appropriately. We did not perform a proper hyperparameter optimization process, which we recommend doing for a real problem.
 </p>
 <p>
-    We also batch the safety data using <code class="highlight">batch_size_safety=1000</code>. This passes 1000 images in the safety dataset through the model at a time during the safety test. If we exclude this parameter, all 35,000 samples in the safety dataset will be passed through the model at once. This can be extremely slow and can result in exhausting the memory of your machine. As a result, for problems with large datasets and/or large models we highly recommend using this parameter. The value of this parameter does not change the result of the safety test.  The value you choose for your use case will depend on your dataset, model, and resources you have available.
+    We also batch the safety data using <code class='codesnippet'>batch_size_safety=1000</code>. This passes 1000 images in the safety dataset through the model at a time during the safety test. If we exclude this parameter, all 35,000 samples in the safety dataset will be passed through the model at once. This can be extremely slow and can result in exhausting the memory of your machine. As a result, for problems with large datasets and/or large models we highly recommend using this parameter. The value of this parameter does not change the result of the safety test.  The value you choose for your use case will depend on your dataset, model, and resources you have available.
 </p>
 <p>
     Finally, we are ready to run the Seldonian algorithm using this spec object. 
@@ -467,7 +467,7 @@ Primary objective evaluated on safety test:
 {% endhighlight python %}
 
 <p>
-    The whole script takes about 90 seconds to run on my M1 Macbook Air using the 8-core GPU, and about 5 minutes to run on the CPU. The location of the candidate selection log info file will be in a <code>logs/</code> subfolder of wherever you ran the script. The safety test should also pass for you, though the value of the primary objective (cross entropy over all 10 classes) on the safety test might differ slightly because your machine's random number generator may differ from mine. The important thing is that the gradient descent curve is similar. Plot it using the following Python code, replacing the path to the <code class="highlight">logfile</code> with the location where that file was saved on your machine.
+    The whole script takes about 90 seconds to run on my M1 Macbook Air using the 8-core GPU, and about 5 minutes to run on the CPU. The location of the candidate selection log info file will be in a <code>logs/</code> subfolder of wherever you ran the script. The safety test should also pass for you, though the value of the primary objective (cross entropy over all 10 classes) on the safety test might differ slightly because your machine's random number generator may differ from mine. The important thing is that the gradient descent curve is similar. Plot it using the following Python code, replacing the path to the <code class='codesnippet'>logfile</code> with the location where that file was saved on your machine.
 </p>
 {% highlight python %}
 from seldonian.utils.plot_utils import plot_gradient_descent

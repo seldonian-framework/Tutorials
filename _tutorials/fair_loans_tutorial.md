@@ -114,7 +114,7 @@ Let us enforce this constraint function with a confidence of $0.95$.
 
 <h5 id="spec_from_script"> Creating the specification object from a script </h5>
 <p>
-A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='highlight'>save_dir</code> directory on your computer. That directory is currently set to <code class="highlight">.</code>, the current directory on my computer, so change <code class='highlight'>save_dir</code> in the code snippet below to the directory where you want to save the spec file. Also, make sure to modify <code class='highlight'>data_pth</code> and <code class='highlight'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
+A complete script for creating the spec object for our Seldonian ML problem is shown below. This script will save the spec object as a pickle file called "spec.pkl" in the <code class='codesnippet'>save_dir</code> directory on your computer. That directory is currently set to <code class='codesnippet'>.</code>, the current directory on my computer, so change <code class='codesnippet'>save_dir</code> in the code snippet below to the directory where you want to save the spec file. Also, make sure to modify <code class='codesnippet'>data_pth</code> and <code class='codesnippet'>metadata_pth</code> to point to the locations where you downloaded the data and metadata files described in the <a href="#dataset_prep"> Dataset preparation section</a>, respectively. 
 </p>
 
 {% highlight python %}
@@ -205,15 +205,15 @@ if __name__ == '__main__':
 </div>
 
 <p>
-Let's take a close look at the instantiation of <code class='highlight'>SupervisedSpec</code> in the code above so we can understand each of the arguments. First, the spec object takes the <code class='highlight'>dataset</code> and <code class='highlight'>model</code> objects as arguments. Next, we pass the <code class='highlight'>parse_trees</code> list that we defined above in the script. In our case, we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. We also need to pass the <code class='highlight'>sub_regime</code> to indicate the type of supervised ML problem <code class='highlight'></code>Then, we set <code class='highlight'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='highlight'>primary_objective</code> function, followed by the <code class='highlight'>initial_solution_fn</code>, which specifies the function we will use to provide the initial solution to candidate selection. Here, we set <code class='highlight'>initial_solution_fn=model.fit</code>.  Because <code class='highlight'>model</code> refers to our <code class='highlight'>LogisticRegressionModel()</code> object, <code class='highlight'>model.fit</code> refers to that objects' <code class='highlight'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
+Let's take a close look at the instantiation of <code class='codesnippet'>SupervisedSpec</code> in the code above so we can understand each of the arguments. First, the spec object takes the <code class='codesnippet'>dataset</code> and <code class='codesnippet'>model</code> objects as arguments. Next, we pass the <code class='codesnippet'>parse_trees</code> list that we defined above in the script. In our case, we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. We also need to pass the <code class='codesnippet'>sub_regime</code> to indicate the type of supervised ML problem <code class='codesnippet'></code>Then, we set <code class='codesnippet'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='codesnippet'>primary_objective</code> function, followed by the <code class='codesnippet'>initial_solution_fn</code>, which specifies the function we will use to provide the initial solution to candidate selection. Here, we set <code class='codesnippet'>initial_solution_fn=model.fit</code>.  Because <code class='codesnippet'>model</code> refers to our <code class='codesnippet'>LogisticRegressionModel()</code> object, <code class='codesnippet'>model.fit</code> refers to that objects' <code class='codesnippet'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
 </p>
 
 <p>
-The next argument is <code class='highlight'>use_builtin_primary_gradient_fn=True</code>. This instructs the engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='highlight'>primary_objective = objectives.binary_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the binary logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='highlight'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='highlight'>use_builtin_primary_gradient_fn=False</code> will cause the engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient can speed up execution in some cases. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
+The next argument is <code class='codesnippet'>use_builtin_primary_gradient_fn=True</code>. This instructs the engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='codesnippet'>primary_objective = objectives.binary_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the binary logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='codesnippet'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='codesnippet'>use_builtin_primary_gradient_fn=False</code> will cause the engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient can speed up execution in some cases. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
 </p>
 
 <p>
-The next argument is <code class='highlight'>optimization_technique='gradient_descent'</code>, which specifies how we will search for a candidate solution during candidate selection. The other option for this argument is <code class="highlight">'barrier_function'</code>, which we will not cover here. The argument <code class='highlight'>optimizer='adam'</code> instructs the code to use the Adam optimizer during gradient descent. The final argument, <code class='highlight'>optimization_hyperparams</code>, is for setting the parameters of gradient descent, which include:
+The next argument is <code class='codesnippet'>optimization_technique='gradient_descent'</code>, which specifies how we will search for a candidate solution during candidate selection. The other option for this argument is <code class='codesnippet'>'barrier_function'</code>, which we will not cover here. The argument <code class='codesnippet'>optimizer='adam'</code> instructs the code to use the Adam optimizer during gradient descent. The final argument, <code class='codesnippet'>optimization_hyperparams</code>, is for setting the parameters of gradient descent, which include:
 <ul>
 <li>'lambda_init': the initial value of the Lagrange multiplier. </li>
 <li>'alpha_theta': the initial learning rate for the model parameters. </li>
@@ -228,7 +228,7 @@ The next argument is <code class='highlight'>optimization_technique='gradient_de
 </ul>
 
 
-For more details about the <code class='highlight'>SupervisedSpec</code> object, see the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html">engine docs </a>.
+For more details about the <code class='codesnippet'>SupervisedSpec</code> object, see the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html">engine docs </a>.
 </p>
 
 
@@ -255,7 +255,7 @@ For more details about the <code class='highlight'>SupervisedSpec</code> object,
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="running_the_engine"> Running the Seldonian Engine </h3>
 <p>
-    We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code below into the file. You may need to change the line <code class='highlight'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
+    We are now ready to run the Seldonian algorithm using the spec file generated in the previous step, regardless of the method used. The code below modifies some defaults of the spec object that we created and then runs the Seldonian algorithm using the modified spec object. Create a file called "loan_fairness.py" and copy the code below into the file. You may need to change the line <code class='codesnippet'>specfile = './spec.pkl'</code> to point it to where you created that file in the previous step.
 
 <div>
 
@@ -329,21 +329,21 @@ This will print all of the keys of this dictionary:
 {% endhighlight %}
 Here we explain what each of these keys represents:
 <ul>
-    <li><code class="highlight">candidate_solution</code> contains the optimal weight vector found during candidate selection. </li>
-    <li><code class="highlight">best_index</code> is the iteration of gradient descent where the optimum was found. </li>
-    <li><code class="highlight">best_f</code> is the value of the primary objective function at the optimal gradient descent step, <code class="highlight">best_index</code>. </li>
-    <li><code class="highlight">best_g</code> is a vector containing the values of the upper bounds on the constraint functions at the optimal gradient descent step, <code class="highlight">best_index</code>. </li>
-    <li><code class="highlight">best_lamb</code> is a vector containing the values of the Lagrange multipliers at the optimal gradient descent step, <code class="highlight">best_index</code>.</li>
-    <li><code class="highlight">best_L</code> is the value of the Lagrangian at the optimal gradient descent step, <code class="highlight">best_index</code>.</li>
-    <li><code class="highlight">found_feasible_solution</code> is a Boolean indicating whether a solution was found that is predicted to pass the safety test. </li>
-    <li><code class="highlight">theta_vals</code> is an array containing the model weights $\theta_j$ at each $j$th iteration of gradient descent. </li>
-    <li><code class="highlight">f_vals</code> is an array containing the value of the primary objective function $f_j$ at each $j$th iteration of gradient descent. </li>
-    <li><code class="highlight">lamb_vals</code> is an array containing the vector of each $i$th Lagrange multiplier $\lambda_{i,j}$ at each $j$th iteration of gradient descent. </li>
-    <li><code class="highlight">g_vals</code> is an array containing the vector of each $i$th constraint function upper bound $\text{HCUB}(g_{i,j})$ at each $j$th iteration of gradient descent. </li>
-    <li><code class="highlight">L_vals</code> is an array containing the values of the Lagrangian $L_{j}$ at each $j$th iteration of gradient descent. </li>
-    <li><code class="highlight">constraint_strs</code> is a list of the constraint strings. </li>
-    <li><code class="highlight">batch_size</code> is the batch size used in gradient descent. </li>
-    <li><code class="highlight">n_epochs</code> is the number of epochs used in gradient descent. </li>
+    <li><code class='codesnippet'>candidate_solution</code> contains the optimal weight vector found during candidate selection. </li>
+    <li><code class='codesnippet'>best_index</code> is the iteration of gradient descent where the optimum was found. </li>
+    <li><code class='codesnippet'>best_f</code> is the value of the primary objective function at the optimal gradient descent step, <code class='codesnippet'>best_index</code>. </li>
+    <li><code class='codesnippet'>best_g</code> is a vector containing the values of the upper bounds on the constraint functions at the optimal gradient descent step, <code class='codesnippet'>best_index</code>. </li>
+    <li><code class='codesnippet'>best_lamb</code> is a vector containing the values of the Lagrange multipliers at the optimal gradient descent step, <code class='codesnippet'>best_index</code>.</li>
+    <li><code class='codesnippet'>best_L</code> is the value of the Lagrangian at the optimal gradient descent step, <code class='codesnippet'>best_index</code>.</li>
+    <li><code class='codesnippet'>found_feasible_solution</code> is a Boolean indicating whether a solution was found that is predicted to pass the safety test. </li>
+    <li><code class='codesnippet'>theta_vals</code> is an array containing the model weights $\theta_j$ at each $j$th iteration of gradient descent. </li>
+    <li><code class='codesnippet'>f_vals</code> is an array containing the value of the primary objective function $f_j$ at each $j$th iteration of gradient descent. </li>
+    <li><code class='codesnippet'>lamb_vals</code> is an array containing the vector of each $i$th Lagrange multiplier $\lambda_{i,j}$ at each $j$th iteration of gradient descent. </li>
+    <li><code class='codesnippet'>g_vals</code> is an array containing the vector of each $i$th constraint function upper bound $\text{HCUB}(g_{i,j})$ at each $j$th iteration of gradient descent. </li>
+    <li><code class='codesnippet'>L_vals</code> is an array containing the values of the Lagrangian $L_{j}$ at each $j$th iteration of gradient descent. </li>
+    <li><code class='codesnippet'>constraint_strs</code> is a list of the constraint strings. </li>
+    <li><code class='codesnippet'>batch_size</code> is the batch size used in gradient descent. </li>
+    <li><code class='codesnippet'>n_epochs</code> is the number of epochs used in gradient descent. </li>
 </ul>  
 
 So, to get the primary objective values at each iteration of gradient descent, one would do:
@@ -358,11 +358,11 @@ Similarly, to get the value of the upper bound on the constraint function, $\tex
 print(cs_dict['g_vals'])
 {% endhighlight %}
 
-If candidate selection returns "NSF", the <code class="highlight">cs_dict</code> will still store these values. Note that this particular <code class="highlight">cs_dict</code> is unique to gradient descent. Other optimization techniques will return different structures of the <code class="highlight">cs_dict</code>.
+If candidate selection returns "NSF", the <code class='codesnippet'>cs_dict</code> will still store these values. Note that this particular <code class='codesnippet'>cs_dict</code> is unique to gradient descent. Other optimization techniques will return different structures of the <code class='codesnippet'>cs_dict</code>.
 </p>
 
 <p>
-As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this dictionary (for gradient descent only). The following script will run that function on the file. Note that you will have to change the path for <code class='highlight'>cs_file</code> to point it to the file that was created on your machine. 
+As part of the Engine library, we provide a plotting function that is designed to help visualize the contents of this dictionary (for gradient descent only). The following script will run that function on the file. Note that you will have to change the path for <code class='codesnippet'>cs_file</code> to point it to the file that was created on your machine. 
 </p>
 <div>
 
@@ -415,8 +415,8 @@ Seldonian Experiments are a way to thoroughly evaluate the performance and safet
         <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 15 different data fractions, which will be log-spaced between 0.001 and 1.0. This array times the number of data points in the original dataset (1000) will make up the horizontal axis of the three plots.</li>
         <li>Create 50 resampled datasets (one for each trial) by sampling with replacement from the dataset we used as input to the engine above. Each resampled dataset will have the same number of rows (1000) as the original dataset. We use 50 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use the original dataset as the ground truth dataset</b> for calculating the performance and safety metrics.</li>
         <li>
-        For each <code class='highlight'>data_frac</code> in the array of data fractions, run 50 trials. In each trial, use only the first <code class='highlight'>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the engine, where only the <code class='highlight'>dataset</code> parameter to <code class='highlight'>SupervisedSpec</code> will be modified for each trial. This will generate 15x50=750 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters, or "NSF" if no solution was found. </li>
-        <li>For each <code class='highlight'>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g., logistic loss or accuracy) across the 50 trials at this <code class='highlight'>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e., $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
+        For each <code class='codesnippet'>data_frac</code> in the array of data fractions, run 50 trials. In each trial, use only the first <code class='codesnippet'>data_frac</code> fraction of the corresponding resampled dataset to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the engine, where only the <code class='codesnippet'>dataset</code> parameter to <code class='codesnippet'>SupervisedSpec</code> will be modified for each trial. This will generate 15x50=750 total runs of the Seldonian algorithm. Each run will consist of a different set of fitted model parameters, or "NSF" if no solution was found. </li>
+        <li>For each <code class='codesnippet'>data_frac</code>, if a solution was returned that passed the safety test, calculate the mean and standard error on the performance (e.g., logistic loss or accuracy) across the 50 trials at this <code class='codesnippet'>data_frac</code> using the fitted model parameters evaluated on the ground truth dataset. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 50 trials. This fraction, referred to as the "solution rate", will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the disparate impact statistic, $g_1(\theta)$, was violated, i.e., $g_1(\theta) > 0$, on the ground truth dataset. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
     </ul>
 </p>
 <p>
@@ -430,10 +430,10 @@ pip install fairlearn==0.7.0
 We will describe the Fairlearn model we use in more detail below. Each model requires its own experiment, but the main parameters of the experiment, such as the number of trials and data fractions, as well as the metrics we will calculate (performance, solution rate, and failure rate), are identical. This will allow us to compare the Seldonian algorithm to these other models on the same three plots. 
 </p>
 <p>
-    Now, we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code class='highlight'>PlotGenerator</code> class, and in our particular example, the <code class='highlight'>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
+    Now, we will show how to implement the described experiment using the Experiments library. At the center of the Experiments library is the <code class='codesnippet'>PlotGenerator</code> class, and in our particular example, the <code class='codesnippet'>SupervisedPlotGenerator</code> child class. The goal of the following script is to setup this object, use its methods to run our experiments, and then to make the three plots.  
 </p>
 
-<p><b>Note:</b> Running the code below in a Jupyter Notebook may crash the notebook. To prevent this from happening, set <code class="highlight">verbose=False</code> or run the code in a script only. </p>
+<p><b>Note:</b> Running the code below in a Jupyter Notebook may crash the notebook. To prevent this from happening, set <code class='codesnippet'>verbose=False</code> or run the code in a script only. </p>
 
 <p>
     First, the imports we will need:
@@ -460,7 +460,7 @@ Now, we will set up the parameters for the experiments, such as the data fractio
 Fairlearn's fairness definitions are rigid and do not exactly match the definition we used in the engine. To approximate the same definition of disparate impact as ours, we use their definition of demographic parity with a ratio bound of four different values. We will show later that we can change our constraint to match theirs exactly, and the results we find do not change significantly. 
 </p>
 <p>
-Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. <code class='highlight'>n_workers</code> is how many parallel processes will be used for running the experiments. Set this parameter to however many CPUs you want to use. Note: using 7 CPUs, this entire script takes 5–10 minutes to run on an M1 Macbook Air. The results for each experiment we run will be saved in subdirectories of <code class='highlight'>results_dir</code>. 
+Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. <code class='codesnippet'>n_workers</code> is how many parallel processes will be used for running the experiments. Set this parameter to however many CPUs you want to use. Note: using 7 CPUs, this entire script takes 5–10 minutes to run on an M1 Macbook Air. The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. 
 </p>
 
 <p>
@@ -507,7 +507,7 @@ Next, we will set up the ground truth dataset on which we will calculate the per
 {% endhighlight python %}
 </p>
 <p>
-We need to define what function <code class='highlight'>perf_eval_fn</code> we will use to evaluate the model's performance. In this case, we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='highlight'>perf_eval_kwargs</code>, which will be passed to the <code class='highlight'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation function on the model in each of our experiment trials. 
+We need to define what function <code class='codesnippet'>perf_eval_fn</code> we will use to evaluate the model's performance. In this case, we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='codesnippet'>perf_eval_kwargs</code>, which will be passed to the <code class='codesnippet'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation function on the model in each of our experiment trials. 
 
 {% highlight python %}
     # Setup performance evaluation function and kwargs 
@@ -543,7 +543,7 @@ Now we instantiate the plot generator, passing in the parameters from variables 
 </p>
 
 <p>
-We will first run our two baseline experiments, which we can do by calling the <code class='highlight'>run_baseline_experiment()</code> method of the plot generator and passing in the baseline model name of choice. 
+We will first run our two baseline experiments, which we can do by calling the <code class='codesnippet'>run_baseline_experiment()</code> method of the plot generator and passing in the baseline model name of choice. 
 
 {% highlight python %}
     # Baseline models
@@ -568,7 +568,7 @@ Similarly, to run our Seldonian Experiment, we call the corresponding method of 
 </p>
 
 <p>
-The last experiment we will run is the Fairlearn experiment. While Fairlearn does not explictly support a a disparate impact constraint, disparate impact can be constructed using their demographic parity constraint with a ratio bound. Under the hood, we are using the following Fairlearn model, where <code class='highlight'>fairlearn_epsilon_constraint</code> is one of the four values in the list we defined above. <b>Note that the following code is not part of the experiment script and you do not need to run it. It is shown only to illuminate how we are implementing the Fairlearn model in our experiment</b>. 
+The last experiment we will run is the Fairlearn experiment. While Fairlearn does not explictly support a a disparate impact constraint, disparate impact can be constructed using their demographic parity constraint with a ratio bound. Under the hood, we are using the following Fairlearn model, where <code class='codesnippet'>fairlearn_epsilon_constraint</code> is one of the four values in the list we defined above. <b>Note that the following code is not part of the experiment script and you do not need to run it. It is shown only to illuminate how we are implementing the Fairlearn model in our experiment</b>. 
 {% highlight python %}
 from sklearn.linear_model import LogisticRegression
 from fairlearn.reductions import ExponentiatedGradient
@@ -616,7 +616,7 @@ The way Fairlearn handles sensitive columns is different than way we handle them
 {% endhighlight python %}
 </p>
 <p>
-Now that the experiments have been run, we can make the three plots. At the top of the script, we set <code class='highlight'>save_plot = False</code>, so while the plot will be displayed to the screen, it will not be saved. Setting <code class="highlight">save_plot = True</code> at the top of the script will save the plot to disk but will not display it to screen. 
+Now that the experiments have been run, we can make the three plots. At the top of the script, we set <code class='codesnippet'>save_plot = False</code>, so while the plot will be displayed to the screen, it will not be saved. Setting <code class='codesnippet'>save_plot = True</code> at the top of the script will save the plot to disk but will not display it to screen. 
 
 {% highlight python %}        
     if make_plots:
@@ -636,7 +636,7 @@ Now that the experiments have been run, we can make the three plots. At the top 
 Here is the entire script all together, which we will call <code>generate_threeplots.py</code>:
 </p>
 
-<p><b>Note:</b> Running the code below in a Jupyter Notebook may crash the notebook. To prevent this from happening, set <code class="highlight">verbose=False</code> or run the code in a script only. </p>
+<p><b>Note:</b> Running the code below in a Jupyter Notebook may crash the notebook. To prevent this from happening, set <code class='codesnippet'>verbose=False</code> or run the code in a script only. </p>
 
 <div>
 
@@ -774,7 +774,7 @@ Some minor points of these plots are:
 <ul>
 <li> The performance is not plotted for trials that did not return a solution. For the smallest data fractions (e.g., 0.001), only the random classifier returns a solution because it is defined to always return the same solution independent of input. </li>
 <li> The solution rate is between 0 and 1 for the logistic regression model and the Fairlearn models for small amounts of data, not 0 or 1 as one might expect. This happens because in each trial, at a fixed number of training samples, a different resampled dataset is used. When the number of training samples is small ($\lesssim 10$), some of these resampled datasets only contain data labeled for one of the two label classes, i.e., all 0s or all 1s. The logistic regression model and the Fairlearn models return an error when we attempt to train them on these datasets. We count those cases as not returning a solution. Note that Seldonian algorithms do not return a solution for a different reason. They do this when the algorithm deems that the solution is not safe. The random classifier does not use the input data to make predictions, which is why it always returns a solution. </li>
-<li>The failure rate is not plotted for trials that did not return a solution for all models except QSA. The logistic regression baseline and Fairlearn can fail to converge, for example. However, the QSA will always return either a solution or "NSF", even when only one data point (i.e., <code class='highlight'>data_frac=0.001</code>) is provided as input. In cases where it returns "NSF", that solution is considered safe.  </li>
+<li>The failure rate is not plotted for trials that did not return a solution for all models except QSA. The logistic regression baseline and Fairlearn can fail to converge, for example. However, the QSA will always return either a solution or "NSF", even when only one data point (i.e., <code class='codesnippet'>data_frac=0.001</code>) is provided as input. In cases where it returns "NSF", that solution is considered safe.  </li>
 <li> The random classifier does not violate the safety constraint ever because its positive rate is 0.5 for all datapoints, regardless of sex.</li>
 </ul>
 </p>
@@ -811,11 +811,11 @@ spec_save_name = os.path.join(save_dir,'spec_fairlearndef.pkl')
 <p> 
 Once that file is saved, you are ready to run the experiments again. There are only a few changes you will need to make to the file <code>generate_threeplots.py</code>. They are:
 <ul>
-<li> Set <code class='highlight'>fairlearn_eval_method = "native"</code>.</li>
-<li> Set <code class="highlight">fairlearn_epsilons_constraint = [0.9]</code>.</li>
-<li> Point <code class='highlight'>specfile</code> to the new spec file you just created.
+<li> Set <code class='codesnippet'>fairlearn_eval_method = "native"</code>.</li>
+<li> Set <code class='codesnippet'>fairlearn_epsilons_constraint = [0.9]</code>.</li>
+<li> Point <code class='codesnippet'>specfile</code> to the new spec file you just created.
 </li>
-<li> Change <code class='highlight'>results_dir</code> to a new directory so you do not overwrite the results from the previous experiment. </li>
+<li> Change <code class='codesnippet'>results_dir</code> to a new directory so you do not overwrite the results from the previous experiment. </li>
 </ul>  
 </p>
 

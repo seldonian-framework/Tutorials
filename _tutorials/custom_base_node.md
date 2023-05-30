@@ -27,8 +27,8 @@ title: Seldonian \| Tutorial I
 In cases where behavioral constraints can be expressed as mathematical inequalities, as is the case for some popular definitions of fairness (for example, see <a href="https://fairware.cs.umass.edu/papers/Verma.pdf">Verma et al., 2018</a>), the constraints can be passed to the Seldonian Engine as strings with specific syntax. Specifically, these strings can contain five types of things:
 </p>
 <ol>
-<li>The mathematical operators: <code class='highlight'>(+,-,*,/)</code> </li>
-<li>These four native Python math functions: <code class='highlight'>min(),max(),abs(),exp()</code> </li>
+<li>The mathematical operators: <code class='codesnippet'>(+,-,*,/)</code> </li>
+<li>These four native Python math functions: <code class='codesnippet'>min(),max(),abs(),exp()</code> </li>
 <li>Constant numbers, such as $-0.5$ or 7</li>
 <li>The inequality strings "<=" or ">=" (optional)</li>
 <li>Special strings that trigger a call to a function, such as "FPR" (false positive rate)</li>
@@ -61,27 +61,27 @@ where  "M" and "F" refer to the male and female columns of your dataset, respect
 <ol>
 <li>Fork the engine repository: https://github.com/seldonian-toolkit/Engine </li>
 <li>Define a string to represent the precision operator that you will type into your constraint. In this example, we will call it "PREC" </li>
-<li>Add "PREC" to the list of supervised classification measure functions in the <code class='highlight'>measure_functions_dict</code> here: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py#L74">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py#L74</a></li>
-<li>Add the following block of code to the <code class='highlight'>evaluate_statistic()</code> function in this module: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/objectives.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/objectives.py</a>:
+<li>Add "PREC" to the list of supervised classification measure functions in the <code class='codesnippet'>measure_functions_dict</code> here: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py#L74">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py#L74</a></li>
+<li>Add the following block of code to the <code class='codesnippet'>evaluate_statistic()</code> function in this module: <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/objectives.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/objectives.py</a>:
 
 {% highlight python %}
 if statistic_name == 'PREC':
     return Precision(
         theta,data_dict['features'],data_dict['labels'])
 {% endhighlight python %}
-This points to a function <code class='highlight'>Precision()</code> which we will implement shortly to calculate the mean precision value over a set of points, returning a float.
+This points to a function <code class='codesnippet'>Precision()</code> which we will implement shortly to calculate the mean precision value over a set of points, returning a float.
  </li>
 
- <li>Add the following block of code to the <code class='highlight'>sample_from_statistic()</code> function in the same file:
+ <li>Add the following block of code to the <code class='codesnippet'>sample_from_statistic()</code> function in the same file:
 
 {% highlight python %}
 if statistic_name == 'PREC':
     return vector_Precision(
         theta,data_dict['features'],data_dict['labels'])
 {% endhighlight python %}
-This points to a function <code class='highlight'>vector_Precision()</code> which we will implement shortly to calculate the precision values on each point in a set of points, returning a vector.
+This points to a function <code class='codesnippet'>vector_Precision()</code> which we will implement shortly to calculate the precision values on each point in a set of points, returning a vector.
  </li>
- <li>Add a new function <code class='highlight'>Precision()</code> to the same file that calculates the precision on a set of points and returns a float. Note that we will use the existing functions in this file called <code class='highlight'>True_Positive_Rate()</code> and <code class='highlight'>False_Positive_Rate()</code> in our implementation.
+ <li>Add a new function <code class='codesnippet'>Precision()</code> to the same file that calculates the precision on a set of points and returns a float. Note that we will use the existing functions in this file called <code class='codesnippet'>True_Positive_Rate()</code> and <code class='codesnippet'>False_Positive_Rate()</code> in our implementation.
 
 {% highlight python %}
 def Precision(model,theta,X,Y):
@@ -104,7 +104,7 @@ def Precision(model,theta,X,Y):
     return res
 {% endhighlight python %}
  </li>
- <li>Likewise, add a new function <code class='highlight'>vector_Precision()</code> to the same file that calculates the precision on each point in a set of points and returns a vector of floats. The outputs of this function are the $\widehat z(\theta,D)$ used to obtain the bound on the base variable in the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a>. As before, we will use existing functions of the same file in our implementation of the vector precision.
+ <li>Likewise, add a new function <code class='codesnippet'>vector_Precision()</code> to the same file that calculates the precision on each point in a set of points and returns a vector of floats. The outputs of this function are the $\widehat z(\theta,D)$ used to obtain the bound on the base variable in the <a href="{{ "/tutorials/alg_details_tutorial/#parse_tree" | relative_url}}">parse tree</a>. As before, we will use existing functions of the same file in our implementation of the vector precision.
 
 {% highlight python %}
 def vector_Precision(model,theta,X,Y):
@@ -253,7 +253,7 @@ How we choose the bounds $[c,d]$ for the model predictions is determined by two 
 While these two criteria are in direct conflict, we want our upper bound to be as informative as possible, so we pick a relatively small factor, $2$, to inflate the bounds of $\widehat{y}'$ relative to $y$. We also want the $\widehat{y}'$ bounds to be equally inflated on either side of the $y$ bounds to avoid biasing the model predictions. The label bounds were $[y_{\text{min}}, y_{\text{max}}] = [-3,3]$, so the bounds on our new model predictions will be: $[\widehat{y}'_{\text{min}}$, $\widehat{y}'_{\text{max}}] = [-6,6]$. With this in hand, we can calculate the max possible squared residual, $b$, which would happen when $y=y_{\text{min}}$ and $\widehat{y}'=\widehat{y}'_{\text{max}}$ or when $y=y_{\text{max}}$ and $\widehat{y}'=\widehat{y}'_{\text{min}}$, both of which would result in the same value for the squared residual: $b=(3-(-6))^2=9^2=81$. Again, $a=0$ because it is possible that $y=\widehat{y}'$.
 </p>
 <p>
-    We will need to define a new model class that will provide linear regression model predictions that are bounded, as in equation \eqref{squashed_model}. Note that creating a new model class may not be necessary for your custom base node. We define the new model class in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>, inheriting from <code class='highlight'>LinearRegressionModel</code>. We named the model class <code class='highlight'>BoundedLinearRegressionModel</code>, which uniquely defines the class and conforms to upper camel case. In this class, all we need to do is override the <code class='highlight'>predict()</code> method of the parent class. We also define a helper function <code class='highlight'>_sigmoid()</code>. Here is the full implementation of this model, which is already part of the engine source code:
+    We will need to define a new model class that will provide linear regression model predictions that are bounded, as in equation \eqref{squashed_model}. Note that creating a new model class may not be necessary for your custom base node. We define the new model class in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>, inheriting from <code class='codesnippet'>LinearRegressionModel</code>. We named the model class <code class='codesnippet'>BoundedLinearRegressionModel</code>, which uniquely defines the class and conforms to upper camel case. In this class, all we need to do is override the <code class='codesnippet'>predict()</code> method of the parent class. We also define a helper function <code class='codesnippet'>_sigmoid()</code>. Here is the full implementation of this model, which is already part of the engine source code:
 </p>
 {% highlight python %}
 class BoundedLinearRegressionModel(LinearRegressionModel):
@@ -291,16 +291,16 @@ class BoundedLinearRegressionModel(LinearRegressionModel):
 
 </div>
 <p>
-We now have everything we need to implement this custom base node, the $\text{CVaR}_\alpha(X)$ statistic (with $\alpha=0.1$) of the squared residual. Below, we outline the steps for creating this custom base variable, which we will call <code class='highlight'>CVaRSQE</code>. We have already implemented all of these steps in the engine library, so feel free to reference the code as you go through the steps. The steps are written generally to help you write your own custom base variables.
+We now have everything we need to implement this custom base node, the $\text{CVaR}_\alpha(X)$ statistic (with $\alpha=0.1$) of the squared residual. Below, we outline the steps for creating this custom base variable, which we will call <code class='codesnippet'>CVaRSQE</code>. We have already implemented all of these steps in the engine library, so feel free to reference the code as you go through the steps. The steps are written generally to help you write your own custom base variables.
 </p>
 
 <ol>
 
 <li>Fork the engine repository: <a href="https://github.com/seldonian-toolkit/Engine">https://github.com/seldonian-toolkit/Engine</a> </li>
 
-<li> Define a class in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/nodes.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/nodes.py</a> that inherits from the <code class='highlight'>BaseNode</code> class, ideally conforming to <a href="https://en.wikipedia.org/wiki/Camel_case">upper camel case</a> and named something that uniquely identifies your custom base node. The name must not already be an existing class in that file. We chose <code class='highlight'>CVaRSQeBaseNode(BaseNode)</code>.</li>
+<li> Define a class in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/nodes.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/nodes.py</a> that inherits from the <code class='codesnippet'>BaseNode</code> class, ideally conforming to <a href="https://en.wikipedia.org/wiki/Camel_case">upper camel case</a> and named something that uniquely identifies your custom base node. The name must not already be an existing class in that file. We chose <code class='codesnippet'>CVaRSQeBaseNode(BaseNode)</code>.</li>
 
-<li> Define an <code class='highlight'>__init__()</code> method for the new class which at minimum takes the following arguments and calls <code class='highlight'>super().__init__()</code> to register these arguments to the parent class. This is also where we want to set $\alpha=0.1$. 
+<li> Define an <code class='codesnippet'>__init__()</code> method for the new class which at minimum takes the following arguments and calls <code class='codesnippet'>super().__init__()</code> to register these arguments to the parent class. This is also where we want to set $\alpha=0.1$. 
 {% highlight python %}
 def __init__(self,
     name,
@@ -312,11 +312,11 @@ def __init__(self,
 {% endhighlight python %}
 </li>
 
-<li> Define a method of the class called <code class='highlight'>calculate_bounds()</code>. This method overrides the parent class method of the same name and will instruct the engine how to calculate the upper and lower confidence bounds on the CVaR statistic. Much of the code for this method will be taken from the parent method. For example, the <code class='highlight'>kwargs</code> passed to this method are the same that are passed to the parent method, so those are unpacked in the same way as in the parent method. Also, the calls to the methods that actually calculate the upper and lower bounds (e.g., <code class='highlight'>predict_HC_upper_bound()</code>) are similar. The things we need to do in this method that are not done in the parent method we are overriding are:
+<li> Define a method of the class called <code class='codesnippet'>calculate_bounds()</code>. This method overrides the parent class method of the same name and will instruct the engine how to calculate the upper and lower confidence bounds on the CVaR statistic. Much of the code for this method will be taken from the parent method. For example, the <code class='codesnippet'>kwargs</code> passed to this method are the same that are passed to the parent method, so those are unpacked in the same way as in the parent method. Also, the calls to the methods that actually calculate the upper and lower bounds (e.g., <code class='codesnippet'>predict_HC_upper_bound()</code>) are similar. The things we need to do in this method that are not done in the parent method we are overriding are:
     <ul>
         <li>Calculate the theoretical lower and upper bounds on the squared residual, $a$ and $b$. </li>
         <li>Get the squared residuals and sort them in order to obtain the $Z_1,\dotsc,Z_n$ used in equations (\ref{st_upper}-\ref{cs_lower}). </li>
-        <li>Create a <code class='highlight'>bound_kwargs</code> dictionary to pass to the methods that do the actual calculation of the upper and lower bounds. </li>
+        <li>Create a <code class='codesnippet'>bound_kwargs</code> dictionary to pass to the methods that do the actual calculation of the upper and lower bounds. </li>
     </ul>
 Here is our full implementation of this method:
 {% highlight python %}
@@ -390,7 +390,7 @@ def calculate_bounds(self,
 </li>
 
 <li> 
-    Implement equations (\ref{st_upper}-\ref{cs_lower}) as the methods: <code class='highlight'>compute_HC_upper_bound()</code>, <code class='highlight'>compute_HC_lower_bound()</code>, <code class='highlight'>predict_HC_upper_bound()</code> and <code class='highlight'>predict_HC_upper_bound()</code>, respectively. The convention we use in this library is that the <code class='highlight'>compute_*</code> methods calculate the bounds for the <code class='glossary-term'>safety test</code> and the <code class='highlight'>predict_*</code> methods calculate the bounds for <code class='glossary-term'>candidate selection</code>. Here are the implementations of these four methods:
+    Implement equations (\ref{st_upper}-\ref{cs_lower}) as the methods: <code class='codesnippet'>compute_HC_upper_bound()</code>, <code class='codesnippet'>compute_HC_lower_bound()</code>, <code class='codesnippet'>predict_HC_upper_bound()</code> and <code class='codesnippet'>predict_HC_upper_bound()</code>, respectively. The convention we use in this library is that the <code class='codesnippet'>compute_*</code> methods calculate the bounds for the <code class='glossary-term'>safety test</code> and the <code class='codesnippet'>predict_*</code> methods calculate the bounds for <code class='glossary-term'>candidate selection</code>. Here are the implementations of these four methods:
 {% highlight python %}
 def predict_HC_lowerbound(self,
     Z,
@@ -536,7 +536,7 @@ def compute_HC_upperbound(self,
 {% endhighlight python %}
 </li>
 
-<li>The last method we need here is <code class='highlight'>calculate_value()</code>, which calculates not the bound but the actual value of the CVaR statistic. This is not necessary for the Seldonian algorithm to run, but it is used in the experiments library for making the failure rate plot. This is only implemented for continuous probability distributions. Here is our implementation of this method:
+<li>The last method we need here is <code class='codesnippet'>calculate_value()</code>, which calculates not the bound but the actual value of the CVaR statistic. This is not necessary for the Seldonian algorithm to run, but it is used in the experiments library for making the failure rate plot. This is only implemented for continuous probability distributions. Here is our implementation of this method:
 {% highlight python %}
 def calculate_value(self,**kwargs):
     """
@@ -570,12 +570,12 @@ def calculate_value(self,**kwargs):
     <ul>
     <li>Needs to be a unique identifier.</li>
     <li>Must only consist only of alphabetical characters (upper and lower case allowed) and the underscore character. No spaces are allowed. </li>
-    <li>Must not already be an existing measure function name. The names of all measure functions are provided in the sub-dictionaries of the <code class='highlight'>measure_functions_dict</code> dictionary in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py</a>. For example, <code class='highlight'>"PR"</code> and <code class='highlight'>"Mean_Error"</code> are already taken.</li>
-    <li>Must not already be a custom base variable name. The names of the custom base nodes we have implemented so far are listed as keys of the <code class='highlight'>custom_base_node_dict</code> in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py</a>. For example, <code class='highlight'>MEDMF</code> is already taken.</li>
+    <li>Must not already be an existing measure function name. The names of all measure functions are provided in the sub-dictionaries of the <code class='codesnippet'>measure_functions_dict</code> dictionary in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py</a>. For example, <code class='codesnippet'>"PR"</code> and <code class='codesnippet'>"Mean_Error"</code> are already taken.</li>
+    <li>Must not already be a custom base variable name. The names of the custom base nodes we have implemented so far are listed as keys of the <code class='codesnippet'>custom_base_node_dict</code> in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py</a>. For example, <code class='codesnippet'>MEDMF</code> is already taken.</li>
     </ul>
-    We chose <code class='highlight'>CVaRSQeBaseNode</code> for our string expression.
+    We chose <code class='codesnippet'>CVaRSQeBaseNode</code> for our string expression.
 </li>
-<li> Add an entry to the dictionary: <code class='highlight'>custom_base_node_dict</code> in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py</a>, where the key is the string expression of your custom base node chosen in the previous step and the value is the name of the class you defined in step 2, like this:
+<li> Add an entry to the dictionary: <code class='codesnippet'>custom_base_node_dict</code> in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/parse_tree/operators.py</a>, where the key is the string expression of your custom base node chosen in the previous step and the value is the name of the class you defined in step 2, like this:
 {% highlight python %}
 'CVaRSQE':CVaRSQeBaseNode
 {% endhighlight python %}
@@ -596,10 +596,10 @@ At this point, you will be able to use your custom base node in a constraint str
   We can now run this Seldonian algorithm using the script below. Most of the script is boilerplate code for running the Seldonian Engine, but we want to note a few things first:
 </p>
 <ul>
-    <li>The custom base variable string, <code class='highlight'>CVaRSQE</code>, appears in our constraint string. </li>
-    <li>To generate the data as described in equation \eqref{data_distribution}, we are using a function called <code class='highlight'>make_synthetic_regression_dataset</code>, which is part of the Engine library but is not shown in this tutorial. The function can be found in this file: https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/utils/tutorial_utils.py </li>
+    <li>The custom base variable string, <code class='codesnippet'>CVaRSQE</code>, appears in our constraint string. </li>
+    <li>To generate the data as described in equation \eqref{data_distribution}, we are using a function called <code class='codesnippet'>make_synthetic_regression_dataset</code>, which is part of the Engine library but is not shown in this tutorial. The function can be found in this file: https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/utils/tutorial_utils.py </li>
     <li>The number of points, $N = N_{\text{cand}} + N_{\text{safety}}$, that we use when generating the data is important. That is because the concentration bounds in equations (\ref{st_upper}–\ref{cs_lower}) depend on $N$ (either through $N_{\text{cand}}$ or $N_{\text{safety}}$ or both). It turns out that these bounds require a relatively large amount of data to be informative. The exact amount of data needed of course depends on the other variables $\delta$, $\alpha$, and the upper bound of the squared residual, $b$. For the values of those variables that we chose, we found that we needed $N\gtrsim50,000$ points in our synthetic dataset in order to pass the <code class='glossary-term'>safety test</code> for the constraint we defined. In the end, we chose $N=75,000$ to be conservative. </li>
-    <li>We are using the custom model class: <code class='highlight'>BoundedLinearRegressionModel</code> that we defined in the "Bounding the squared residuals" box above. </li>
+    <li>We are using the custom model class: <code class='codesnippet'>BoundedLinearRegressionModel</code> that we defined in the "Bounding the squared residuals" box above. </li>
     <li>We are only fitting the slope of the line. Because we do not provide a custom initial solution, the default model weights are the zero vector, so a slope of zero in this case.</li>
     
 </ul>

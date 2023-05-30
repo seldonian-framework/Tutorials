@@ -249,7 +249,7 @@ class PytorchFacialRecog(SupervisedPytorchBaseModel):
 </div>
 
 <p>
- The model class <code class="highlight">PytorchFacialRecog</code> is the Seldonian model, which is just a wrapper for the PyTorch model class <code class="highlight">FacialRecogCNNModel</code>. 
+ The model class <code class='codesnippet'>PytorchFacialRecog</code> is the Seldonian model, which is just a wrapper for the PyTorch model class <code class='codesnippet'>FacialRecogCNNModel</code>. 
 </p>
 
 <p>
@@ -369,7 +369,7 @@ from experiments.baselines.random_classifiers import (
 from experiments.baselines.facial_recog_cnn import PytorchFacialRecogBaseline
 {% endhighlight python %}
 <p>
-    We will use 40 trials and a log-spaced data fraction array between 0.001 and 1.0, containing 15 distinct values. We will fix the batch size at 237 so that for a data fraction of 1.0, the number of samples in each batch will be equal, i.e., the last batch will not be smaller than all of the other batches. Because the number of datapoints input to the models varies with data fraction, if we left the number of epochs constant, the number of total iterations of gradient descent/ascent would be much smaller for the smaller data fractions. To keep the number of iterations of gradient descent/ascent fixed at 1200, we determine the number of epochs needed at each data fraction to do this. The <code class="highlight">batch_epoch_dict</code> contains the batch sizes (fixed at 237) and number of epochs for each data fraction. We set the number of workers to 1 in this case because on the machine we ran this we only had access to a single GPU. 
+    We will use 40 trials and a log-spaced data fraction array between 0.001 and 1.0, containing 15 distinct values. We will fix the batch size at 237 so that for a data fraction of 1.0, the number of samples in each batch will be equal, i.e., the last batch will not be smaller than all of the other batches. Because the number of datapoints input to the models varies with data fraction, if we left the number of epochs constant, the number of total iterations of gradient descent/ascent would be much smaller for the smaller data fractions. To keep the number of iterations of gradient descent/ascent fixed at 1200, we determine the number of epochs needed at each data fraction to do this. The <code class='codesnippet'>batch_epoch_dict</code> contains the batch sizes (fixed at 237) and number of epochs for each data fraction. We set the number of workers to 1 in this case because on the machine we ran this we only had access to a single GPU. 
 </p>
 
 {% highlight python %}
@@ -441,7 +441,7 @@ if __name__ == "__main__":
 {% endhighlight python %}
 
 <p>
-    Although using the CPU will be much slower than the GPU for a <i>single</i> trial, if you have access to many CPUs and only one GPU, it could be faster to run the entire experiment across many CPUs. To do that, you would need to change <code class="highlight">n_workers</code> above to the number of CPUs you want to use, and then replace the line <code class="highlight">device = spec.model.device</code> above with the following two lines of code:
+    Although using the CPU will be much slower than the GPU for a <i>single</i> trial, if you have access to many CPUs and only one GPU, it could be faster to run the entire experiment across many CPUs. To do that, you would need to change <code class='codesnippet'>n_workers</code> above to the number of CPUs you want to use, and then replace the line <code class='codesnippet'>device = spec.model.device</code> above with the following two lines of code:
 </p>
 {% highlight python %}
 device = torch.device('cpu')

@@ -172,14 +172,14 @@ True [0.16911355 0.1738146 ]
     </p>
     
     <p>
-    Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class="highlight">passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class="highlight">passed_safety==False </code>, then <code class='highlight'> solution="NSF"</code>, i.e., "No Solution Found". If <code class="highlight">passed_safety==True</code>, then the solution is the array of model weights that resulted in the safety test passing. In this example, you should get <code class="highlight">passed_safety=True</code> and a candidate solution of something like: <code class="highlight">[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator. These numbers represent the y-intercept and slope of the line that the Seldonian algorithm found. 
+    Notice in the last few lines of the script that <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.run">SA.run()</a> returns two values. <code class='codesnippet'>passed_safety</code> is a Boolean indicating whether the candidate solution found during candidate selection passed the safety test. If <code class='codesnippet'>passed_safety==False </code>, then <code class='codesnippet'> solution="NSF"</code>, i.e., "No Solution Found". If <code class='codesnippet'>passed_safety==True</code>, then the solution is the array of model weights that resulted in the safety test passing. In this example, you should get <code class='codesnippet'>passed_safety=True</code> and a candidate solution of something like: <code class='codesnippet'>[0.16911355 0.1738146]</code>, although the exact numbers might differ slightly depending on your machine's random number generator. These numbers represent the y-intercept and slope of the line that the Seldonian algorithm found. 
 </p>
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     <h3 id="extracting">Extracting important quantities</h3>
 <p> 
-    There are a few quantities of interest that are not automatically returned by <code class="highlight">SA.run()</code>. One such quantity is the value of the primary objective function (the MSE, in this case) evaluated on the safety data for the model weights returned by the algorithm, $\hat{f}(\theta_{\text{cand}},D_{\text{safety}})$. Given that the solution passed the safety test, we know that $\hat{f}(\theta,D_{\text{safety}})$ will likely be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class="highlight">SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
+    There are a few quantities of interest that are not automatically returned by <code class='codesnippet'>SA.run()</code>. One such quantity is the value of the primary objective function (the MSE, in this case) evaluated on the safety data for the model weights returned by the algorithm, $\hat{f}(\theta_{\text{cand}},D_{\text{safety}})$. Given that the solution passed the safety test, we know that $\hat{f}(\theta,D_{\text{safety}})$ will likely be between $1.25$ and $2.0$ (and the actual MSE on future data will be in this range with high probability). The <code class='codesnippet'>SA</code> object provides the introspection we need to extract this information through the <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.seldonian_algorithm.SeldonianAlgorithm.html#seldonian.seldonian_algorithm.SeldonianAlgorithm.evaluate_primary_objective">SA.evaluate_primary_objective()</a> method:
 
 {% highlight python %}
 st_primary_objective = SA.evaluate_primary_objective(
@@ -214,7 +214,7 @@ This returns a dictionary where the keys are the constraint strings and the valu
 </p>
 
 <p>
-More introspection to the <code class="highlight">SA</code> object is possible, but it is beyond the scope of this tutorial. 
+More introspection to the <code class='codesnippet'>SA</code> object is possible, but it is beyond the scope of this tutorial. 
 </p>
 </div> 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
