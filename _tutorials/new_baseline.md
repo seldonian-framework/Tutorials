@@ -217,7 +217,7 @@ if __name__ == "__main__":
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="summary">Summary</h3>
 
-In this tutorial, we demonstrated how to create a new baseline for Seldonian Experiments. We described the general requirements for implementing a new baseline and provided an example implementation in a Seldonian Experiment using the dataset from the Fair Loans Tutorial. Our implementation wrapped scikit-learn's random forest classifier, and the method we used can used to implement any scikit-learn supervised ML model as a baseline in a Seldonian Experiment. If you develop a baseline that you think could be generally useful to others, feel free to submit a pull request on the <a href="https://github.com/seldonian-toolkit/Experiments/pulls">Experiments library Github page</a>.
+In this tutorial, we demonstrated how to create a new baseline for Seldonian Experiments. We described the general requirements for implementing a new baseline and provided an example implementation in a Seldonian Experiment using the dataset from the Fair Loans Tutorial. Our implementation wrapped scikit-learn's random forest classifier, and the method we used can be used to implement any scikit-learn supervised ML model as a baseline in a Seldonian Experiment. Baselines using other Python librarires can similarly be implemented using the patterns described in this tutorial. If you develop a baseline that you think could be generally useful to others, feel free to submit a pull request on the <a href="https://github.com/seldonian-toolkit/Experiments/pulls">Experiments library Github page</a>.
 
 </div>
 
