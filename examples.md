@@ -41,7 +41,7 @@ title: Seldonian \| Examples
     </div>
 
     <div class="container inset-box border border-dark border-2 p-3 my-2">
-        <h5>Competition winners </h5>
+        <h5 id="compwinners">Student competition winners </h5>
         <p> Two winners were selected from participants in the first Seldonian Toolkit student <a href="{{ "/contest/" | relative_url }}">competition</a>:  </p>
 
         <ol>
