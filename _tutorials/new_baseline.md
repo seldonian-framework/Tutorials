@@ -8,7 +8,7 @@ title: Seldonian \| Tutorial H
 
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
-    <h2 align="center" class="mb-3">Tutorial H: Creating a new baseline for (supervised) Seldonian Experiments </h2>
+    <h2 align="center" class="mb-3">Tutorial K: Creating a new baseline for (supervised) Seldonian Experiments </h2>
     <hr class="my-4">
     <h3> Contents </h3>
     <ul>
