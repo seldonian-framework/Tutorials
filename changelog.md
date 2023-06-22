@@ -12,9 +12,10 @@ title: Seldonian \| Changelog
    
     <h5>Engine (since initial alpha release in September, 2022):</h5>
 
-    <h5><a href="https://pypi.org/project/seldonian-engine/0.7.9/">0.7.9</a></h5>
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.8.0/">0.8.0</a></h5>
     <ul>
-        <li> Make PyTorch an optional dependency. </li>
+        <li> Create a class to hold metadata. Metadata are stored in dataset's via a <code class="codesnippet">DataSet.meta</code> attribute. </li>
+        <li> Add support for alternate RL rewards. Arbitrary number of RL rewards are supported and can be referenced in constraint strings via <code class="codesnippet">"J_pi_new_[i]"</code>, where <code class="codesnippet">i</code> is the alternate reward number, starting at 1. Alternate rewards are stored in the <code class="codesnippet">Episode</code> object as a single multidimensional array under the <code class="codesnippet">Episode.alt_rewards</code> attribute. </li>
         
     </ul>
 
