@@ -92,6 +92,11 @@ title: Seldonian \| Changelog
 
     <h5>Experiments (since initial alpha release):</h5>
     
+    <h5><a href="https://pypi.org/project/seldonian-experiments/0.2.1/">0.2.1</a></h5>
+    <ul>
+        <li> Include decision tree and random forest scikit-learn baselines. </li>
+    </ul>
+
     <h5><a href="https://pypi.org/project/seldonian-experiments/0.2.0/">0.2.0</a></h5>
     <ul>
         <li> Record each g value (the value of the constraint function) for each constraint separately in trial output files.  </li>
