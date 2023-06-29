@@ -111,8 +111,6 @@ from seldonian.spec import createSimpleSupervisedSpec
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
 from seldonian.utils.tutorial_utils import (
     make_synthetic_regression_dataset)
-from seldonian.parse_tree.parse_tree import (
-    make_parse_trees_from_constraints)
 
 if __name__ == "__main__":
     np.random.seed(0)
