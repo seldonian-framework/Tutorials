@@ -91,7 +91,7 @@ title: Seldonian \| Tutorial C
     </p>
     <ol>
         <li> Define the data — we will generate some synthetic data for X and Y for this case.</li>
-        <li> Create parse trees from the behavioral constraints.</li>
+        <li> Specify the behavioral constraints.</li>
         <li> Define the underlying machine learning model. </li>
         <li> Create a spec object containing all of this information and some hyperparameters — we can ignore many of these in this example. For a full list of parameters and their default values, see the API docs for <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.spec.SupervisedSpec.html#seldonian.spec.SupervisedSpec">SupervisedSpec</a>.</li>
         <li> Run the Seldonian algorithm using the spec object. </li>
