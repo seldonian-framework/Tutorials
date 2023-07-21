@@ -15,7 +15,7 @@ title: Seldonian \| Changelog
     <h5><a href="https://pypi.org/project/seldonian-engine/0.8.1/">0.8.1</a></h5>
     <ul>
         <li> Fixed a bug where the datasize term in the confidence interval calculations was incorrect in some edge cases. Now, the datasize is always based off of the length of the vector of estimator samples (from the zhat function).  </li>
-        <li> Separate out zhat functions into their own module from objective functions.</li>
+        <li> Separate out zhat functions (from objectives.py) into their own module zhat_funcs.py.</li>
         
     </ul>
 
