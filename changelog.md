@@ -16,7 +16,6 @@ title: Seldonian \| Changelog
     <ul>
         <li> Fixed a bug where the datasize term in the confidence interval calculations was incorrect in some edge cases. Now, the datasize is always based off of the length of the vector of estimator samples (from the zhat function).  </li>
         <li> Separate out zhat functions into their own module from objective functions.</li>
-        <li> Add support for alternate RL rewards. Arbitrary number of RL rewards are supported and can be referenced in constraint strings via <code class="codesnippet">"J_pi_new_[i]"</code>, where <code class="codesnippet">i</code> is the alternate reward number, starting at 1. Alternate rewards are stored in the <code class="codesnippet">Episode</code> object as a single multidimensional array under the <code class="codesnippet">Episode.alt_rewards</code> attribute. </li>
         
     </ul>
 
