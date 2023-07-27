@@ -196,19 +196,24 @@ This saves a file called <code>gridworld_1000episodes.pkl</code> in the current 
 Now we can use these episodes to create a <code class='codesnippet'>RLDataSet</code> object and complete the spec file. We will use the <code class='codesnippet'>createRLSpec()</code> function which takes as input a dataset, policy, constraint strings, deltas, and environment-specific keyword arguments. The dataset will be created from the episodes we just saved in one line. We already specified our constraint strings and deltas above. The policy requires some knowledge of the environment, which we call a <a href="https://seldonian-toolkit.github.io/Engine/build/html/_autosummary/seldonian.RL.Env_Description.Env_Description.Env_Description.html#seldonian.RL.Env_Description.Env_Description.Env_Description">Env_Description</a>. This is just a description of the observation and action spaces. We provide these as objects. In our case, the only additional environment-specific piece of information is the discount factor, $\gamma=0.9$, which we specify in the <code class='codesnippet'>env_kwargs</code> argument. 
 </p>
 
+
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 # createSpec.py
 from seldonian.RL.Agents.Policies.Softmax import DiscreteSoftmax
 from seldonian.RL.Env_Description.Env_Description import Env_Description
 from seldonian.RL.Env_Description.Spaces import Discrete_Space
 from seldonian.spec import createRLSpec
-from seldonian.dataset import RLDataSet
+from seldonian.dataset import RLDataSet,RLMetaData
 from seldonian.utils.io_utils import load_pickle
 
 def main():
     episodes_file = './gridworld_1000episodes.pkl'
     episodes = load_pickle(episodes_file)
-    dataset = RLDataSet(episodes=episodes)
+    meta = RLMetaData(all_col_names=["episode_index", "O", "A", "R", "pi_b"])
+    dataset = RLDataSet(episodes=episodes,meta=meta)
 
     # Initialize policy
     num_states = 9
@@ -237,6 +242,7 @@ if __name__ == '__main__':
 
 
 {% endhighlight python %}
+</div>
 
 <p> 
 Saving this script to a file called <code>createSpec.py</code> and then running it the command line like:
@@ -251,6 +257,10 @@ will create a file called <code>spec.pkl</code> in whatever directory you ran th
 <h3 id="running_the_engine"> Running the Seldonian Engine </h3>
 <p>
 Now that we have the spec file, running the Seldonian algorithm is simple. You may need to change the path to <code class='codesnippet'>specfile</code> if your spec file is saved in a location other than the current directory. We will also change some of the defaults of the optimization process; namely, we will set the number of iterations to $10$ and set the learning rates of $\theta$ and $\lambda$ to $0.01$.
+
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 # run_gridworld.py 
 from seldonian.seldonian_algorithm import SeldonianAlgorithm
@@ -273,22 +283,34 @@ if __name__ == '__main__':
     else:
         print("No Solution Found")
 {% endhighlight python %}
+</div>
 
 This should result in the following output, though the exact numbers may differ due to your machine's random number generator:
 {% highlight bash %}
 Safety dataset has 600 episodes
 Candidate dataset has 400 episodes
-Iteration 0
+Candidate sensitive_attrs:
+Have 10 epochs and 1 batches of size 400 for a total of 10 iterations
+Epoch: 0, batch iteration 0
+Epoch: 1, batch iteration 0
+Epoch: 2, batch iteration 0
+Epoch: 3, batch iteration 0
+Epoch: 4, batch iteration 0
+Epoch: 5, batch iteration 0
+Epoch: 6, batch iteration 0
+Epoch: 7, batch iteration 0
+Epoch: 8, batch iteration 0
+Epoch: 9, batch iteration 0
 Passed safety test!
 The solution found is:
-[[ 0.19907136  0.20260221 -0.20081473  0.2004336 ]
- [-0.20323448  0.20115298 -0.2023812  -0.19957809]
- [-0.20665602  0.19071499  0.20247835 -0.20167761]
- [ 0.20084656  0.21050098 -0.20152061 -0.20083289]
- [ 0.20156723  0.2012198  -0.20136459  0.20180457]
- [-0.20693545 -0.20328714  0.20207675 -0.20123736]
- [ 0.20047478 -0.20036864 -0.20053801  0.19877662]
- [ 0.20421366  0.20038838 -0.20056068  0.21222363]
+[[ 0.20093676  0.20021209 -0.20095315  0.2018718 ]
+ [ 0.19958715  0.21193489 -0.21250555 -0.20173669]
+ [ 0.20076256 -0.19977755  0.21200753 -0.20160111]
+ [ 0.20127782  0.21320971 -0.20111709  0.19984976]
+ [ 0.19655251  0.20152484 -0.20126941 -0.19943337]
+ [-0.20448104 -0.2002143   0.20163945 -0.20272628]
+ [ 0.20233235 -0.20099993  0.20002241  0.20128514]
+ [ 0.20062167  0.20107532 -0.20115979 -0.20080426]
  [ 0.          0.          0.          0.        ]]
 
 {% endhighlight bash %}
@@ -328,8 +350,8 @@ from experiments.generate_plots import RLPlotGenerator
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import (create_env,
-    create_agent,run_trial_given_agent_and_env)
+from seldonian.RL.RL_runner import (create_agent_fromdict,
+    run_trial_given_agent_and_env)
 {% endhighlight python %}
 </p>
 
@@ -347,7 +369,7 @@ if __name__ == "__main__":
     data_fracs = np.logspace(-2.3,0,10)
     n_workers = 8
     verbose=True
-    results_dir = f'results/gridworld_2022Sep09_{n_trials}trials'
+    results_dir = f'results/gridworld_tutorial'
     os.makedirs(results_dir,exist_ok=True)
     plot_savename = os.path.join(results_dir,f'gridworld_{n_trials}trials.png')
     n_episodes_for_eval = 1000
@@ -367,7 +389,12 @@ We will need to load the same spec object that we created for running the engine
 </p>
 
 <p>
-One of the remaining parameters of the plot generator is <code class='codesnippet'>perf_eval_fn</code>, a function that will be used to evaluate the performance in each trial. In general, this function is completely up to the user to define. During each trial, this function is called after the Seldonian algorithm has been run and only if the safety test passed for that trial. The <code class='codesnippet'>kwargs</code> passed to this function will always consist of the <code class='codesnippet'>model</code> object from the current trial and the <code class='codesnippet'>hyperparameter_and_setting_dict</code>. There is also the option to pass additional keyword arguments to this function via the <code class='codesnippet'>perf_eval_kwargs</code> parameter. In our case, we will define this function to generate 1000 episodes using the policy obtained by running the Seldonian algorithm and calculate the expected discounted return ($\gamma = 0.9$). The only additional argument we need to provide is how many episodes to run. This function uses the same <code class='codesnippet'>run_trial</code> function that we used when generating the original dataset. We set the agent's weights to the weights that were trained by the Seldonian algorithm so that the data are generated using the new policy obtained by the Seldonian algorithm. 
+One of the remaining parameters of the plot generator is <code class='codesnippet'>perf_eval_fn</code>, a function that will be used to evaluate the performance in each trial. In general, this function is completely up to the user to define. During each trial, this function is called after the Seldonian algorithm has been run and only if the safety test passed for that trial. The <code class='codesnippet'>kwargs</code> passed to this function will always consist of the <code class='codesnippet'>model</code> object from the current trial and the <code class='codesnippet'>hyperparameter_and_setting_dict</code>. There is also the option to pass additional keyword arguments to this function via the <code class='codesnippet'>perf_eval_kwargs</code> parameter. 
+</p>
+
+<p>
+We will write this function to generate 1000 episodes using the policy obtained by running the Seldonian algorithm and calculate the expected discounted return (with $\gamma = 0.9$). The only additional kwarg we need to provide is how many episodes to run. In this function, we create a fresh gridworld environment and agent so these are independent across trials. We set the agent's weights to the weights that were trained by the Seldonian algorithm so that the data are generated using the new policy obtained by the Seldonian algorithm. 
+</p>
 
 {% highlight python %}
     def generate_episodes_and_calc_J(**kwargs):
@@ -385,8 +412,8 @@ One of the remaining parameters of the plot generator is <code class='codesnippe
        
         # create env and agent
         hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
-        agent = create_agent(hyperparameter_and_setting_dict)
-        env = create_env(hyperparameter_and_setting_dict)
+        agent = create_agent_fromdict(hyperparameter_and_setting_dict)
+        env = Gridworld(size=3)
        
         # set agent's weights to the trained model weights
         agent.set_new_params(new_params)
@@ -402,14 +429,13 @@ One of the remaining parameters of the plot generator is <code class='codesnippe
         return episodes,J
     perf_eval_kwargs = {'n_episodes_for_eval':n_episodes_for_eval}   
 {% endhighlight python %}
-</p>
 
 <p>
 Next, we need to define the <code class='codesnippet'>hyperparameter_and_setting_dict</code> as we did in the <code>createSpec.py</code> script above. This is required for generating the datasets that we will use in each of the 20 trials, as well as for generating the data in the function we defined to evaluate the performance. Note that in this case the number of episodes that we use for generating the trial datasets and the number of episodes that we use for evaluating the performance are the same. This does not need to be the case, as we can pass a different value for <code class='codesnippet'>n_episodes_for_eval</code> via <code class='codesnippet'>perf_eval_kwargs</code> if we wanted to. 
 
 {% highlight python %}
     hyperparameter_and_setting_dict = {}
-    hyperparameter_and_setting_dict["env"] = "gridworld"
+    hyperparameter_and_setting_dict["env"] = Gridworld(size=3)
     hyperparameter_and_setting_dict["agent"] = "Parameterized_non_learning_softmax_agent"
     hyperparameter_and_setting_dict["num_episodes"] = 1000
     hyperparameter_and_setting_dict["num_trials"] = 1
@@ -447,19 +473,21 @@ To run the experiment, we simply run the following code block:
 After the experiment is done running, we can make the three plots, which is done in the following code block:
 {% highlight python %}
     if make_plots:
-        if save_plot:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                savename=plot_savename)
-        else:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,)
+        plot_generator.make_plots(
+            fontsize=12,
+            legend_fontsize=12,
+            performance_label=performance_metric,
+            savename=plot_savename if save_plot else None,
+            save_format="png")
 {% endhighlight python %}
 </p>
 
 <p>
 Here is the entire script, saved in a file called <code>generate_gridworld_plots.py</code>. We put the function definition for evaluating the performance outside of the main block in the full script for clarity. This is a slightly different place than where we presented it in the step-by-step code blocks above. 
 
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 # generate_gridworld_plots.py
 import os
@@ -469,8 +497,9 @@ from experiments.generate_plots import RLPlotGenerator
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import (create_env,
-    create_agent,run_trial_given_agent_and_env)
+from seldonian.RL.RL_runner import (create_agent_fromdict,
+    run_trial_given_agent_and_env)
+from seldonian.RL.environments.gridworld import Gridworld
 
 def generate_episodes_and_calc_J(**kwargs):
     """ Calculate the expected discounted return 
@@ -487,8 +516,8 @@ def generate_episodes_and_calc_J(**kwargs):
    
     # create env and agent
     hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
-    agent = create_agent(hyperparameter_and_setting_dict)
-    env = create_env(hyperparameter_and_setting_dict)
+    agent = create_agent_fromdict(hyperparameter_and_setting_dict)
+    env = Gridworld(size=3)
    
     # set agent's weights to the trained model weights
     agent.set_new_params(new_params)
@@ -509,16 +538,16 @@ if __name__ == "__main__":
     make_plots = True
     save_plot = False
     performance_metric = 'J(pi_new)'
-    n_trials = 20
+    n_trials = 5
     data_fracs = np.logspace(-2.3,0,10)
     n_workers = 8
     verbose=True
-    results_dir = f'results/gridworld_2022Sep09_{n_trials}trials'
+    results_dir = f'results/gridworld_tutorial'
     os.makedirs(results_dir,exist_ok=True)
     plot_savename = os.path.join(results_dir,f'gridworld_{n_trials}trials.png')
     n_episodes_for_eval = 1000
     # Load spec
-    specfile = f'../engine-repo/examples/gridworld_tutorial/spec.pkl'
+    specfile = f'./spec.pkl'
     spec = load_pickle(specfile)
     spec.optimization_hyperparams['num_iters'] = 40
     spec.optimization_hyperparams['alpha_theta'] = 0.01
@@ -526,15 +555,17 @@ if __name__ == "__main__":
     spec.optimization_hyperparams['beta_velocity'] = 0.9
     spec.optimization_hyperparams['beta_rmspropr'] = 0.95
 
-    perf_eval_fn = generate_episodes_and_calc_J
-    perf_eval_kwargs = {'n_episodes_for_eval':n_episodes_for_eval}
-
     hyperparameter_and_setting_dict = {}
-    hyperparameter_and_setting_dict["env"] = "gridworld"
+    hyperparameter_and_setting_dict["env"] = Gridworld(size=3)
     hyperparameter_and_setting_dict["agent"] = "Parameterized_non_learning_softmax_agent"
     hyperparameter_and_setting_dict["num_episodes"] = 1000
     hyperparameter_and_setting_dict["num_trials"] = 1
     hyperparameter_and_setting_dict["vis"] = False
+
+    perf_eval_fn = generate_episodes_and_calc_J
+    perf_eval_kwargs = {
+        'n_episodes_for_eval':n_episodes_for_eval,
+    }
 
     plot_generator = RLPlotGenerator(
         spec=spec,
@@ -551,15 +582,15 @@ if __name__ == "__main__":
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
     if make_plots:
-        if save_plot:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                savename=plot_savename)
-        else:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,)
-
+        plot_generator.make_plots(
+            fontsize=12,
+            legend_fontsize=12,
+            performance_label=performance_metric,
+            savename=plot_savename if save_plot else None,
+            save_format="png")
 {% endhighlight python %}
+</div>
+
 </p>
 
 <p>
