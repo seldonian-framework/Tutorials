@@ -154,7 +154,7 @@ if __name__ == '__main__':
         filename=data_pth,
         metadata_filename=metadata_pth,
         file_type='csv')
-    sensitive_col_names = dataset.meta_information['sensitive_col_names']
+    sensitive_col_names = dataset.meta.sensitive_col_names
 
     # Use logistic regression model
     model = LogisticRegressionModel()
@@ -163,7 +163,10 @@ if __name__ == '__main__':
     primary_objective = objectives.binary_logistic_loss
     
     # Define behavioral constraints
-    constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.9'] 
+    epsilon = 0.9
+    constraint_name = "disparate_impact"
+    if constraint_name == "disparate_impact":
+        constraint_strs = [f'min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= {epsilon}'] 
     deltas = [0.05]
     
     # For each constraint (in this case only one), make a parse tree
@@ -197,7 +200,7 @@ if __name__ == '__main__':
         }
     )
 
-    spec_save_name = os.path.join(save_dir,'spec.pkl')
+    spec_save_name = os.path.join(save_dir,f'loans_{constraint_name}_{epsilon}_spec.pkl')
     save_pickle(spec_save_name,spec)
     print(f"Saved Spec object to: {spec_save_name}")
 
@@ -205,19 +208,19 @@ if __name__ == '__main__':
 </div>
 
 <p>
-Let's take a close look at the instantiation of <code class='codesnippet'>SupervisedSpec</code> in the code above so we can understand each of the arguments. First, the spec object takes the <code class='codesnippet'>dataset</code> and <code class='codesnippet'>model</code> objects as arguments. Next, we pass the <code class='codesnippet'>parse_trees</code> list that we defined above in the script. In our case, we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. We also need to pass the <code class='codesnippet'>sub_regime</code> to indicate the type of supervised ML problem <code class='codesnippet'></code>Then, we set <code class='codesnippet'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='codesnippet'>primary_objective</code> function, followed by the <code class='codesnippet'>initial_solution_fn</code>, which specifies the function we will use to provide the initial solution to candidate selection. Here, we set <code class='codesnippet'>initial_solution_fn=model.fit</code>.  Because <code class='codesnippet'>model</code> refers to our <code class='codesnippet'>LogisticRegressionModel()</code> object, <code class='codesnippet'>model.fit</code> refers to that objects' <code class='codesnippet'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
+Let's take a close look at the instantiation of <code class='codesnippet'>SupervisedSpec</code> in the code above so we can understand each of the arguments. First, the spec object takes the <code class='codesnippet'>dataset</code> and <code class='codesnippet'>model</code> objects as arguments. Next, we pass the <code class='codesnippet'>parse_trees</code> list that we defined above in the script. In our case, we only have one parse tree (because there is one parse tree per constraint), but it still must be passed as a list. We also need to pass the <code class='codesnippet'>sub_regime</code> to indicate the type of supervised ML problem. Then, we set <code class='codesnippet'>frac_data_in_safety=0.6</code>, which specifies that 60% of the data points in our dataset will be used for the safety test. The remaining 40% of the points will be used for candidate selection. Next, we specify the <code class='codesnippet'>primary_objective</code> function, followed by the <code class='codesnippet'>initial_solution_fn</code>, which specifies the function we will use to provide the initial solution to candidate selection. Here, we set <code class='codesnippet'>initial_solution_fn=model.fit</code>.  Because <code class='codesnippet'>model</code> refers to our <code class='codesnippet'>LogisticRegressionModel()</code> object, <code class='codesnippet'>model.fit</code> refers to that objects' <code class='codesnippet'>fit</code> method. This method is just a wrapper for  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression.fit">scikit-learn's LogisticRegression fit method</a>. The reason we use this method to create an initial solution is so that we start gradient descent with model weights that minimize the primary objective (in the absence of constraints). Because we have constraints, this initial solution is not necessarily the true optimum of our optimization problem, but it can help us find the true optimum much more efficiently in some cases. 
 </p>
 
 <p>
-The next argument is <code class='codesnippet'>use_builtin_primary_gradient_fn=True</code>. This instructs the engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='codesnippet'>primary_objective = objectives.binary_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/models.py</a>), including the binary logistic loss. If you use a custom primary objective function, there will definitely not be a built-in gradient function for your objective and <code class='codesnippet'>use_builtin_primary_gradient_fn=True</code> will raise an error. Setting <code class='codesnippet'>use_builtin_primary_gradient_fn=False</code> will cause the engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient can speed up execution in some cases. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
+The next argument is <code class='codesnippet'>use_builtin_primary_gradient_fn=True</code>. This instructs the engine to use a function that is already part of the library to calculate the gradient of the primary objective. Recall that earlier in the script we set the primary objective to be the logistic loss with the line: <code class='codesnippet'>primary_objective = objectives.binary_logistic_loss</code>. Built-in gradients exist for some common objective functions (see <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/objectives.py">https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/objectives.py</a>), including the binary logistic loss. Setting <code class='codesnippet'>use_builtin_primary_gradient_fn=False</code> will cause the engine to use automatic differentiation to calculate the gradient of the primary objective instead. While automatic differentiation will work, using a built-in function for the gradient can speed up execution in some cases. There is also a parameter for specifying a custom function for the gradient of the primary objective as well, but we will not cover that in this tutorial. 
 </p>
 
 <p>
 The next argument is <code class='codesnippet'>optimization_technique='gradient_descent'</code>, which specifies how we will search for a candidate solution during candidate selection. The other option for this argument is <code class='codesnippet'>'barrier_function'</code>, which we will not cover here. The argument <code class='codesnippet'>optimizer='adam'</code> instructs the code to use the Adam optimizer during gradient descent. The final argument, <code class='codesnippet'>optimization_hyperparams</code>, is for setting the parameters of gradient descent, which include:
 <ul>
-<li>'lambda_init': the initial value of the Lagrange multiplier. </li>
+<li>'lambda_init': the initial value of the Lagrange multiplier(s). </li>
 <li>'alpha_theta': the initial learning rate for the model parameters. </li>
-<li>'alpha_lamb': the initial learning rate for the Lagrange multiplier. </li>
+<li>'alpha_lamb': the initial learning rate for the Lagrange multiplier(s). </li>
 <li>'beta_velocity': the decay rate of the velocity (also called momentum) term. </li>
 <li>'beta_rmsprop': the decay rate of the rmsprop term. </li>
 <li>'use_batches': whether to use mini batches for gradient descent. </li>
@@ -620,15 +623,12 @@ Now that the experiments have been run, we can make the three plots. At the top 
 
 {% highlight python %}        
     if make_plots:
-        if save_plot:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                performance_yscale='log',
-                savename=plot_savename)
-        else:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                performance_yscale='log')
+        plot_generator.make_plots(fontsize=12,legend_fontsize=10,
+            performance_label=performance_metric,
+            performance_yscale='log',
+            model_label_dict=model_label_dict,
+            savename=plot_savename if save_plot else None,
+            save_format="png")
 {% endhighlight python %}
 </p>
 
@@ -744,15 +744,12 @@ if __name__ == "__main__":
                 )
 
     if make_plots:
-        if save_plot:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                performance_yscale='log',
-                savename=plot_savename)
-        else:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                performance_yscale='log')
+        plot_generator.make_plots(fontsize=12,legend_fontsize=10,
+            performance_label=performance_metric,
+            performance_yscale='log',
+            model_label_dict=model_label_dict,
+            savename=plot_savename if save_plot else None,
+            save_format="png")
 {% endhighlight python %}
 </div>
 

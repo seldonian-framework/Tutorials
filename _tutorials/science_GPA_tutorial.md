@@ -91,7 +91,6 @@ We need to create a different spec object for each constraint because we will be
 
 <p><b>Note:</b> Comparing this script to the equivalent one in the <a href="{{ "/tutorials/fair_loans_tutorial" | relative_url }}">fair loans tutorial</a>, you may notice that the model and primary objective are missing here. That is because we are using a wrapper function called <code class='codesnippet'>createSupervisedSpec()</code> here which fills in the default values for these quantities in the classification setting, i.e., a logistic regression model with log loss.</p>
 
-<p>
 <div>
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
@@ -155,6 +154,7 @@ if __name__ == '__main__':
 
 {% endhighlight python %}
 </div>
+<p>
 Running this code should print out that the five spec files have been created.
 </p>
 </div>
@@ -240,10 +240,10 @@ if __name__ == "__main__":
     # # Baseline models
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            baseline_model=UniformRandomClassifierBaseline,verbose=True)
+            baseline_model=UniformRandomClassifierBaseline(),verbose=True)
 
         plot_generator.run_baseline_experiment(
-            baseline_model=BinaryLogisticRegressionBaseline,verbose=True)
+            baseline_model=BinaryLogisticRegressionBaseline(),verbose=True)
 
         # Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)
@@ -283,15 +283,11 @@ if __name__ == "__main__":
                 )
 
     if make_plots:
-        if save_plot:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                performance_label=performance_metric,
-                include_legend=include_legend,
-                savename=plot_savename)
-        else:
-            plot_generator.make_plots(fontsize=12,legend_fontsize=8,
-                include_legend=include_legend,
-                performance_label=performance_metric)
+        plot_generator.make_plots(fontsize=12,legend_fontsize=12,
+            performance_label=performance_metric,
+            performance_yscale='log',
+            savename=plot_savename if save_plot else None,
+            save_format="png")
 {% endhighlight python %}
 </div>
 <p>
