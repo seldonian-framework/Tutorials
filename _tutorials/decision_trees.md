@@ -10,7 +10,7 @@ title: Seldonian \| Tutorial K
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
 <h2 align="center" class="mb-3">Tutorial L: Creating Fair Decision Trees (for binary classification)</h2>
-<a href="https://colab.research.google.com/github/seldonian-toolkit/Tutorials/blob/main/tutorial_d_fairness_for_automated_loan_approval_systems.ipynb" target="blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+<!-- <a href="https://colab.research.google.com/github/seldonian-toolkit/Tutorials/blob/main/tutorial_d_fairness_for_automated_loan_approval_systems.ipynb" target="blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> -->
 <hr class="my-4">
 
 <!-- Table of contents -->
