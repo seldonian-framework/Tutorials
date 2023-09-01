@@ -178,7 +178,7 @@ class SeldonianDecisionTree(ClassificationModel):
 </p>
 
 <p>
-Let $d_k(X_i,\theta)$ be the prediction for the $i$th sample for the $k$th decision tree in the random forest. The prediction for a single sample $X_i$ of the random forest, $r_k(X_i,\theta)$, (at least in scikit-learn's implementation), is simply the mean prediction of all trees: </p>
+Let $d_k(X_i,\theta)$ be the prediction for the $i$th sample for the $k$th decision tree in the random forest, which contains $K$ total trees. The prediction for a single sample $X_i$ of the random forest, $r_k(X_i,\theta)$, (at least in scikit-learn's implementation), is simply the mean prediction of all trees: </p>
 
 $$ r_k(X_i,\theta) = \frac{1}{K} \sum_{k=1}^{K}{d_k(X_i,\theta)} $$
 
@@ -188,8 +188,20 @@ $$ r_k(X_i,\theta) = \frac{1}{K} \sum_{k=1}^{K}{d_k(X_i,\theta)} $$
 $$J_{i,j}=\frac{\partial \left( r_k(X_i,\theta) \right)}{\partial \theta_j} = \frac{1}{K} \sum_{k=1}^{K}{\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}}. $$
 
 <p>
-    Notice that $\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}$ is exactly the Jacobian of a single decision tree shown in Equation \ref{Jacobian}. In the case of a single decision tree, the rows of the Jacobian were one-hot vectors, where the value of 1 was given for the leaf node index that was hit by a given sample's decision path. The columns of the Jacobian for the single decision tree corresponded to each leaf node. As in the decision tree, each row of the random forest Jacobian corresponds to a different data sample. Because our parameter vector $\theta$ consists of a flattened vector containing all trees, each column of the Jacobian corresponds to a different leaf node, starting with the leaf nodes of the first tree, followed by the leaf nodes of the second tree, etc. In the random forest, each sample is passed through each decision tree once and hits one leaf node per tree. Therefore, each row of the random forest Jacobian contains horizontally-concatenated one-hot vectors of the individual decision trees, with a factor of $\frac{1}{K}$ out front. For example, if there are two decision trees and each has 4 leaf nodes, the rows of the Jacobian will be of length 8 and there will be one value of 1 in the first four elements (otherwise 0) and one value of 1 in the last four elements (otherwise 0). 
+    Notice that $\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}$ is exactly the Jacobian of a single decision tree shown in Equation \ref{Jacobian}. In the case of a single decision tree, the rows of the Jacobian were one-hot vectors, where the value of 1 was given for the leaf node index that was hit by a given sample's decision path. The columns of the Jacobian for the single decision tree corresponded to each leaf node. As in the decision tree, each row of the random forest Jacobian corresponds to a different data sample. Because our parameter vector $\theta$ consists of a flattened vector containing all trees, each column of the Jacobian corresponds to a different leaf node, starting with the leaf nodes of the first tree, followed by the leaf nodes of the second tree, etc. In the random forest, each sample is passed through each decision tree once and hits one leaf node per tree. Therefore, each row of the random forest Jacobian contains horizontally-concatenated one-hot vectors of the individual decision trees, with a factor of $\frac{1}{K}$ out front. 
 </p>
+
+<p>
+    Consider an example random forest containing two decision trees, each with 4 leaf nodes. The rows of the Jacobian will be of length 8 and there will be one value of 1 in the first four elements (otherwise 0) and one value of 1 in the last four elements (otherwise 0). Consider three samples for which we have to compute the Jacobian, which is depicted in Figure 2. The first sample's decision path ends at the second leaf node (ordered left to right) in the first decision tree and ends at the first leaf node in the second decision tree. The second sample's decision path ends at the first leaf node in the first decision tree and ends at the last leaf node in the second decision tree. The third sample's decision path ends at the third leaf node in the first decision tree and the third leaf node in the second decision tree. 
+</p>
+
+<div align="center">
+    <figure>
+        <img src="{{ "/assets/img/dtree_tutorial/rf_jacobian.png" | relative_url}}" class="img-fluid mt-4" style="width: 65%"  alt="Disparate impact"> 
+        <figcaption>
+         <b>Figure 2</b> - An example Jacobian matrix for a random forest containing two decision trees, each with four leaf nodes.  </figcaption>
+    </figure>
+</div>  
 
 <p>
      We implemented a Seldonian random forest (SRF) model that uses scikit-learn's RandomForestClassifier as the initial model in <a href="https://github.com/seldonian-toolkit/Engine/blob/main/seldonian/models/trees/skrandomforest_model.py">this module</a>. Here is the constructor of this class:
@@ -216,7 +228,7 @@ class SeldonianRandomForest(ClassificationModel):
 <p>Like the SeldonianDecisionTree model, the only inputs are the inputs you would normally provide to the scikit-learn RandomForestClassifier. </p>
 
 <p>
-    <b>Note:</b>If you are using a different library than scikit-learn for building the initial decision tree(s), you will need to carefully consider how to write down the Jacobian for your problem. This is also true if you using your own custom implementation, unless it is written purely in NumPy, SciPy and pure Python, in which case autograd will happily compute the Jacobian automatically.
+    <b>Note:</b> If you are using a different library than scikit-learn for building the initial decision tree(s), you will need to carefully consider how to write down the Jacobian for your problem. This is also true if you using your own custom implementation, unless it is written purely in NumPy, SciPy and pure Python, in which case autograd will happily compute the Jacobian automatically.
 </p>
 
 </div>
@@ -638,15 +650,15 @@ if __name__ == "__main__":
         <img src="{{ "/assets/img/dtree_tutorial/gpa_dtree_vs_logreg_equalized_odds_0.15.png" | relative_url}}" class="img-fluid mt-2" style="width: 100%"  alt="Equalized odds"> 
         <img src="{{ "/assets/img/dtree_tutorial/gpa_dtree_vs_logreg_equal_opportunity_0.1.png" | relative_url}}" class="img-fluid mt-2" style="width: 100%"  alt="Equal opportunity"> 
         <img src="{{ "/assets/img/dtree_tutorial/gpa_dtree_vs_logreg_predictive_equality_0.1.png" | relative_url}}" class="img-fluid mt-2" style="width: 100%"  alt="Predictive equality"> 
-        <figcaption align="left"> <b>Figure 2</b> - Experiment plots for the GPA prediction problem for five fairness constraints. Each row of plots is an experiment for a different fairness constraint. From top to bottom: disparate impact, demographic parity, equalized odds, equal opportunity, and predictive equality. The Seldonian decision tree model (blue) and Seldonian random forest model (brown) are compared to the Seldonian logistic regressor (purple) discussed in Tutorial E and three baseline models trained without knowledge of the fairness constraints: i) a decision tree classifier trained with scikit-learn (orange), ii) the same decision tree classifier as (i) but with leaf tuning using gradient descent (green), and iii) a logistic regressor trained with scikit-learn (red). The colored points and bands in each panel show the mean and standard error over 20 trials, respectively.  </figcaption>
+        <figcaption align="left"> <b>Figure 3</b> - Experiment plots for the GPA prediction problem for five fairness constraints. Each row of plots is an experiment for a different fairness constraint. From top to bottom: disparate impact, demographic parity, equalized odds, equal opportunity, and predictive equality. The Seldonian decision tree model (blue) and Seldonian random forest model (brown) are compared to the Seldonian logistic regressor (purple) discussed in Tutorial E and three baseline models trained without knowledge of the fairness constraints: i) a decision tree classifier trained with scikit-learn (orange), ii) the same decision tree classifier as (i) but with leaf tuning using gradient descent (green), and iii) a logistic regressor trained with scikit-learn (red). The colored points and bands in each panel show the mean and standard error over 20 trials, respectively.  </figcaption>
     </figure>
 </div>  
 
 <p>
-    Figure 2 shows that for all fairness constraints, the three Seldonian models have the desired behavior. That is, as the amount of data increases, their performance increases and the probability of returning a solution increases. Furthermore, they never violate the constraints. The Seldonian logistic regressor outperforms and returns solutions with less data than both of the tree-based Seldonian models. The Seldonian random forest generally performs as well or slightly better than the Seldonian decision tree and consistenly requires less data. 
+    Figure 3 shows that for all fairness constraints, the three Seldonian models have the desired behavior. That is, as the amount of data increases, their performance increases and the probability of returning a solution increases. Furthermore, they never violate the constraints. The Seldonian logistic regressor outperforms and returns solutions with less data than both of the tree-based Seldonian models. The Seldonian random forest generally performs as well or slightly better than the Seldonian decision tree and consistenly requires less data. 
 </p>
 <p>
-    We included a new baseline in this tutorial for the first time which is now part of the toolkit: a decision tree classifier trained initially with scikit-learn, whose leaf node probabilities are then tuned using gradient descent (Figure 2; green). The purpose of this baseline is to provide a model that is as similar to the Seldonian tree-based models as possible, without considering the constraints. Figure 2 shows that this baseline achieves higher accuracy than the Seldonian decision tree, but it does this at the expense of being unfair, no matter the definition of fairness. The Seldonian logistic regressor achieves similar performance as this baseline for all constraints, and it is always fair, proving that accuracy does not need to be traded off with fairness for this problem. 
+    We included a new baseline in this tutorial for the first time which is now part of the toolkit: a decision tree classifier trained initially with scikit-learn, whose leaf node probabilities are then tuned using gradient descent (Figure 3; green). The purpose of this baseline is to provide a model that is as similar to the Seldonian tree-based models as possible, without considering the constraints. Figure 3 shows that this baseline achieves higher accuracy than the Seldonian decision tree, but it does this at the expense of being unfair, no matter the definition of fairness. The Seldonian logistic regressor achieves similar performance as this baseline for all constraints, and it is always fair, proving that accuracy does not need to be traded off with fairness for this problem. 
 </p>
 </div>
 

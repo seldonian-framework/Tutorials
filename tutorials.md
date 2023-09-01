@@ -49,6 +49,11 @@ title: Seldonian \| Tutorials
             <li>
                 <a href="{{ "/tutorials/pytorch_mnist/" | relative_url}}">(G) Creating your first Seldonian PyTorch model</a>
             </li> 
+
+            <li>
+                <a href="{{ "/tutorials/dtree_tutorial/" | relative_url}}">(L) Creating Fair Decision Trees and Random Forests (for binary classification)</a>
+            </li> 
+
         </ol>
     </div>
 
