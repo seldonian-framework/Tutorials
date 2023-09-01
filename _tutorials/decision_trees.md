@@ -3,7 +3,7 @@ layout: tutorial
 permalink: /tutorials/dtree_tutorial/
 prev_url: /tutorials/new_baseline/
 prev_page_name: (K) Creating a new baseline for Seldonian Experiments
-title: Seldonian \| Tutorial K
+title: Seldonian \| Tutorial L
 ---
 
 <!-- Main Container -->
