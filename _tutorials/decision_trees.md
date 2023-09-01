@@ -25,18 +25,13 @@ title: Seldonian \| Tutorial K
         <li> <a href="#gpa_spec_object">Creating the specification object</a> </li>
         <li> <a href="#gpa_experiments">Running the Seldonian Experiments</a> </li>
     </ul>
-    <li> <a href="#gpa">Applying fair decision tree and random forest models to the COMPAS criminal recidivism dataset</a> </li>
-    <ul>
-        <li> <a href="#compas_spec_object">Creating the specification object</a> </li>
-        <li> <a href="#compas_experiments">Running the Seldonian Experiments</a> </li>
-    </ul>
     <li> <a href="#summary">Summary</a> </li>
 </ul>
 <hr class="my-4">
 
 <h3 id="intro">Introduction</h3>
 
-<p>For tabular datasets, tree-based models are often the first choice for ML practitioners. Depending on the specific model, they can have advantages over more complex models like artificial neural networks, such as explainability, a smaller memory footprint, and lower latency (both at training and inference time). There are many types of tree-based models, but at the foundation of all of them is the decision tree. 
+<p>For tabular datasets, tree-based models are often the first choice for ML practitioners. Depending on the specific model, they can have advantages, such as explainability, a smaller memory footprint, and lower latency (both at training and inference time), compared to more complex models like artificial neural networks. There are many types of tree-based models, but at the foundation of all of them is the decision tree. 
 </p>
 
 <!-- Instead, training a decision tree involves building a tree recursively, where each node represents a specific value of (usually) a single feature in the dataset that split the training data into (usually) two subsets.  Two common criteria for deciding the feature splits are the information gain or gini index (also called gini impurity). Using these criteria for splits in the tree often results in accurate predictions on unseen data, although vanilla decision trees can suffer from overfitting to the training data. -->
@@ -52,11 +47,11 @@ title: Seldonian \| Tutorial K
 </p>
 
 <p>
-    <b>Note 1:</b> The SDTree model discussed in this tutorial is only designed for <b>binary classification</b> problems. With some modification, it could be used for regression and multi-class classification problems, though that is beyond the scope of this tutorial.
+    <b>Note 1:</b> The models discussed in this tutorial are only designed for <b>binary classification</b> problems. With some modification, they could be used for regression and multi-class classification problems.
 </p>
 
 <p>
-    <b>Note 2:</b> While the approach is agnostic to the algorithm or library used to build the initial decision tree, in practice we use scikit-learn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">DecisionTreeClassifier</a>, which implements a variation on the CART algorithm. In order to use other libraries for building the tree, one would need to add some code to the toolkit (see the section <a href="#model_desc">How does the SDTree model work?</a> below for details). If this is something you would find valuable, please open an <a href="https://github.com/seldonian-toolkit/Engine/issues">issue</a> or submit a <a href="https://github.com/seldonian-toolkit/Engine/pulls">pull request</a>.
+    <b>Note 2:</b> While the approach in this tutorial is agnostic to the algorithm or library used to build the initial decision tree, in practice we use scikit-learn, which implements a variation on the CART algorithm to build its trees. In order to use other libraries for building the initial tree model, a small amount of plug-in code is required to make the model compatible the toolkit (see the section <a href="#model_desc">How does the SDTree model work?</a> below for details). If this is something you would find valuable, please open an <a href="https://github.com/seldonian-toolkit/Engine/issues">issue</a> or submit a <a href="https://github.com/seldonian-toolkit/Engine/pulls">pull request</a>.
 </p>
 
 
@@ -68,7 +63,6 @@ title: Seldonian \| Tutorial K
     <li>Cover how the SDTree is trained in candidate selection.</li>
     <li>Explain how the SDTree can be extended to a Seldonian Random Forest (SRF).  </li>
     <li>Apply the SDTree and SRF to the GPA prediction problem from <a href="{{ "/tutorials/science_GPA_tutorial/" | relative_url}}"> Tutorial E</a>. </li>
-    <li>Apply the SDTree and SRF to the COMPAS criminal recidivism dataset. </li>
 </ul>
 </p>
 </div>
@@ -80,26 +74,26 @@ title: Seldonian \| Tutorial K
 </p>
 
 <p>
-    In brief, the Seldonian decision tree model relabels the leaf node probabilities so that the model's predictions enforce the behavioral constraints while maintaining high accuracy. 
+    In brief, the Seldonian decision tree model relabels the leaf node label probabilities so that the model's predictions enforce the behavioral constraints while maintaining high accuracy. 
 </p>
 
 
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/dtree_tutorial/example_sklearn_tree.png" | relative_url}}" class="img-fluid mt-4" style="width: 100%"  alt="Scikit-learn decision tree"> 
-        <figcaption align="left"> <b>Figure 1</b> - A simple decision tree with <code class="codesnippet">max_depth=2</code> built using scikit-learn's DecisionTreeClassifier on a binary classification problem. Each internal node (including the root node) displays the feature split condition, the gini index, the number of samples that reach the node, and the "value" vector. Each leaf node displays the gini index, the number of samples that reach the node, and the "value" vector. For internal nodes, the first element of the value vector is the number of samples that meet the split condition, and the second number is the number that do not. For leaf nodes, the two numbers in the value vector indicate the number of samples whose true labels are 0 and 1, respectively. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - A simple decision tree with <code class="codesnippet">max_depth=2</code> built using scikit-learn's DecisionTreeClassifier on a binary classification problem. Each internal node (including the root node) displays the feature split condition, the gini index, the number of samples that reach the node, and a "value" vector. Each leaf node displays the gini index, the number of samples that reach the node, and a "value" vector. For internal nodes, the first element of the value vector is the number of samples that meet the split condition, and the second number is the number that do not. For leaf nodes, the two numbers in the value vector indicate the number of samples whose true labels are 0 and 1, respectively. </figcaption>
     </figure>
 </div>
 
 <p>
-    Let's assume we have obtained the decision tree in Figure 1 by training an instance of scikit-learn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">DecisionTreeClassifier</a> on some imaginary tabular dataset. Our goal is to enforce behavioral constraints on this model with high confidence, e.g., $1-\delta = 0.95$. First, we obtain the probabilities of predicting the positive and negative class in each leaf node. The most straightforward way to do this is to consider the probabilities to be the fraction of samples that have each label. Taking the left-most leaf node as an example, the probabilities for predicting the 0th and 1st classes are:
+    Let's assume we have obtained the decision tree in Figure 1 by training an instance of scikit-learn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">DecisionTreeClassifier</a> on some imaginary tabular dataset. Our goal is to enforce behavioral constraints on this model with high confidence. First, we obtain the probabilities of predicting the positive and negative class in each leaf node. The most straightforward way to do this is to consider the probabilities to be the fraction of samples that reach the leaf node that belong to each true label class (in this case, 0 or 1). Taking the left-most leaf node as an example, the probabilities for predicting the 0th and 1st classes are:
 </p>
 
 $$ \Pr(\hat{y} = 0) = \frac{8812}{8812+4471} \approx 0.66 $$
 $$ \Pr(\hat{y} = 1) = \frac{4471}{8812+4471} \approx 0.34 $$
 
 <p>
-    Because these probabilities are redundant (i.e., $ \Pr(\hat{y} = 1) = 1.0 - \Pr(\hat{y} = 0)$), we only need to compute one of them for each leaf node. Our convention is to only compute $\Pr(\hat{y} = 1)$. Now, we want to tune these probabilities in the KKT optimization procedure subject to our behavioral constraint(s). However, probabilities are bounded between 0 and 1, and the optimization procedure works best with unbounded parameters. Therefore, for the $j$th leaf node, we define a parameter, $\theta_j \in (-\infty,\infty)$, such that:
+    Because these probabilities are redundant (i.e., $ \Pr(\hat{y} = 1) = 1.0 - \Pr(\hat{y} = 0)$), we only need to compute one of them for each leaf node. Our convention is to only compute $\Pr(\hat{y} = 1)$. The probabilities of each leaf node are what we want to tune using the KKT optimization procedure subject to our behavioral constraint(s). However, probabilities are bounded between 0 and 1, and the optimization procedure works best with unbounded parameters. Therefore, for the $j$th leaf node, we define a parameter, $\theta_j \in (-\infty,\infty)$, such that:
 </p>
 
 $$ 
@@ -109,7 +103,7 @@ $$
 \end{equation}
 $$
 <p>
-    which ensures that $\Pr(\hat{y} = 1) \in (0,1)$. It is also helpful to express $\theta_j$ in terms of $\Pr(\hat{y} = 1)_j$:
+    which ensures that $\Pr(\hat{y} = 1)_j \in (0,1)$. We can also express $\theta_j$ in terms of $\Pr(\hat{y} = 1)_j$:
 </p>
 
 $$
@@ -176,17 +170,25 @@ class SeldonianDecisionTree(ClassificationModel):
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="rf">From Decision Trees to Random Forests</h3>
 
-<p>The technique described in the previous section can be similarly applied to a random forest. The difference is that now the initial model is a scikit-learn random forest classifier, which consists of an array of trees rather than a single tree. We can treat the leaf node probabilities of all trees as the parameters of parametric model, such that $\theta$ is a flattened vector containing the leaf node probabilities (after transformation via Equation \ref{probs2theta}) of all decision trees. The only subtlely comes when writing down the Jacobian. Let's let $d_k(X_i,\theta)$ be the prediction for a single data sample $X_i$ of a single decision tree in the random forest. The prediction for a single sample $X_i$ of the random forest, $r_k(X_i,\theta)$, (at least in scikit-learn's implementation), is simply the mean prediction of all trees: </p>
+<p>
+    <b>Note:</b> like the previous section, this section is technical and is intended for developers who are seeking to modify the model or better understand how it works. 
+</p>
 
-$$ r_k(X_i,\theta) = \frac{1}{K} \sum_{k}{d_k(X_i,\theta)} $$
+<p>The technique described in the previous section can be similarly applied to a random forest. The difference is that now the initial model is a scikit-learn random forest classifier, which consists of an array of trees rather than a single tree. We can treat the leaf node probabilities of all trees as the parameters of parametric model, such that $\theta$ is a flattened vector containing the leaf node probabilities (after transformation via Equation \ref{probs2theta}) of all decision trees. The only subtlely comes when writing down the Jacobian. 
+</p>
+
+<p>
+Let $d_k(X_i,\theta)$ be the prediction for the $i$th sample for the $k$th decision tree in the random forest. The prediction for a single sample $X_i$ of the random forest, $r_k(X_i,\theta)$, (at least in scikit-learn's implementation), is simply the mean prediction of all trees: </p>
+
+$$ r_k(X_i,\theta) = \frac{1}{K} \sum_{k=1}^{K}{d_k(X_i,\theta)} $$
 
 <p>
     Therefore, the Jacobian is:
 </p>
-$$J_{i,j}=\frac{\partial \left( r_k(X_i,\theta) \right)}{\partial \theta_j} = \frac{1}{K} \sum_{k}{\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}}. $$
+$$J_{i,j}=\frac{\partial \left( r_k(X_i,\theta) \right)}{\partial \theta_j} = \frac{1}{K} \sum_{k=1}^{K}{\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}}. $$
 
 <p>
-    Notice that $\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}$ is exactly the Jacobian of a single decision tree shown in Equation \ref{Jacobian}. In the case of a single decision tree, the rows of the Jacobian were one-hot vectors, where the value of 1 was given for the leaf node index that was hit by a given sample's decision path. For the random forest, the rows of the Jacobian now consist of horizontally-concatenated one-hot vectors of the individual decision trees, with a factor of $\frac{1}{K}$ out front. For example, if there are two decision trees and each has 4 leaf nodes, the rows of the Jacobian will be of length 8 and there will be one value of 1 in the first four elements (otherwise 0) and one value of 1 in the last four elements (otherwise 0). 
+    Notice that $\frac{\partial \left( d_k(X_i,\theta) \right)}{\partial \theta_j}$ is exactly the Jacobian of a single decision tree shown in Equation \ref{Jacobian}. In the case of a single decision tree, the rows of the Jacobian were one-hot vectors, where the value of 1 was given for the leaf node index that was hit by a given sample's decision path. The columns of the Jacobian for the single decision tree corresponded to each leaf node. As in the decision tree, each row of the random forest Jacobian corresponds to a different data sample. Because our parameter vector $\theta$ consists of a flattened vector containing all trees, each column of the Jacobian corresponds to a different leaf node, starting with the leaf nodes of the first tree, followed by the leaf nodes of the second tree, etc. In the random forest, each sample is passed through each decision tree once and hits one leaf node per tree. Therefore, each row of the random forest Jacobian contains horizontally-concatenated one-hot vectors of the individual decision trees, with a factor of $\frac{1}{K}$ out front. For example, if there are two decision trees and each has 4 leaf nodes, the rows of the Jacobian will be of length 8 and there will be one value of 1 in the first four elements (otherwise 0) and one value of 1 in the last four elements (otherwise 0). 
 </p>
 
 <p>
@@ -211,7 +213,11 @@ class SeldonianRandomForest(ClassificationModel):
         self.params_updated = False
 {% endhighlight python %}
 
-<p>Like the SeldonianDecisionTree model, the only inputs are the inputs you would normally provide to the scikit-leran RandomForestClassifier. </p>
+<p>Like the SeldonianDecisionTree model, the only inputs are the inputs you would normally provide to the scikit-learn RandomForestClassifier. </p>
+
+<p>
+    <b>Note:</b>If you are using a different library than scikit-learn for building the initial decision tree(s), you will need to carefully consider how to write down the Jacobian for your problem. This is also true if you using your own custom implementation, unless it is written purely in NumPy, SciPy and pure Python, in which case autograd will happily compute the Jacobian automatically.
+</p>
 
 </div>
 
@@ -634,3 +640,14 @@ if __name__ == "__main__":
 </p>
 </div>
 
+<div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
+<h5 id="summary">Summary</h5>
+<p>
+    In this tutorial, we introduced two tree-based models that can be trained with the Seldonian Toolkit. The first is a decision tree model (SDTree) which takes an initial decision tree trained with Scikit-Learn's DecisionTreeClassifier and tunes the leaf node label probabilities subject to fairness constraints using the toolkit's KKT-based optimization technique for candidate selection. We extend the basic SDTree model to a Seldonian random forest model, which takes an initial random forest trained with Scikit-Learn's RandomForestClassifier and, like in the single decision tree case, tunes the leaf node label probabilities of all trees in the forest. We provided our implementation of both of these models, and showed that the technique can work regardless of the library or method used to create the initial decision tree or random forest. These techniques could also be extended to support other tree-based models such as boosted trees and other tree-bagging models. 
+</p>
+
+<p>
+    We showed how to apply the Seldonian decision tree and Seldonian random forest models to an actual machine learning problem -- the GPA prediction problem with five fairness constraints from Tutorial E. Both models perform well, with the random forest slightly outperforming and requiring less data than the decision tree. The tree-based models were outperformed and required more data than the Seldonian logistic regressor. This is likely application-specific, and we are interested to see results applying Seldonian tree-based models to other problems. 
+</p>
+
+</div>
