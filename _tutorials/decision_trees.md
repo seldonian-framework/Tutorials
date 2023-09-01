@@ -231,7 +231,7 @@ class SeldonianRandomForest(ClassificationModel):
 <h5 id="gpa_spec_object">Creating the specification object</h5>
 
 <p>
-    There are a few differences between the script we used to create spec objects in Tutorial E and the one we will create here: i) the model object is now the SeldonianDecisionTree or SeldonianRandomForest model, ii) we use tighter versions of the same fairness constraints, and iii) we customize the hyperparameters of the KKT optimization. We used all of the default hyperparameters of the scikit-learn decision tree and random forest models except <code class="codesnippet">max_depth</code> and <code class="codesnippet">n_estimators</code> (for random forest). We chose a max depth of 5 to keep the model relatively simple. In a real situation, one would tune max_depth as with any other hyperparameter. Below is code snippet for creating the spec objects for each of the five fairness constraints from Tutorial E for the Seldonian decision tree model. Note that the data path and metadata path are local paths and must be adjusted to wherever you downloaded those two files. The two files can be downloaded from <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/GPA">here</a>.
+    There are a few differences between the script we used to create spec objects in Tutorial E and the one we will create here: i) the model object is now the SeldonianDecisionTree or SeldonianRandomForest model, ii) we use tighter versions of the same fairness constraints, and iii) we customize the hyperparameters of the KKT optimization. We used all of the default hyperparameters of the scikit-learn decision tree and random forest models except <code class="codesnippet">max_depth</code> and <code class="codesnippet">n_estimators</code> (for random forest). We chose a <code class="codesnippet">max_depth=5</code> to keep the model simple and to avoid overfitting, and we chose <code class="codesnippet">n_estimators=50</code> to get a reasonably-sized forest without incurring too much compute. In a real situation, one would tune these hyperparameters. Below is code snippet for creating the spec objects for each of the five fairness constraints from Tutorial E for the Seldonian decision tree model. Note that the data path and metadata path are local paths and must be adjusted to wherever you downloaded those two files. The two files can be downloaded from <a href="https://github.com/seldonian-toolkit/Engine/tree/main/static/datasets/supervised/GPA">here</a>.
 </p>
 
 <div>
@@ -336,6 +336,10 @@ if __name__ == "__main__":
 <p>
     Running this code will create fives specfiles in the directory: <code>specfiles/</code>. Next, we show how to create the five specfiles for the random forest model. 
 </p>
+
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 import os
 import autograd.numpy as np
@@ -398,7 +402,7 @@ if __name__ == "__main__":
 
         # 3. Define the underlying machine learning model
         max_depth = 5
-        n_estimators = 100
+        n_estimators = 50
         model = SeldonianRandomForest(n_estimators=n_estimators,max_depth=max_depth)
 
         # 4. Create a spec object
@@ -431,7 +435,7 @@ if __name__ == "__main__":
         spec_save_name = f'specfiles/gpa_{constraint_name}_{epsilon}_fracsafety_{frac_data_in_safety}_skrf_maxdepth{max_depth}_{n_estimators}trees_reparam_spec.pkl'
         save_pickle(spec_save_name,spec,verbose=True)
 {% endhighlight python %}
-
+</div>
 <p>
     This will save five more spec files to the <code>specfiles/</code> directory. Now we will skip running the engine and go straight to running an experiment.
 </p>
@@ -446,7 +450,7 @@ if __name__ == "__main__":
 </p>
 
 <p>
-    The experiment we will run will consist of 20 trials. This is fewer than we ran in Tutorial E, but it will be sufficient for comparing to the Seldonian logistic regressor and the baseline models. We will compare to three baseline models that do not consider the fairness constraints: i) a decision tree classifier trained with scikit-learn, ii) the same decision tree classifier as (i) but with leaf tuning using gradient descent, and iii) a logistic regressor trained with scikit-learn. 
+    The experiment will consist of 20 trials. This is fewer than we ran in Tutorial E, but it will be sufficient for comparing to the Seldonian logistic regressor and the baseline models. We will compare to three baseline models that do not consider the fairness constraints: i) a decision tree classifier trained with scikit-learn, ii) the same decision tree classifier as (i) but with leaf tuning using gradient descent, and iii) a logistic regressor trained with scikit-learn. 
 </p>
 
 <p>
@@ -456,7 +460,7 @@ if __name__ == "__main__":
             In this experiment, we omit the comparison to Fairlearn models, as that is not the purpose of this tutorial.
         </li>
         <li>
-            In this tutorial, we use a held-out test set of 1/3 of the original GPA dataset ($\sim$14,500 samples) for calculating the performance (left plot) and fairness violation (right plot). We use the remaining 2/3 of the data ($\sim$28,800 samples) for resampling to make the trial datasets. 
+            In this tutorial, we use a held-out test set of 1/3 of the original GPA dataset ($\sim$14,500 samples) for calculating the performance (left plot) and fairness violation (right plot). We resample the remaining 2/3 of the data ($\sim$28,800 samples) to make the trial datasets. 
         </li>
         <li>
             We use probabilistic accuracy rather than deterministic accuracy for the performance metric.
@@ -465,9 +469,12 @@ if __name__ == "__main__":
         </li>
     </ul>
 
-    Again, these differences do not affect the comparison between the Seldonian models because we use the same performance metrics and primary objectives for all models in this tutorial. We do not have control over the primary objective function used to fit the scikit-learn baselines, but we do evaluate them using the same performance metric and the Seldonian modles. 
+    Again, these differences do not affect the comparison between the Seldonian models because we use the same performance metrics and primary objectives for all models in this tutorial. We do not have control over the primary objective function used to fit the scikit-learn baselines, but we do evaluate them using the same performance metric as the Seldonian models. 
 </p>
 
+<div>
+
+<input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 import os
 import numpy as np 
@@ -617,6 +624,9 @@ def main():
 if __name__ == "__main__":
     main()
 {% endhighlight python %}
+
+</div>
+
 <p>
     In addition to running this script for the five fairness constraints for both Seldonian decision tree and Seldonian random forest, we also separately re-ran the experiments in Tutorial E using the same setup as these experiments (i.e., same constraints, performance metric, primary objective function, and held-out test set), so that we could compare the Seldonian decision tree, Seldonian random forest, and the Seldonian logistic regressor all on the same plots. The results from the five experiments are shown below. See the bottom row for the legend, which applies to all rows.
 </p>
@@ -643,11 +653,11 @@ if __name__ == "__main__":
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h5 id="summary">Summary</h5>
 <p>
-    In this tutorial, we introduced two tree-based models that can be trained with the Seldonian Toolkit. The first is a decision tree model (SDTree) which takes an initial decision tree trained with Scikit-Learn's DecisionTreeClassifier and tunes the leaf node label probabilities subject to fairness constraints using the toolkit's KKT-based optimization technique for candidate selection. We extend the basic SDTree model to a Seldonian random forest model, which takes an initial random forest trained with Scikit-Learn's RandomForestClassifier and, like in the single decision tree case, tunes the leaf node label probabilities of all trees in the forest. We provided our implementation of both of these models, and showed that the technique can work regardless of the library or method used to create the initial decision tree or random forest. These techniques could also be extended to support other tree-based models such as boosted trees and other tree-bagging models. 
+    In this tutorial, we introduced two tree-based models that can be trained to satisfy behavioral constraints with the Seldonian Toolkit. The first is a decision tree model (SDTree) which takes an initial decision tree trained with Scikit-Learn's DecisionTreeClassifier and tunes the leaf node label probabilities subject to fairness constraints using the toolkit's KKT-based optimization technique for candidate selection. We extend the basic SDTree model to a Seldonian random forest model, which takes an initial random forest trained with Scikit-Learn's RandomForestClassifier and, like in the single decision tree case, tunes the leaf node label probabilities of all trees in the forest. We provided our implementation of both of these models, but we stress that the technique can work regardless of the library or method used to create the initial decision tree or random forest. These techniques could also be extended to support other tree-based models such as boosted trees and other tree-bagging models. We encourange and support pull requests with new models, such as a new tree-based model. 
 </p>
 
 <p>
-    We showed how to apply the Seldonian decision tree and Seldonian random forest models to an actual machine learning problem -- the GPA prediction problem with five fairness constraints from Tutorial E. Both models perform well, with the random forest slightly outperforming and requiring less data than the decision tree. The tree-based models were outperformed and required more data than the Seldonian logistic regressor. This is likely application-specific, and we are interested to see results applying Seldonian tree-based models to other problems. 
+    We showed how to apply the Seldonian decision tree and Seldonian random forest models to an actual machine learning problem -- the GPA prediction problem with five fairness constraints from Tutorial E. Both models perform well and are always fair, with the random forest slightly outperforming and requiring less data to achieve fairness than the decision tree. The Seldonian logistic regressor from Tutorial E outperformed the Seldonian tree-based models. This is likely application-specific, and we are interested to see results applying Seldonian tree-based models to other problems. 
 </p>
 
 </div>
