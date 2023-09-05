@@ -12,6 +12,13 @@ title: Seldonian \| Changelog
    
     <h5>Engine (since initial alpha release in September, 2022):</h5>
 
+    <h5><a href="https://pypi.org/project/seldonian-engine/0.8.4/">0.8.4</a></h5>
+    <ul>
+        <li> Add decision tree and random forest (with leaf probability tuning) models. </li>
+        <li> Add error rate objective function and measure function. </li>
+        <li> Add weighted importance sampling objective function and measure function. </li>
+    </ul>
+
     <h5><a href="https://pypi.org/project/seldonian-engine/0.8.1/">0.8.1</a></h5>
     <ul>
         <li> Fixed a bug where the datasize term in the confidence interval calculations was incorrect in some edge cases. Now, the datasize is always based off of the length of the vector of estimator samples (from the zhat function).  </li>
