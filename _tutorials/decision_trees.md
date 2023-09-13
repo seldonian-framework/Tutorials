@@ -3,6 +3,8 @@ layout: tutorial
 permalink: /tutorials/dtree_tutorial/
 prev_url: /tutorials/new_baseline/
 prev_page_name: (K) Creating a new baseline for Seldonian Experiments
+next_url: /tutorials/parallelization_tutorial/
+next_page_name: (M) Efficient parallelization with the toolkit
 title: Seldonian \| Tutorial L
 ---
 

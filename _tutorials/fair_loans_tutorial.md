@@ -443,6 +443,7 @@ We will describe the Fairlearn model we use in more detail below. Each model req
 
 {% highlight python %}
 import os
+os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np 
 from sklearn.metrics import log_loss
 
@@ -463,7 +464,7 @@ Now, we will set up the parameters for the experiments, such as the data fractio
 Fairlearn's fairness definitions are rigid and do not exactly match the definition we used in the engine. To approximate the same definition of disparate impact as ours, we use their definition of demographic parity with a ratio bound of four different values. We will show later that we can change our constraint to match theirs exactly, and the results we find do not change significantly. 
 </p>
 <p>
-Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. <code class='codesnippet'>n_workers</code> is how many parallel processes will be used for running the experiments. Set this parameter to however many CPUs you want to use. Note: using 7 CPUs, this entire script takes 5–10 minutes to run on an M1 Macbook Air. The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. 
+Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. <code class='codesnippet'>n_workers</code> is how many parallel processes will be used for running the experiments. Set this parameter to however many CPUs you want to use. The line <code class="codesnippet">os.environ["OMP_NUM_THREADS"] = "1"</code> in the imports block above turns off NumPy's implicit parallelization, which we want to do when using <code class="codesnippet">n_workers>1</code> (see <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> Tutorial M: Efficient parallelization with the toolkit </a> for more details). Note: using 7 CPUs, this entire script takes 5–10 minutes to run on an M1 Macbook Air. The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. 
 </p>
 
 <p>

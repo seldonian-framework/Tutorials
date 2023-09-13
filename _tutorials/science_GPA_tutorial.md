@@ -170,6 +170,9 @@ To produce the three plots, we will run a Seldonian Experiment using a quasi-Sel
 {% highlight python %}
 # generate_gpa_plots.py
 import os
+# this line disables NumPy's implicit parallelization 
+# and speeds up our own parallelization of experiments 
+os.environ["OMP_NUM_THREADS"] = "1" 
 import numpy as np 
 
 from experiments.generate_plots import SupervisedPlotGenerator

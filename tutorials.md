@@ -54,6 +54,10 @@ title: Seldonian \| Tutorials
                 <a href="{{ "/tutorials/dtree_tutorial/" | relative_url}}">(L) Creating Fair Decision Trees and Random Forests (for binary classification)</a>
             </li> 
 
+            <li>
+                <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> (M) Efficient parallelization with the toolkit </a>
+            </li>
+
         </ol>
     </div>
 
@@ -67,6 +71,10 @@ title: Seldonian \| Tutorials
             <li>
                 <a href="{{ "/tutorials/gridworld_RL_tutorial/" | relative_url}}">(H) Introduction to reinforcement learning with the Seldonian Toolkit</a>
             </li>
+
+            <li>
+                <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> (M) Efficient parallelization with the toolkit </a>
+            </li>
         </ol>
     </div>
 
@@ -79,6 +87,8 @@ title: Seldonian \| Tutorials
             <li> <a href="{{ "/tutorials/efficient_deep_networks/" | relative_url}}"> (J) Efficiently training deep Seldonian networks</a></li>
 
             <li> <a href="{{ "/tutorials/new_baseline/" | relative_url}}"> (K) Creating a new baseline for (supervised) Seldonian Experiments</a></li>
+
+
         
         </ol>
 
