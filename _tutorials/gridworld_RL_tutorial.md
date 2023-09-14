@@ -233,6 +233,7 @@ The policy requires some knowledge of the environment, which we call a <a href="
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 # createSpec.py
+import autograd.numpy as np
 from seldonian.RL.Agents.Policies.Softmax import DiscreteSoftmax
 from seldonian.RL.Env_Description.Env_Description import Env_Description
 from seldonian.RL.Env_Description.Spaces import Discrete_Space
@@ -331,7 +332,6 @@ This should result in the following output, though the exact numbers may differ 
 {% highlight bash %}
 Safety dataset has 600 episodes
 Candidate dataset has 400 episodes
-Candidate sensitive_attrs:
 Have 10 epochs and 1 batches of size 400 for a total of 10 iterations
 Epoch: 0, batch iteration 0
 Epoch: 1, batch iteration 0
@@ -354,7 +354,6 @@ The solution found is:
  [ 0.20233235 -0.20099993  0.20002241  0.20128514]
  [ 0.20062167  0.20107532 -0.20115979 -0.20080426]
  [ 0.          0.          0.          0.        ]]
-
 {% endhighlight bash %}
 
 </p>
@@ -364,18 +363,35 @@ As we can see, the solution returned by candidate selection passed the safety te
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="experiments"> Running a Seldonian Experiment </h3>
 <p>
-Now that we have successfully run the Seldonian algorithm once with the engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policy. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
+Now that we have successfully run the Seldonian algorithm once with the engine, we are ready to run a Seldonian Experiment. This will help us better understand the safety and performance of our new policies. It will also help us understand how much data we need to meet the safety and performance requirements of our problem. We recommend reading the <a href="https://seldonian-toolkit.github.io/Experiments/build/html/overview.html">Experiments overview</a> before continuing here. If you have not already installed the Experiments library, follow the instructions <a href="{{ "/tutorials/install_toolkit_tutorial/" | relative_url}}">here</a> to do so.
 </p>
 
 <p>
     Here is an outline of the experiment we will run: 
     <ul>
-        <li>The performance metric we will use is the expected discounted return.</li>
-        <li>Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 10 different data fractions, which will be log-spaced between approximately 0.005 and 1.0. This array times the number of episodes in the original dataset (1,000) will make up the horizontal axis of the three plots, i.e., the "number of training samples."</li>
-        <li>Create 20 datasets (one for each trial) by rerunning the behavior data generation process with a different random seed. Each regenerated dataset will have the same number of episodes (1,000) as the original dataset. We use 20 trials so that we can compute uncertainties on the plotted quantities at each data fraction. <b>We will use a dataset of 1,000 episodes generated using the new policy as the ground truth dataset</b> when calculating the performance and safety metrics for each trial. </li>
         <li>
-        For each <code class='codesnippet'>data_frac</code> in the array of data fractions, run 20 trials. In each trial, use only the first <code class='codesnippet'>data_frac</code> fraction of episodes to run the Seldonian algorithm using the Seldonian Engine. We will use the same spec file we used above for each run of the engine, where only the <code class='codesnippet'>dataset</code> parameter will be modified for each trial. This will generate 15x20=300 total runs of the Seldonian algorithm. Each run will consist of a different set of new policy parameters, or "NSF" if no solution was found. </li>
-        <li>For each <code class='codesnippet'>data_frac</code>, calculate the mean and standard error on the performance (expected discounted return) across the 20 trials at this <code class='codesnippet'>data_frac</code>. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 20 trials. This fraction, referred to as the "solution rate," will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the constraint was violated on the ground truth episodes. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. </li>
+            Create an array of data fractions, which will determine how much of the data to use as input to the Seldonian algorithm in each trial. We will use 10 different data fractions, which will be log-spaced between approximately 0.005 and 1.0. This array times the number of episodes in the original dataset (1,000) will make up the horizontal axis of the three plots, i.e., the "amount of data."
+        </li>
+        <li>
+            Create 20 datasets (one for each trial) by rerunning the behavior data generation process with a different random seed. Each regenerated dataset will have the same number of episodes (1,000) as the original dataset. We use 20 trials so that we can compute uncertainties on the plotted quantities at each data fraction. 
+        </li>
+        <li>
+            For each <code class='codesnippet'>data_frac</code> in the array of data fractions, run 20 trials. This will result in 200 total trials. In each trial:
+            <ul>
+                <li>
+                    Use only the first <code class='codesnippet'>data_frac</code> fraction of episodes from the corresponding trial dataset to run the Seldonian algorithm using the Seldonian Engine. 
+                </li>
+                <li>
+                    If the safety test passes, return the new policy parameters obtained via the Seldonian algorithm. If not, return "NSF" for no solution found.
+                </li>
+                <li>
+                     If the safety test passes, generate 1,000 episodes using the new policy parameters. This is data set on which the performance and safety metrics will be calculated for this trial.
+                </li>
+            </ul>
+        </li>
+        <li>
+            For each <code class='codesnippet'>data_frac</code>, calculate the mean and standard error on the performance (expected discounted return) across the 20 trials at this <code class='codesnippet'>data_frac</code>. This will be the data used for the first of the three plots. Also record how often a solution was returned and passed the safety test across the 20 trials. This fraction, referred to as the "solution rate," will be used to make the second of the three plots. Finally, for the trials that returned solutions that passed the safety test, calculate the fraction of trials for which the constraint was violated on the ground truth episodes. The fraction violated will be referred to as the "failure rate" and will make up the third and final plot. 
+        </li>
     </ul>
 </p>
 <p>
@@ -385,20 +401,30 @@ Now, we will show how to implement the described experiment using the Experiment
 <p> 
 First, the necessary imports:
 {% highlight python %}
+from functools import partial
 import os
+os.environ["OMP_NUM_THREADS"] = "1"
 import autograd.numpy as np   # Thinly-wrapped version of Numpy
-
-from experiments.generate_plots import RLPlotGenerator
+from concurrent.futures import ProcessPoolExecutor
+import multiprocessing as mp
+from tqdm import tqdm
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import (create_agent_fromdict,
-    run_trial_given_agent_and_env)
+from seldonian.RL.RL_runner import run_episode,run_episodes_par
+from seldonian.RL.environments.gridworld import Gridworld
+from seldonian.RL.Agents.Parameterized_non_learning_softmax_agent import Parameterized_non_learning_softmax_agent
+
+from experiments.generate_plots import RLPlotGenerator
 {% endhighlight python %}
 </p>
 
 <p>
-Now, we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set <code class='codesnippet'>n_workers</code> to however many CPUs you want to use. The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. Change this variable as desired. <code class='codesnippet'>n_episodes_for_eval</code> determines how many episodes are used for evaluating the performance and failure rate. 
+    The line <code class="codesnippet">os.environ["OMP_NUM_THREADS"] = "1"</code> in the imports block above turns off NumPy's implicit parallelization, which we want to do when using <code class="codesnippet">n_workers>1</code> (see <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> Tutorial M: Efficient parallelization with the toolkit </a> for more details).
+</p>
+<p>
+    Now, we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set <code class='codesnippet'>n_workers</code> to however many CPUs you want to use. The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. Change this variable as desired. <code class='codesnippet'>n_episodes_for_eval</code> determines how many episodes are used for evaluating the performance and failure rate. 
+</p>
 
 {% highlight python %}
 if __name__ == "__main__":
@@ -416,10 +442,10 @@ if __name__ == "__main__":
     plot_savename = os.path.join(results_dir,f'gridworld_{n_trials}trials.png')
     n_episodes_for_eval = 1000
 {% endhighlight python %}
-</p>
 
 <p>
-We will need to load the same spec object that we created for running the engine. As before, change the path to where you saved this file. We will modify some of the hyperparameters of gradient descent. This is not necessary, but we found that using these parameters resulted in better performance than the default parameters that we used to run the engine a single time. This also illustrates how to modify the spec object before running an experiment, which can be useful.   
+    We will need to load the same spec object that we created for running the engine. As before, change the path to where you saved this file. We will modify some of the hyperparameters of gradient descent. This is not necessary, but we found that using these parameters resulted in better performance than the default parameters that we used to run the engine a single time. This also illustrates how to modify the spec object before running an experiment, which can be useful. 
+</p>  
 {% highlight python %}
     # Load spec
     specfile = './spec.pkl'
@@ -428,7 +454,6 @@ We will need to load the same spec object that we created for running the engine
     spec.optimization_hyperparams['alpha_theta'] = 0.01
     spec.optimization_hyperparams['alpha_lamb'] = 0.01
 {% endhighlight python %}
-</p>
 
 <p>
 One of the remaining parameters of the plot generator is <code class='codesnippet'>perf_eval_fn</code>, a function that will be used to evaluate the performance in each trial. In general, this function is completely up to the user to define. During each trial, this function is called after the Seldonian algorithm has been run and only if the safety test passed for that trial. The <code class='codesnippet'>kwargs</code> passed to this function will always consist of the <code class='codesnippet'>model</code> object from the current trial and the <code class='codesnippet'>hyperparameter_and_setting_dict</code>. There is also the option to pass additional keyword arguments to this function via the <code class='codesnippet'>perf_eval_kwargs</code> parameter. 
@@ -474,6 +499,7 @@ We will write this function to generate 1000 episodes using the policy obtained 
 
 <p>
 Next, we need to define the <code class='codesnippet'>hyperparameter_and_setting_dict</code> as we did in the <code>createSpec.py</code> script above. This is required for generating the datasets that we will use in each of the 20 trials, as well as for generating the data in the function we defined to evaluate the performance. Note that in this case the number of episodes that we use for generating the trial datasets and the number of episodes that we use for evaluating the performance are the same. This does not need to be the case, as we can pass a different value for <code class='codesnippet'>n_episodes_for_eval</code> via <code class='codesnippet'>perf_eval_kwargs</code> if we wanted to. 
+</p>
 
 {% highlight python %}
     hyperparameter_and_setting_dict = {}
@@ -483,7 +509,6 @@ Next, we need to define the <code class='codesnippet'>hyperparameter_and_setting
     hyperparameter_and_setting_dict["num_trials"] = 1
     hyperparameter_and_setting_dict["vis"] = False
 {% endhighlight python %}
-</p>
 
 <p>
 Now we are ready to make the <code class='codesnippet'>RLPlotGenerator</code> object.
@@ -531,17 +556,35 @@ Here is the entire script, saved in a file called <code>generate_gridworld_plots
 
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
-# generate_gridworld_plots.py
+# run_experiment.py
+from functools import partial
 import os
+os.environ["OMP_NUM_THREADS"] = "1"
 import autograd.numpy as np   # Thinly-wrapped version of Numpy
-
-from experiments.generate_plots import RLPlotGenerator
+from concurrent.futures import ProcessPoolExecutor
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import (create_agent_fromdict,
-    run_trial_given_agent_and_env)
+from seldonian.RL.RL_runner import run_episode
 from seldonian.RL.environments.gridworld import Gridworld
+from seldonian.RL.Agents.Parameterized_non_learning_softmax_agent import Parameterized_non_learning_softmax_agent
+
+from experiments.generate_plots import RLPlotGenerator
+
+from createSpec import GridworldSoftmax
+
+def create_env_func():
+    return Gridworld(size=3)
+
+def create_agent_func(new_params):   
+    dummy_env = Gridworld(size=3)
+    env_description = dummy_env.get_env_description()
+    agent = Parameterized_non_learning_softmax_agent(
+        env_description=env_description,
+        hyperparam_and_setting_dict={},
+    )
+    agent.set_new_params(new_params)
+    return agent
 
 def generate_episodes_and_calc_J(**kwargs):
     """ Calculate the expected discounted return 
@@ -552,62 +595,67 @@ def generate_episodes_and_calc_J(**kwargs):
         the expected discounted return
     :rtype: (List(Episode),float)
     """
-    # Get trained model weights from running the Seldonian algo
     model = kwargs['model']
-    new_params = model.policy.get_params()
-   
-    # create env and agent
-    hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
-    agent = create_agent_fromdict(hyperparameter_and_setting_dict)
-    env = Gridworld(size=3)
-   
-    # set agent's weights to the trained model weights
-    agent.set_new_params(new_params)
-    
-    # generate episodes
     num_episodes = kwargs['n_episodes_for_eval']
-    episodes = run_trial_given_agent_and_env(
-        agent=agent,env=env,num_episodes=num_episodes)
+    hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
+
+    # Get trained model weights from running the Seldonian algo
+    new_params = model.policy.get_params()
+
+    # Create the env and agent (setting the new policy params) 
+    # and run the episodes
+    episodes = []
+    env = create_env_func()
+    agent = create_agent_func(new_params)
+    for i in range(num_episodes):
+        episodes.append(run_episode(agent,env))
 
     # Calculate J, the discounted sum of rewards
-    returns = np.array([weighted_sum_gamma(ep.rewards,env.gamma) for ep in episodes])
+    returns = np.array([weighted_sum_gamma(ep.rewards,gamma=0.9) for ep in episodes])
     J = np.mean(returns)
     return episodes,J
-    
+
 if __name__ == "__main__":
     # Parameter setup
+    np.random.seed(99)
     run_experiments = True
     make_plots = True
     save_plot = False
-    performance_metric = 'J(pi_new)'
-    n_trials = 5
-    data_fracs = np.logspace(-2.3,0,10)
-    n_workers = 8
-    verbose=True
-    results_dir = f'results/gridworld_tutorial'
-    os.makedirs(results_dir,exist_ok=True)
-    plot_savename = os.path.join(results_dir,f'gridworld_{n_trials}trials.png')
+    include_legend = True
+
+    num_episodes = 1000 # For making trial datasets and for looking up specfile
     n_episodes_for_eval = 1000
+    n_trials = 20
+    data_fracs = np.logspace(-3,0,10)
+    n_workers_for_episode_generation = 1
+    n_workers = 6
+
+    frac_data_in_safety = 0.6
+    verbose=True
+    results_dir = f'results/gridworld_{num_episodes}episodes_{n_trials}trials'
+    os.makedirs(results_dir,exist_ok=True)
+    plot_savename = os.path.join(results_dir,f'gridworld_experiment.png')
     # Load spec
     specfile = f'./spec.pkl'
     spec = load_pickle(specfile)
-    spec.optimization_hyperparams['num_iters'] = 40
-    spec.optimization_hyperparams['alpha_theta'] = 0.01
-    spec.optimization_hyperparams['alpha_lamb'] = 0.01
-    spec.optimization_hyperparams['beta_velocity'] = 0.9
-    spec.optimization_hyperparams['beta_rmspropr'] = 0.95
-
-    hyperparameter_and_setting_dict = {}
-    hyperparameter_and_setting_dict["env"] = Gridworld(size=3)
-    hyperparameter_and_setting_dict["agent"] = "Parameterized_non_learning_softmax_agent"
-    hyperparameter_and_setting_dict["num_episodes"] = 1000
-    hyperparameter_and_setting_dict["num_trials"] = 1
-    hyperparameter_and_setting_dict["vis"] = False
 
     perf_eval_fn = generate_episodes_and_calc_J
     perf_eval_kwargs = {
         'n_episodes_for_eval':n_episodes_for_eval,
+        'env_kwargs':spec.model.env_kwargs,
     }
+    initial_solution = np.zeros((9,4)) # theta values
+    # The setup for generating behavior data for the experiment trials.
+    hyperparameter_and_setting_dict = {}
+    hyperparameter_and_setting_dict["create_env_func"] = create_env_func
+    hyperparameter_and_setting_dict["create_agent_func"] = partial(
+        create_agent_func,
+        new_params=initial_solution,
+    )
+    hyperparameter_and_setting_dict["num_episodes"] = num_episodes 
+    hyperparameter_and_setting_dict["n_workers_for_episode_generation"] = n_workers_for_episode_generation
+    hyperparameter_and_setting_dict["num_trials"] = 1 # Leave as 1 - it is not the same "trial" as experiment trial.
+    hyperparameter_and_setting_dict["vis"] = False
 
     plot_generator = RLPlotGenerator(
         spec=spec,
@@ -620,16 +668,19 @@ if __name__ == "__main__":
         perf_eval_kwargs=perf_eval_kwargs,
         results_dir=results_dir,
         )
+    
     if run_experiments:
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
     if make_plots:
-        plot_generator.make_plots(
-            fontsize=12,
-            legend_fontsize=12,
-            performance_label=performance_metric,
-            savename=plot_savename if save_plot else None,
-            save_format="png")
+        plot_generator.make_plots(fontsize=18,
+            performance_label=r"$J(\pi_{\mathrm{new}})$",
+            include_legend=include_legend,
+            save_format="png",
+            title_fontsize=18,
+            legend_fontsize=16,
+            custom_title=r"$J(\pi_{\mathrm{new}}) \geq -0.25$ (vanilla gridworld 3x3)",
+            savename=plot_savename if save_plot else None)
 {% endhighlight python %}
 </div>
 
