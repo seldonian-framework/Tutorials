@@ -22,7 +22,7 @@ title: Seldonian \| Glossary
 <p>The system the user interacts with to provide the behavioral constraints and other inputs to the Seldonian algorithm. Examples include simple command line interfaces, scripts, or more complicated graphical user interfaces (GUIs).</p>
 
 <h5 id="measure_function">Measure function</h5>
-<p>Components of a behavioral constraint that, if appearing in a constraint string, will be recognized by the engine as statistical functions with special meaning. Examples are "Mean_Squared_Error", used in regression problems, "FPR", standing for false positive rate and used in classification problems, and "J_pi_new", which stands for the performance of the new policy for reinforcement learning problems. </p>
+<p>Components of a behavioral constraint that, if appearing in a constraint string, will be recognized by the engine as statistical functions with special meaning. Examples are "Mean_Squared_Error", used in regression problems, "FPR", standing for false positive rate and used in classification problems, and "J_pi_new_IS", which stands for the performance of the new policy for reinforcement learning problems, as evaluated by ordinary importance sampling. </p>
 
 <h5 id="primary_objective">Primary objective function</h5>
 <p>The objective function (also called loss function) that, in the absence of behavioral constraints, would be solely optimized by the machine learning model. The Seldonian machine learning model seeks to simultaneously optimize the primary objective function while satisfying the behavioral constraints. Performance on the objective function is sometimes sacrificed to satisfy the behavioral constraints, depending on the problem.</p>
