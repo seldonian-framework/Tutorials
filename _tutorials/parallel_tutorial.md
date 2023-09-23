@@ -3,7 +3,7 @@ layout: tutorial
 permalink: /tutorials/parallelization_tutorial/
 prev_url: /tutorials/dtree_tutorial/
 prev_page_name: (L) Creating Fair Decision Trees and Random Forests (for binary classification)
-title: Seldonian \| Tutorial B
+title: Seldonian \| Tutorial M
 ---
 
 <!-- Main Container -->

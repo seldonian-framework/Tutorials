@@ -3,6 +3,8 @@ layout: tutorial
 permalink: /tutorials/new_baseline/
 prev_url: /tutorials/efficient_deep_networks/
 prev_page_name: (J) Efficiently training deep Seldonian networks
+next_url: /tutorials/dtree_tutorial/
+next_page_name: (L) Creating Fair Decision Trees and Random Forests
 title: Seldonian \| Tutorial H
 ---
 

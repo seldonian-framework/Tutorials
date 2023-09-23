@@ -3,6 +3,8 @@ layout: tutorial
 permalink: /tutorials/efficient_deep_networks/
 prev_url: /tutorials/custom_base_variable_tutorial/
 prev_page_name: (I) Creating custom base variables in behavioral constraints
+next_url: /tutorials/new_baseline/
+next_page_name: (K) Creating a new baseline for (supervised) Seldonian Experiments
 title: Seldonian \| Tutorial J
 ---
 

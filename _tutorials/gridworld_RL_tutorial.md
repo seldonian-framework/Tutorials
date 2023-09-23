@@ -401,21 +401,22 @@ Now, we will show how to implement the described experiment using the Experiment
 <p> 
 First, the necessary imports:
 {% highlight python %}
+# run_experiment.py
 from functools import partial
 import os
 os.environ["OMP_NUM_THREADS"] = "1"
 import autograd.numpy as np   # Thinly-wrapped version of Numpy
 from concurrent.futures import ProcessPoolExecutor
-import multiprocessing as mp
-from tqdm import tqdm
 
 from seldonian.utils.io_utils import load_pickle
 from seldonian.utils.stats_utils import weighted_sum_gamma
-from seldonian.RL.RL_runner import run_episode,run_episodes_par
+from seldonian.RL.RL_runner import run_episode
 from seldonian.RL.environments.gridworld import Gridworld
 from seldonian.RL.Agents.Parameterized_non_learning_softmax_agent import Parameterized_non_learning_softmax_agent
 
 from experiments.generate_plots import RLPlotGenerator
+
+from createSpec import GridworldSoftmax
 {% endhighlight python %}
 </p>
 
@@ -423,7 +424,41 @@ from experiments.generate_plots import RLPlotGenerator
     The line <code class="codesnippet">os.environ["OMP_NUM_THREADS"] = "1"</code> in the imports block above turns off NumPy's implicit parallelization, which we want to do when using <code class="codesnippet">n_workers>1</code> (see <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> Tutorial M: Efficient parallelization with the toolkit </a> for more details).
 </p>
 <p>
-    Now, we will set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set <code class='codesnippet'>n_workers</code> to however many CPUs you want to use. The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. Change this variable as desired. <code class='codesnippet'>n_episodes_for_eval</code> determines how many episodes are used for evaluating the performance and failure rate. 
+    Now, we will define functions for creating the environment and agent (these are the same as the ones in <code>generate_data.py</code>), and the function for evaluating the performance. The latter function takes as input keyword arguments containing the model and the number of episodes we are using for evaluation. This function returns both the generated episodes and the discounted expected return. 
+</p>
+
+{% highlight python %}
+def generate_episodes_and_calc_J(**kwargs):
+    """ Calculate the expected discounted return 
+    by generating episodes under the new policy
+
+    :return: episodes, J, where episodes is the list
+        of generated ground truth episodes and J is
+        the expected discounted return
+    :rtype: (List(Episode),float)
+    """
+    model = kwargs['model']
+    num_episodes = kwargs['n_episodes_for_eval']
+    hyperparameter_and_setting_dict = kwargs['hyperparameter_and_setting_dict']
+
+    # Get trained model weights from running the Seldonian algo
+    new_params = model.policy.get_params()
+
+    # Create the env and agent (setting the new policy params) 
+    # and run the episodes
+    episodes = []
+    env = create_env_func()
+    agent = create_agent_func(new_params)
+    for i in range(num_episodes):
+        episodes.append(run_episode(agent,env))
+
+    # Calculate J, the discounted sum of rewards
+    returns = np.array([weighted_sum_gamma(ep.rewards,gamma=0.9) for ep in episodes])
+    J = np.mean(returns)
+    return episodes,J
+{% endhighlight python %}
+<p>
+    Next, we set up the parameters for the experiments, such as the data fractions we want to use and how many trials at each data fraction we want to run. Each trial in an experiment is independent of all other trials, so parallelization can speed experiments up enormously. Set <code class='codesnippet'>n_workers</code> to however many CPUs you want to use (again, see <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> Tutorial M: Efficient parallelization with the toolkit </a> for more details). The results for each experiment we run will be saved in subdirectories of <code class='codesnippet'>results_dir</code>. Change this variable as desired. <code class='codesnippet'>n_episodes_for_eval</code> determines how many episodes are used for evaluating the performance and failure rate. 
 </p>
 
 {% highlight python %}

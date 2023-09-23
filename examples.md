@@ -31,6 +31,16 @@ title: Seldonian \| Examples
     </div>
 
     <div class="container inset-box border border-dark border-2 p-3 my-2">
+        <h5>Reinforcement learning </h5>
+
+        <ol>
+            <li>
+                <a href="{{ "/examples/diabetes/" | relative_url }}">Improving type 1 diabetes treatment</a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="container inset-box border border-dark border-2 p-3 my-2">
         <h5>Financial/lending </h5>
 
         <ol>
@@ -40,6 +50,7 @@ title: Seldonian \| Examples
         </ol>
     </div>
 
+    
     <div class="container inset-box border border-dark border-2 p-3 my-2">
         <h5 id="compwinners">Student competition winners </h5>
         <p> Two winners were selected from participants in the first Seldonian Toolkit student <a href="{{ "/contest/" | relative_url }}">competition</a>:  </p>
