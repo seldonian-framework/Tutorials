@@ -32,7 +32,7 @@ title: Seldonian \| Insulin pump controller with reinforcement learning example
 </p>
 
 <p>
-    In treating type 1 diabetes, it is critical to correctly estimate how much insulin a person should inject to mitigate hyperglycemia without inducing hypoglycemia. Synthetic insulin is usually delivered through "basal" injections, which regulate blood glucose between meals, and "bolus" injections, which are given just before mealtime to counteract the increase in blood glucose that results from eating a meal. Often, a bolus calculator is used to determine how much bolus insulin one should inject prior to eating a meal. This calculator is often personalized by a physician based on patient data. In this example, we show how to use the Seldonian toolkit to create a reinforcement learning (RL) algorithm that personalizes the parameters of a bolus calculator to mitigate hyperglycemia, while ensuring with high confidence that dangerously low blood glucose levels are avoided. 
+    In treating type 1 diabetes, it is critical to correctly estimate how much insulin a person should inject to mitigate hyperglycemia without inducing hypoglycemia. Synthetic insulin is usually delivered through "basal" injections, which regulate blood glucose between meals, and "bolus" injections, which are given just before mealtime to counteract the increase in blood glucose that results from eating a meal. Often, a bolus calculator is used to determine how much bolus insulin one should inject prior to eating a meal. This calculator is often personalized by a physician based on patient data. In this example, we show how to use the Seldonian Toolkit to create a reinforcement learning (RL) algorithm that personalizes the parameters of a bolus calculator to mitigate hyperglycemia, while ensuring with high confidence that dangerously low blood glucose levels are avoided. 
 </p>
 
 <p>
@@ -50,7 +50,7 @@ title: Seldonian \| Insulin pump controller with reinforcement learning example
 <h3 id="problem" align="center" class="mb-3">Formalizing the Seldonian RL problem</h3>
 
 <p>
-    In this section, we formalize the RL problem and the safety constraint we will enforce using the Seldonian toolkit. The RL policy $\pi(s,a)$ is parameterized by a bolus calculator, which determines the amount of insulin to inject before each meal. The particular parameterization we will use is: 
+    In this section, we formalize the RL problem and the safety constraint we will enforce using the Seldonian Toolkit. The RL policy $\pi(s,a)$ is parameterized by a bolus calculator, which determines the amount of insulin to inject before each meal. The particular parameterization we will use is: 
 </p>
 
 $$
@@ -102,7 +102,7 @@ $$
 </p>
 
 <p>
-    The goal of the RL problem in the absence of constraints is to find a distribution over policies that optimizes the primary expected return $J_{0,d(\pi)} = \frac{1}{m} \sum_{i=0}^{m-1}{r_{0,i}}$, where $m$ is the total number of episodes (days) in the dataset, and $r_{0,i}$ is the primary reward for the $i$th episode. The Seldonian RL optimization problem seeks to simultaneously optimize $J_{0,d(\pi)}$ <i>and</i> enforce the safety constraint(s). Here we have a single safety constraint, which is that the incidence of hypoglycemia of the obtained distribution over policies must be lower than that of the initially-proposed distributon over policies. To quantify the incidence of hypoglycemica, we define an auxiliary instantaneous reward function, $r_1(t)$: 
+    The goal of the RL problem in the absence of constraints is to find a distribution over policies that optimizes the primary expected return $J_{0,d(\pi)} = \frac{1}{m} \sum_{i=0}^{m-1}{r_{0,i}}$, where $m$ is the total number of episodes (days) in the dataset, and $r_{0,i}$ is the primary reward for the $i$th episode. The Seldonian RL optimization problem seeks to simultaneously optimize $J_{0,d(\pi)}$ and enforce the safety constraint(s). Here we have a single safety constraint, which is that the incidence of hypoglycemia of the obtained distribution over policies must be lower than that of the initially-proposed distributon over policies. To quantify the incidence of hypoglycemica, we define an auxiliary instantaneous reward function, $r_1(t)$: 
 </p>  
 
 $$
@@ -116,7 +116,7 @@ r_1(t) =
 \end{equation}
 $$
 <p>
-    This is identical to the primary instantaneous reward when $g_t < 108 $. The auxiliary reward for a single day is $r_1 = \frac{1}{T}\sum_{t=0}^{T-1}{r_1(t)}$, where $T$ is the total number of times at which the blood glucose is measured in a day. The auxiliary expected return is $J_{1,d(\pi)} = \frac{1}{m} \sum_{i=0}^{m-1}{r_{1,i}}$, where $m$ is the total number of episodes (days) in the dataset, and $r_{1,i}$ is the auxiliary reward for the $i$th episode. The safety constraint we described above can be written formally:
+    This is identical to the primary instantaneous reward function (Equation \ref{primary_reward}) when $g_t < 108 $. The auxiliary reward for a single day is $r_1 = \frac{1}{T}\sum_{t=0}^{T-1}{r_1(t)}$, where $T$ is the total number of times at which the blood glucose is measured in a day. The auxiliary expected return is $J_{1,d(\pi)} = \frac{1}{m} \sum_{i=0}^{m-1}{r_{1,i}}$, where $m$ is the total number of episodes (days) in the dataset, and $r_{1,i}$ is the auxiliary reward for the $i$th episode. The safety constraint we described above can be written formally:
 </p>
 
 $$
@@ -177,7 +177,7 @@ $$
         <img src="{{ "/assets/img/diabetes_example/simglucose_long_episode_nolegend.png" | relative_url}}" class="" style="width: 45%"  alt="Long episode">
         <img src="{{ "/assets/img/diabetes_example/episode_legend.png" | relative_url}}" class="" style="width: 40%"  alt="Legend">
     </figure> 
-    <figcaption><b>Figure 3</b>: (Left) An example episode that we terminated due to the patient reaching unphysical blood glucose levels partway into the day ($CR=5$, $CF=25$). (Right) An episode that lasts for the entire day ($CR=15$, $CF=22$). Note that in both plots the blood glucose values are shown on the primary y-axis and the (instantaneous) reward values are shown on the secondary y-axis. Note that the Python simulator we used is an imperfect approximation of the FDA approved simulator. For this reason, the simulation results may not be precisely realistic.  </figcaption>
+    <figcaption><b>Figure 3</b>: (Left) An example episode that we terminated due to the patient reaching unphysical blood glucose (bg) levels partway into the day ($CR=5$, $CF=25$). (Right) An episode that lasts for the entire day ($CR=15$, $CF=22$). In both plots, the blood glucose values are shown on the primary y-axis, and the (instantaneous) reward values are shown on the secondary y-axis. Note that the Python simulator we used is an imperfect approximation of the FDA approved simulator. For this reason, the simulation results may not be precisely realistic.  </figcaption>
 </div>
 
 <p>
@@ -201,7 +201,7 @@ $$
 </p>
 
 <p>
-    Ultimately, we decided to fix the new policy distributions to be squares with an area of 1/3 of the behavior policy distribution. This simplifies our parameter space to two dimensions, i.e., the center of the box in $(CR,CF)$. The blue squares in the left plot of Figure 2 show two example policy distributions. The bounds of the square are real numbers, so even with this simplification there is a vast parameter space to explore. Because the parameter space is bounded, and our KKT optimization procedure works best for unbounded variables, we introduced a mapping between the centers of the policy distribution box $(CR_{\text{cen}}$, $CF_{\text{cen}})$ and the unbounded parameters $\theta_1 \in (-\infty,+\infty)$, $\theta_2 \in (-\infty,+\infty)$ that we use in the optimization procedure.
+    Ultimately, we decided to fix the new policy distributions to be squares with one third of the area  of the behavior policy distribution square. This simplifies our parameter space to two dimensions, i.e., the center of the box in $(CR,CF)$. The blue squares in the left plot of Figure 2 show two example policy distributions. The bounds of the square are real numbers, so even with this simplification there is a vast parameter space to explore. Because the parameter space is bounded, and our KKT optimization procedure works best for unbounded variables, we introduced a mapping between the centers of the policy distribution box $(CR_{\text{cen}}$, $CF_{\text{cen}})$ and the unbounded parameters $\theta_1 \in (-\infty,+\infty)$, $\theta_2 \in (-\infty,+\infty)$ that we use in the optimization procedure.
 </p>
 
 
@@ -213,7 +213,7 @@ CF_{\text{cen}} = \sigma(\theta_2)*CF_{\text{size}} + CF_{\text{min}},
 \end{equation}
 $$
 <p>
-    where $\sigma(x)$ is the sigmoid function, $CR_{\text{size}}$ and $CF_{\text{size}}$ are the sizes of the new policy distribution box in $CR$ and $CF$ space, respectively, and $CR_{\text{min}}$ and $CF_{\text{min}}$ are the minimum possible values for $CR_{\text{cen}}$ and $CF_{\text{cen}}$, respectively, that keep the square inside of the original policy distribution box. Because we fixed the new policy distribution boxes to have 1/3 of the area of the original policy distribution box, the sizes of the new policy distribution boxes in $CR$ and $CF$ space are $\frac{1}{\sqrt{3}}$ times the original sizes, i.e., $CR_{\text{size}} = CF_{\text{size}} = \frac{10}{\sqrt{3}}$. Similarly, this requires that $CR_{\text{min}} = 5 + \frac{10}{2\sqrt{3}}$ and $CF_{\text{min}} = 15 + \frac{10}{2\sqrt{3}}$.
+    where $\sigma(x)$ is the sigmoid function, $CR_{\text{size}}$ and $CF_{\text{size}}$ are the sizes of the new policy distribution box in $CR$ and $CF$ space, respectively, and $CR_{\text{min}}$ and $CF_{\text{min}}$ are the minimum possible values for $CR_{\text{cen}}$ and $CF_{\text{cen}}$, respectively, that keep the square inside of the original policy distribution box. Because we fixed the new policy distribution boxes to have 1/3 of the area of the original policy distribution box, the sizes of the new policy distribution boxes in $CR$ and $CF$ space are $\frac{1}{\sqrt{3}}$ times the original sizes, i.e., $CR_{\text{size}} = CF_{\text{size}} = \frac{10}{\sqrt{3}}$. This constraint also requires that $CR_{\text{min}} = 5 + \frac{10}{2\sqrt{3}}$ and $CF_{\text{min}} = 15 + \frac{10}{2\sqrt{3}}$.
 </p>
 
 
@@ -499,6 +499,10 @@ if __name__ == '__main__':
     Another important parameter is <code class="codesnippet">n_episodes_for_eval=2000</code>, which is the number of episodes we generate when evaluating each trial solution in <code class="codesnippet">generate_episodes_and_calc_J()</code>. We set <code class="codesnippet">n_workers_for_episode_generation=46</code> and <code class="codesnippet">n_workers=1</code>. The former is how many cores we use to generate both the trial episodes and the new episodes for evaluation, and the latter is how many cores we use to parallelize over trials. Our choice to parallelize over episode generation is due to the fact that the computational bottleneck is in generating episodes rather than running the Seldonian algorithm in each trial. For more details on how to efficiently parallelize toolkit code, see <a href="{{ "/tutorials/parallelization_tutorial" | relative_url}}">Tutorial M: Efficient parallelization with the toolkit</a>.
 </p>
 
+<p>
+    We created a baseline for this experiment called <code class="codesnippet">RLDiabetesUSAgentBaseline</code>, which performs an identical optimization as the Seldonian algorithm, except it does not consider the constraint and it does not have a safety test. That is, it just performs importance sampling with unequal support to optimize the expected return of the new policy. The source code for this baseline can be found in <a href="https://github.com/seldonian-toolkit/Experiments/blob/main/experiments/baselines/diabetes_US_baseline.py">this module</a>.
+</p>
+
 <div>
     
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
@@ -519,6 +523,7 @@ from seldonian.RL.RL_runner import run_episode,run_episodes_par
 from seldonian.RL.environments.simglucose_custom import SimglucoseCustomEnv
 from seldonian.RL.Agents.simglucose_custom_fixedarea_random_agent import SimglucoseFixedAreaAgent
 
+from experiments.baselines.diabetes_US_baseline import RLDiabetesUSAgentBaseline
 from experiments.generate_plots import RLPlotGenerator
 
 CR_min = 5.0
@@ -667,6 +672,10 @@ if __name__ == "__main__":
         )
     
     if run_experiments:
+        env_kwargs = {'gamma':1.0}
+        baseline_model = RLDiabetesUSAgentBaseline(initial_solution,env_kwargs)
+        plot_generator.run_baseline_experiment(baseline_model=baseline_model,verbose=verbose)
+
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
     if make_plots:
@@ -688,11 +697,11 @@ if __name__ == "__main__":
     <figure>
         <img src="{{ "/assets/img/diabetes_example/diabetes_experiment_100trials.png" | relative_url}}" class="" style="width: 100%"  alt="experiment results">
     </figure> 
-    <figcaption><b>Figure 4</b>: The three plots of the Seldonian experiment obtained using the Seldonian RL algorithm on the type 1 diabetes treament problem. (<b>Left</b>) Performance, (<b>middle</b>) probability of solution, and (<b>right</b>) probability of violating the constraint for 100 trials as a function of the number of episodes (days) used as input to the Seldonian algorithm. The performance $J_{0,d_{\text{new}}(\pi)}$ is the expected return of the primary reward of the new policy distribution obtained in each trial. The probability of solution represents the fraction of trials that passed the safety test in each trial. The probability of violating the constraint represents the fraction of trials that passed the safety test but then violated the safety constraint on ground truth data.  </figcaption>
+    <figcaption><b>Figure 4</b>: The three plots of the Seldonian experiment obtained using the Seldonian RL algorithm on the type 1 diabetes treament problem. The Seldonian RL algorithm (blue) is plotted alongside the baseline model (orange) that uses the same model but does not train it with the safety constraint. (<b>Left</b>) Performance, (<b>middle</b>) probability of solution, and (<b>right</b>) probability of violating the constraint for 100 trials as a function of the number of episodes (days) used as input to the Seldonian algorithm. The black dashed line in the right plot indicates  $\delta=0.05$, i.e., the maximum allowable probability that the Seldonian algorithm violates the constraint. The performance $J_{0,d_{\text{new}}(\pi)}$ is the expected return of the primary reward of the new policy distribution obtained in each trial. The probability of solution represents the fraction of trials that passed the safety test in each trial. The probability of violating the constraint represents the fraction of trials that passed the safety test but then violated the safety constraint on ground truth data.  </figcaption>
 </div>
 
 <p>
-    Figure 4 shows that the Seldonian RL algorithm was successful at achieving the goal we set in this example, which was to create an algorithm to find policy distributions (new sub-boxes in $CR,CF$ space) that improve the primary expected return (less incidence of both hyper and hypoglycemia) over the behavior policy distribution (initially proposed $CR,CF$ box), while ensuring with high confidence that hypoglycemic episodes were less prevalent. Recall that the primary expected return of the behavior policy distribution was $J_{0,d_b(\pi)}\simeq - 6.1$, which is exceeded by the Seldonian algorithm with less than 20 days of data (Figure 4; left plot). The Seldonian algorithm starts returning solutions it deems are safe at $\sim15$ days of data, but takes $\sim1,000$ days to return a solution every time (middle plot). Critically, the seldonian algorithm never returns policy distiributions that violate the constraint. 
+    Figure 4 shows that the Seldonian RL algorithm was successful at achieving the goal we set in this example, which was to create an algorithm to find policy distributions (new sub-boxes in $CR,CF$ space) that improve the primary expected return (less incidence of both hyper and hypoglycemia) over the behavior policy distribution (initially proposed $CR,CF$ box), while ensuring with high confidence that hypoglycemic episodes were less prevalent. Recall that the primary expected return of the behavior policy distribution was $J_{0,d_b(\pi)}\simeq - 6.1$, which is exceeded by the Seldonian algorithm with less than 50 days of data (Figure 4; left plot). The Seldonian algorithm's primary expected return matches that of the baseline, indicating that satisfying the safety constraint does not require any trade-off in the primary return. This is not surprising given that the two reward functions are well-aligned, but it is still a good indication that the Seldonian algorithm is not doing anything perverse to satisfy the safety constraint. The Seldonian algorithm starts returning solutions it is confident are safe at $\sim15$ days of data, but takes $\sim1,000$ days to return a solution every time (middle plot). Critically, the seldonian algorithm never returns policy distiributions that violate the constraint, whereas the baseline model that does not consider the constraint violates the constraint, even when it is fed up to 100 days of input data. 
 </p>
 
 </div>
@@ -706,7 +715,7 @@ if __name__ == "__main__":
 </p>
 
 <p>
-    Finally, we stress this example is to demonstratte the potential applications of the Seldonian Toolkit and Seldonian algorithms, in general.  The simulator is a simplified model, and we consider only a simple set of dosage recommendation policies.
+    Finally, we stress that the purpose of this example is to demonstrate the potential applications of the Seldonian Toolkit and, generally, Seldonian algorithms. The simulator is a simplified model, and we consider only a simple set of dosage recommendation policies.
 </p>
 </div>
 
