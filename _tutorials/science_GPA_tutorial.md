@@ -132,7 +132,7 @@ if __name__ == '__main__':
         os.makedirs(save_dir,exist_ok=True)
         # Define behavioral constraints
         if constraint_name == 'disparate_impact':
-            constraint_strs = ['0.8 - min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M]))'] 
+            constraint_strs = ['min((PR | [M])/(PR | [F]),(PR | [F])/(PR | [M])) >= 0.8'] 
         elif constraint_name == 'demographic_parity':
             constraint_strs = ['abs((PR | [M]) - (PR | [F])) <= 0.2']
         elif constraint_name == 'equalized_odds':
