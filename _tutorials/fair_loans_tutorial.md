@@ -87,8 +87,7 @@ title: Seldonian \| Tutorial D
 </p>
 
 <p>
-    Now, let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case, the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) ) \geq 0.9$.
-Let us enforce this constraint function with a confidence of $0.95$. 
+    Now, let's suppose we want to add fairness constraints to this problem. The first fairness constraint that we will consider is called <i>disparate impact</i>, which ensures that the ratio of positive class predictions (in our case, the prediction that someone is a high credit risk) between sensitive groups may not differ by more than some threshold. In the <a href="{{ page.prev_url | relative_url }}">previous tutorial</a>, we demonstrated how to write fairness constraints for a regression problem using the special measure function "Mean_Squared_Error" in the constraint string. For disparate impact, the measure function we will use is "PR", which stands for "positive rate", which is the fraction of predictions that predict 1, the positive class. Disparate impact between our two sensitive attribute columns "M" and "F" with a threshold value of 0.9 can be written as: $\text{min}( (\text{PR} | [\text{M}]) / (\text{PR} | [\text{F}]), (\text{PR} | [\text{F}]) / (\text{PR} | [\text{M}]) ) \geq 0.9$. Let us enforce this constraint function with a confidence of $0.95$. 
 </p>
 
 <p>
@@ -138,6 +137,9 @@ from seldonian.models.models import (
     BinaryLogisticRegressionModel as LogisticRegressionModel) 
 from seldonian.models import objectives
 
+def initial_solution_fn(model,features,labels):
+    return model.fit(features,labels)
+
 if __name__ == '__main__':
     data_pth = "../../static/datasets/supervised/german_credit/german_loan_numeric_forseldonian.csv"
     metadata_pth = "../../static/datasets/supervised/german_credit/metadata_german_loan.json"
@@ -182,7 +184,7 @@ if __name__ == '__main__':
         sub_regime=sub_regime,
         frac_data_in_safety=0.6,
         primary_objective=primary_objective,
-        initial_solution_fn=model.fit,
+        initial_solution_fn=initial_solution_fn,
         use_builtin_primary_gradient_fn=True,
         optimization_technique='gradient_descent',
         optimizer='adam',
@@ -511,15 +513,14 @@ Next, we will set up the ground truth dataset on which we will calculate the per
 {% endhighlight python %}
 </p>
 <p>
-We need to define what function <code class='codesnippet'>perf_eval_fn</code> we will use to evaluate the model's performance. In this case, we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='codesnippet'>perf_eval_kwargs</code>, which will be passed to the <code class='codesnippet'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation function on the model in each of our experiment trials. 
+We need to define what function <code class='codesnippet'>perf_eval_fn</code> we will use to evaluate the model's performance. In this case, we will use the logistic (or "log") loss, which happens to be the same as our primary objective. We also define <code class='codesnippet'>perf_eval_kwargs</code>, which will be passed to the <code class='codesnippet'>SupervisedPlotGenerator</code> so that we can evaluate the performance evaluation function on the model in each of our experiment trials. Note that this function should be defined outside of the <code class="codesnippet">if __name__ == "__main__":</code> block, ideally just above this block. It is shown inside of the block below for illustration purposes only. 
 
 {% highlight python %}
     # Setup performance evaluation function and kwargs 
     # of the performance evaluation function
 
     def perf_eval_fn(y_pred,y,**kwargs):
-        if performance_metric == 'log_loss':
-            return log_loss(y,y_pred)
+        return log_loss(y,y_pred)
 
     perf_eval_kwargs = {
         'X':test_features,
@@ -651,6 +652,8 @@ from experiments.generate_plots import SupervisedPlotGenerator
 from seldonian.utils.io_utils import load_pickle
 from sklearn.metrics import log_loss
 
+def perf_eval_fn(y_pred,y,**kwargs):
+    return log_loss(y,y_pred)
 
 if __name__ == "__main__":
     # Parameter setup
@@ -683,11 +686,6 @@ if __name__ == "__main__":
 
     # Setup performance evaluation function and kwargs 
     # of the performance evaluation function
-
-    # perf_eval_fn = lambda y_pred,y,X: fbeta_score(y,y_pred,beta=2)
-    def perf_eval_fn(y_pred,y,**kwargs):
-        if performance_metric == 'log_loss':
-            return log_loss(y,y_pred)
 
     perf_eval_kwargs = {
         'X':test_features,
