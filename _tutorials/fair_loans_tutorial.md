@@ -553,10 +553,10 @@ We will first run our two baseline experiments, which we can do by calling the <
     # Baseline models
     if run_experiments:
         plot_generator.run_baseline_experiment(
-            baseline_model=UniformRandomClassifierBaseline,verbose=verbose)
+            baseline_model=UniformRandomClassifierBaseline(),verbose=verbose)
 
         plot_generator.run_baseline_experiment(
-            baseline_model=BinaryLogisticRegressionBaseline,verbose=verbose)
+            baseline_model=BinaryLogisticRegressionBaseline(),verbose=verbose)
 
 {% endhighlight python %}
 </p>
