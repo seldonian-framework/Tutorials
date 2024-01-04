@@ -162,7 +162,7 @@ Running this code should print out that the five spec files have been created.
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="experiment"> Running a Seldonian Experiment </h3>
 <p>
-To produce the three plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) in the constraint in order to match Thomas et al. (2019). As a sanity check, we also included a random classifier baseline model in our experiment. We used the same performance metric as Thomas et al. (2019), deterministic accuracy, i.e, $1-\frac{1}{m}\sum_{i=1}^{m}(\hat{y}_i(\theta,X) \neq Y_i)$, where $m$ is the number of data points in the entire dataset, $Y_i$ is the label for the $i$th data point and $\hat{y}_i(\theta,X_i)$ is the model prediction for the $i$th data point, given the data point $X_i$ and the model parameters $\theta$. Here is the code we used to produce the plot for disparate impact: 
+To produce the three plots, we will run a Seldonian Experiment using a quasi-Seldonian model, a baseline logistic regression model, and a Fairlearn model with three different values of epsilon (0.01,0.1,1.0) in the constraint in order to match Thomas et al. (2019). We used the same performance metric as Thomas et al. (2019), deterministic accuracy, i.e, $1-\frac{1}{m}\sum_{i=1}^{m}(\hat{y}_i(\theta,X_i) \neq Y_i)$, where $m$ is the number of data points in the entire dataset, $Y_i$ is the label for the $i$th data point and $\hat{y}_i(\theta,X_i)$ is the model prediction for the $i$th data point, given the data point $X_i$ and the model parameters $\theta$. Here is the code we used to produce the plot for disparate impact: 
 </p>
 
 <div>
@@ -180,8 +180,6 @@ from seldonian.utils.io_utils import load_pickle
 from sklearn.metrics import log_loss,accuracy_score
 
 from experiments.baselines.logistic_regression import BinaryLogisticRegressionBaseline
-from experiments.baselines.random_classifiers import (
-    UniformRandomClassifierBaseline)
 
 if __name__ == "__main__":
     # Parameter setup
@@ -242,8 +240,6 @@ if __name__ == "__main__":
 
     # # Baseline models
     if run_experiments:
-        plot_generator.run_baseline_experiment(
-            baseline_model=UniformRandomClassifierBaseline(),verbose=True)
 
         plot_generator.run_baseline_experiment(
             baseline_model=BinaryLogisticRegressionBaseline(),verbose=True)
@@ -311,7 +307,7 @@ Running the script for each constraint will produce the following plots:
         <img src="{{ "/assets/img/gpa_tutorial/equalized_odds_0.35_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 90%"  alt="Equalized odds"> 
         <img src="{{ "/assets/img/gpa_tutorial/equal_opportunity_0.2_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 90%"  alt="Equal opportunity"> 
         <img src="{{ "/assets/img/gpa_tutorial/predictive_equality_0.2_accuracy.png" | relative_url}}" class="img-fluid mt-2" style="width: 90%"  alt="Predictive equality"> 
-        <figcaption align="left"> <b>Figure 1</b> - The three plots of a Seldonian Experiment, accuracy (left), solution rate (middle) and failure rate (right), for five different fairness constraints enforced independently on the GPA classification dataset considered by Thomas et al. (2019). The colored points and bands in each panel show the mean standard error over 50 trials. Each row of plots is an experiment for a different fairness constraint. From top to bottom: disparate impact, demographic parity, equalized odds, equal opportunity, predictive equality. The legend in the bottom panel applies to all five panels. A quasi-Seldonian algorithm (qsa, blue) is compared to a logistic regression baseline (magenta) and a random classifier (brown), as well as a Fairlearn model enforcing the constraints above with three different values of the group disparity threshold, $\epsilon$: 0.01 (orange), 0.1 (green), and 1.0 (red). Note that the vertical axis range is [0,1] for failure rate on all subplots, whereas Thomas et al. (2019), Figure 3 shows a smaller range that varies for the different constraints. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - The three plots of a Seldonian Experiment, accuracy (left), solution rate (middle) and failure rate (right), for five different fairness constraints enforced independently on the GPA classification dataset considered by Thomas et al. (2019). The colored points and bands in each panel show the mean standard error over 50 trials. Each row of plots is an experiment for a different fairness constraint. From top to bottom: disparate impact, demographic parity, equalized odds, equal opportunity, predictive equality. The legend in the bottom panel applies to all five panels. A quasi-Seldonian algorithm (qsa, blue) is compared to a logistic regression baseline (magenta), as well as a Fairlearn model enforcing the constraints above with three different values of the group disparity threshold, $\epsilon$: 0.01 (orange), 0.1 (green), and 1.0 (red). Note that the vertical axis range is [0,1] for failure rate on all subplots, whereas Thomas et al. (2019), Figure 3 shows a smaller range that varies for the different constraints. </figcaption>
     </figure>
 </div>  
 <p>
