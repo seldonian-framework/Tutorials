@@ -8,7 +8,7 @@ prev_page_name: (M) Efficient parallelization with the toolkit
 <!-- Main Container -->
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
     
-<h2 align="center" class="mb-3">Tutorial N: Using additional datasets for constraints </h2>
+<h2 align="center" class="mb-3">Tutorial N: Using multiple datasets with the toolkit </h2>
 
 <hr class="my-4">
 
@@ -43,7 +43,10 @@ prev_page_name: (M) Efficient parallelization with the toolkit
 </p>
 
 <p>
-    <b>Note:</b> It is important to ensure that if there are shared data points between the primary dataset and additional datasets that no data points that are used in candidate selection for any purpose are used during the safety test. We leave this up to the user; there are no checks in the Seldonian Toolkit to ensure that no data are shared.
+    <b>Note 1:</b> It is important to ensure that if there are shared data points between the primary dataset and additional datasets that no data points that are used in candidate selection for any purpose are used during the safety test. We leave this up to the user; there are no checks in the Seldonian Toolkit to ensure that no data are shared.
+</p>
+<p>
+    <b>Note 2:</b> Additional datasets are currently only supported for Supervised Learning problems with the toolkit.
 </p>
 
 
@@ -424,19 +427,23 @@ if __name__ == '__main__':
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="experiment"> Running a Seldonian Experiment with Additional Datasets </h3>
 <p>
-    As we saw in the previous section, running the engine with additional datasets requires very little modification beyond the normal procedure. The only differences were the inclusion of the <code class="codesnippet">additional_datasets</code>, <code class="codesnippet">candidate_dataset</code>, and <code class="codesnippet">safety_dataset</code> parameters when building the spec object. We will use the same spec object to run an experiment. There are some additional points we need to consider with experiments that have additional datasets. 
+    As we saw in the previous section, running the engine with additional datasets requires very little modification beyond the normal procedure. The only requirement is the inclusion of the <code class="codesnippet">additional_datasets</code> parameter. We also introduced the <code class="codesnippet">candidate_dataset</code> and <code class="codesnippet">safety_dataset</code> parameters, but those are not necessary for all additional dataset applications. When running Seldonian Experiments with additional datasets for the base noddes, there are some additional considerations beyond what we have covered so far.
 </p>
 
 <p>
-    Both the primary dataset and the additional datasets are resampled when making the trial datasets. After running an experiment with primary and additional datasets, you will notice that there are multiple sets of files in the <code class="codesnippet">resampled_datasets/</code> folder, one with the file pattern: <code class="codesnippet">resampled_datasets/trial_{trial_index}.pkl</code> and another with <code class="codesnippet">resampled_datasets/trial_{trial_index}_addl_datasets.pkl</code>. The latter contain the additional datasets dictionaries to be used for each trial. As with the resampled primary datasets, the resampled additional datasets are of the same size as the original resampled datasets provided in the spec object. This happens behind the scenes, and does not require any user input to enable it. 
+    Both the primary dataset and the additional datasets are resampled when the trial datasets are made. After running an experiment with primary and additional datasets, you will notice that there are multiple sets of files in the <code class="codesnippet">resampled_datasets/</code> folder. The resampled primary datasets keep the extant file pattern: <code class="codesnippet">resampled_datasets/trial_{trial_index}.pkl</code>, and the additional resampled dataset dictionaries are saved with the pattern <code class="codesnippet">resampled_datasets/trial_{trial_index}_addl_datasets.pkl</code>. As with the resampled primary datasets, the resampled additional datasets are of the same size as the original resampled datasets provided in the spec object. This happens behind the scenes, and does not require any user input to enable. 
 </p>
 
 <p>
-    Seldonian experiments require held-out ground truth datasets to evaluate two of the three plots. These are the performance plot (left plot) and probability of constraint violation plot (right plot). Until the introduction of additional datasets, both plots were evaluated on a single held out dataset. With the introduction of additional datasets, however, we support providing a held out primary dataset and held out additional datasets. The held out primary dataset is used to evaluate the performance plot and the held out additional datasets are used to evaluate the probability of constraint violation plot. 
+    When the spec object contains explicit candidate and safety datasets, as in our example spec object above, the primary resampled datasets are saved with the file pattern: <code class="codesnippet">resampled_datasets/trial_{trial_index}_candidate_dataset.pkl</code> and <code class="codesnippet">resampled_datasets/trial_{trial_index}_safety_dataset.pkl</code>. The additional resampled dataset files are unaffected. 
 </p>
 
 <p>
-    The held out primary dataset is provided in the same way as it has always been provided, i.e., via the <code class="codesnippet">perf_eval_kwargs</code> dictionary parameter to the plot generator object. The held out additional datasets are provided via the <code class="codesnippet">"additional_datasets"</code> key to the <code class="codesnippet">constraint_eval_kwargs</code> dictionary parameter to the plot generator object. Below is an example script to run a Seldonian experiment using a held out primary dataset and a held out additional dataset for both base nodes. All of the other parameters are identical to the experiment run in <a href="{{ "/tutorials/science_GPA_tutorial" | relative_url }}">Tutorial E: Predicting student GPAs from application materials with fairness guarantees</a>, except that here we do not run any of the baselines because the baseline results are identical to those in Tutorial E. 
+    Seldonian experiments require held-out ground truth datasets to evaluate the first plot (performance) and last plot (probability of constraint violation plot). Until the introduction of additional datasets, both plots were evaluated using a single held out dataset. With the introduction of additional datasets, we added support for providing held out datasets for the primary dataset and additional datasets separately. The held out primary dataset is used to evaluate the performance plot and the held out additional datasets are used to evaluate the probability of constraint violation plot. 
+</p>
+
+<p>
+    The held out primary dataset is provided using the extant pattern, i.e., via the <code class="codesnippet">perf_eval_kwargs</code> dictionary parameter to the plot generator object. The held out additional datasets are provided via the <code class="codesnippet">"additional_datasets"</code> key to the <code class="codesnippet">constraint_eval_kwargs</code> dictionary parameter to the plot generator object. Below is an example script to run a Seldonian experiment using a held out primary dataset and a held out additional dataset for both base nodes. The held out primary dataset is the original dataset from Tutorial E, and the held out additional datasets are the additional datasets we defined for the spec object above. Below is a script to run this experiment. Besides for the modifications just described, the script is very similar to the one used to run the experiment in Tutorial E. We include a binary logistic regressor as a baseline, but exclude the Fairlearn baselines in this tutorial. 
 </p>
 
 
@@ -444,19 +451,17 @@ if __name__ == '__main__':
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
 import os
+os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np 
 
 from experiments.generate_plots import SupervisedPlotGenerator
 from experiments.baselines.logistic_regression import BinaryLogisticRegressionBaseline
-from experiments.baselines.random_classifiers import (
-    UniformRandomClassifierBaseline,WeightedRandomClassifierBaseline)
-from experiments.baselines.random_forest import RandomForestClassifierBaseline
 from seldonian.utils.io_utils import load_pickle
+from seldonian.dataset import SupervisedDataSet
 from sklearn.metrics import log_loss,accuracy_score
 
 def perf_eval_fn(y_pred,y,**kwargs):
-    # Deterministic accuracy. Should really be using probabilistic accuracy, 
-    # but use deterministic to match Thomas et al. (2019)
+    # Deterministic accuracy to match Thomas et al. (2019)
     return accuracy_score(y,y_pred > 0.5)
 
 def initial_solution_fn(m,X,Y):
@@ -467,7 +472,7 @@ def main():
     run_experiments = True
     make_plots = True
     save_plot = True
-    include_legend = True
+    include_legend = False
 
     model_label_dict = {
         'qsa':'Seldonian model (with additional datasets)',
@@ -478,28 +483,28 @@ def main():
     n_trials = 20
     data_fracs = np.logspace(-4,0,15)
     n_workers = 8
-    results_dir = f'results/test_demographic_parity'
+    results_dir = f'results/demographic_parity_nodups'
     plot_savename = os.path.join(results_dir,f'gpa_{constraint_name}_{performance_metric}.png')
 
-    verbose=True
+    verbose=False
 
     # Load spec
-    specfile = f'specfiles/demographic_parity_addl_datasets.pkl'
+    specfile = f'specfiles/demographic_parity_addl_datasets_nodups.pkl'
     spec = load_pickle(specfile)
-
     os.makedirs(results_dir,exist_ok=True)
 
-    # Use entire original primary dataset as ground truth for test set
-    dataset = spec.dataset
-    test_features = dataset.features
-    test_labels = dataset.labels
+    # Combine primary candidate and safety datasets to be used as ground truth for performance plotd
+    test_dataset = spec.candidate_dataset + spec.safety_dataset 
+
+    test_features = test_dataset.features
+    test_labels = test_dataset.labels
 
     # Setup performance evaluation function and kwargs 
     perf_eval_kwargs = {
         'X':test_features,
         'y':test_labels,
         'performance_metric':performance_metric
-        }
+    }
 
     # Use original additional_datasets as ground truth (for evaluating safety)
     constraint_eval_kwargs = {}
@@ -516,22 +521,29 @@ def main():
         constraint_eval_kwargs=constraint_eval_kwargs,
         results_dir=results_dir,
         perf_eval_kwargs=perf_eval_kwargs,
-        )
+    )
 
     if run_experiments:
+
+        # Logistic regression baseline
+        lr_baseline = BinaryLogisticRegressionBaseline()
+        plot_generator.run_baseline_experiment(
+            baseline_model=lr_baseline,verbose=False)
 
         # Seldonian experiment
         plot_generator.run_seldonian_experiment(verbose=verbose)
 
 
     if make_plots:
-        plot_generator.make_plots(fontsize=12,legend_fontsize=8,
+        plot_generator.make_plots(
+            tot_data_size=test_dataset.num_datapoints,
+            fontsize=12,
+            legend_fontsize=8,
             performance_label=performance_metric,
             include_legend=include_legend,
             model_label_dict=model_label_dict,
             save_format="png",
             savename=plot_savename if save_plot else None)
-
 
 if __name__ == "__main__":
     main()
@@ -544,21 +556,23 @@ Running the script above will produce the following plot (one or very similar de
 <div align="center">
     <figure>
         <img src="{{ "/assets/img/additional_datasets_tutorial/gpa_demographic_parity_accuracy.png" | relative_url}}" class="img-fluid mt-4" style="width: 90%"  alt="Disparate impact"> 
-        <figcaption align="left"> <b>Figure 1</b> - The three plots of a Seldonian Experiment for  the GPA classification problem studied in this tutorial. </figcaption>
+        <figcaption align="left"> <b>Figure 1</b> - The three plots of a Seldonian Experiment for the modified GPA classification problem studied in this tutorial.   </figcaption>
     </figure>
 </div>  
 <p>
-The three plots shown in Figure 1 are similar to the Quasi-Seldonian algorithm curve in the demographic parity plot shown in Figure 1 of Tutorial E. The difference 
+The three plots in Figure 1 are similar to the demographic parity plot shown in Figure 1 of Tutorial E, as expected. The main difference is that it appears that more data are needed to achieve a high probability of solution (middle). However, care must be taken when interpreting these three plots when additional datasets are used. The "Amount of Data" label for the horizontal axes refers to the amount of data in the <b>primary dataset</b> for a given data fraction, and gives no indication of the size of additional dataset. One can derive the size of the additional datasets used in any given trial by knowing the total size of the additional datasets and multiplying it by the data fraction. The additional dataset is 30% the size of the full GPA dataset, for reference. For a data fraction of 0.5, for example, the "Amount of Data" would be half the size of the primary dataset, or 43303*0.5 = 21651. For the same data fraction, the size of the additional dataset is 30% of this, or only about 6500. This is why is appears to take more data to achieve the same probability of solution as the experiment in Tutorial E. 
 </p>
-<p>
-The largest differences between our experiments and those done by Thomas et al. are in the Fairlearn results. The newer Fairlearn models that we ran achieve near-optimal accuracy with almost any amount of data. The older Fairlearn models never reached optimal accuracy in the experiments performed by Thomas et al. The Fairlearn API has changed considerably since Thomas et al. used it, and more fairness constraints can be included in their models. That being said, their models continue to violate the fairness constraints. In particular, the disparate impact constraint is violated with high probability over the most of the sample sizes considered. This is not surprising given that the Fairlearn models do not have a safety test; their models make no guarantee that they will not violate the constraints on unseen data. 
-</p>
+
 </div>
 
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="summary">Summary</h3>
 <p>
-In this tutorial, we demonstrated how to use the Seldonian Toolkit to recreate the analysis performed by Thomas et al. (2019) using the GPA classification dataset. In particular, we sought to recreate their Figure 3. We showed how to format the dataset so that it can be used in the Seldonian Toolkit. Using the same five fairness constraints that Thomas et al. (2019) considered, we ran a Seldonian Experiment for each constraint. We produced the three plots: accuracy, solution rate, and failure rate, finding similar overall trends as Thomas et al. The quasi-Seldonian algorithms we ran slightly outperformed those run by Thomas et al. (2019), but in general were very similar. The main differences we found were in the Fairlearn models. The differences we observed are easily explained by updates to the Fairlearn API that took place since 2019. Due to compatibility issues, we were unable to use the same Fairlearn API version as Thomas et al. with the newer Python versions required by the Seldonian Toolkit.  
+In this tutorial, we demonstrated how to use additional datasets for bounding base nodes. This feature could be useful in scenarios where only a fraction of their data have sensitive attributes. This feature can also be used with completely different datasets for the primary objective and the base nodes. This can be useful when fine-tuning large models subject to behavioral constraints, where one wants to use a pre-existing loss function as the primary objective and custom behavioral constraints. 
+</p>
+
+<p>
+We demonstrated how to specify additional datasets when building the specification object. We also showed how to use another new feature where the candidate and safety sets are specified explicitly. This feature can be useful on its own (i.e., without using additional datasets), but is particularly helpful when one wants to ensure that there are no shared data points between candidate data and safety data across primary and additional datasets. We first ran the Seldonian Engine using the modified spec object. Then, we ran a Seldonian Experiment, demonstrating how to specify held out datasets when one has additional datasets. We pointed out that interpreting the three plots of a Seldonian Experiment is more complicated when additional datasets are used, as evidenced by the apparent difference betwen the middle plot in Figure 1 compared to the same plot in Tutorial E. 
 </p>
 
 </div>

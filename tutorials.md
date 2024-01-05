@@ -58,6 +58,10 @@ title: Seldonian \| Tutorials
                 <a href="{{ "/tutorials/parallelization_tutorial/" | relative_url}}"> (M) Efficient parallelization with the toolkit </a>
             </li>
 
+            <li>
+                <a href="{{ "/tutorials/addl_datasets_tutorial/" | relative_url}}"> (N) Using multiple datasets with the toolkit </a>
+            </li>
+
         </ol>
     </div>
 

@@ -3,6 +3,8 @@ layout: tutorial
 permalink: /tutorials/parallelization_tutorial/
 prev_url: /tutorials/dtree_tutorial/
 prev_page_name: (L) Creating Fair Decision Trees and Random Forests (for binary classification)
+next_url: /tutorials/addl_datasets_tutorial/
+next_page_name: (N) Using multiple datasets with the toolkit
 title: Seldonian \| Tutorial M
 ---
 
