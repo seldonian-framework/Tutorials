@@ -39,14 +39,14 @@ prev_page_name: (M) Efficient parallelization with the toolkit
 </p>    
 
 <p>
-    In the new scenario described above, each fairness constraint can only be evaluated using 30% of the data because it relies on the gender attribute. However, the primary objective function for this problem, the logistic loss (see Tutorial E), does not use the gender attribute. As a result, we can use of all 100% of the data when evaluating the primary objective. 
+    In the new scenario described above, each fairness constraint can only be evaluated using 30% of the data because it relies on the gender attribute. However, the primary objective function for this problem, the logistic loss (see Tutorial E), does not use the gender attribute. As a result, we can use 100% of the data when evaluating the primary objective. 
 </p>
 
 <p>
-    <b>Note 1:</b> It is important to ensure that if there are shared data points between the primary dataset and additional datasets that no data points that are used in candidate selection for any purpose are used during the safety test. We leave this up to the user; there are no checks in the Seldonian Toolkit to ensure that no data are shared.
+    <b>Note 1:</b> It is important to ensure that if there are shared data points between the primary dataset and additional datasets that no data points that are used in candidate selection from any dataset (whether primary or additional) are used during the safety test. We leave this up to the user; there are no checks in the Seldonian Toolkit to ensure that no data are shared.
 </p>
 <p>
-    <b>Note 2:</b> Additional datasets are currently only supported for Supervised Learning problems with the toolkit.
+    <b>Note 2:</b> Additional datasets are currently only supported for supervised learning problems with the toolkit.
 </p>
 
 
