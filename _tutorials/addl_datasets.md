@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
 {% highlight python %}
     # Behavioral constraints
-    constraint_strs = ['abs((PR | [M]) - (PR | [F])) <= 0.2']
+    constraint_strs = ['abs((PR | [M]) - (PR | [F])) - 0.2']
     deltas = [0.05] 
     # For each constraint, make a parse tree 
     parse_trees = []
@@ -173,8 +173,8 @@ if __name__ == '__main__':
         parse_tree = ParseTree(
             delta=delta,
             regime="supervised_learning",
-            sub_regime=addl_dataset.meta.sub_regime,
-            columns=addl_dataset.sensitive_col_names,
+            sub_regime=addl_cand_dataset.meta.sub_regime,
+            columns=addl_cand_dataset.sensitive_col_names,
         )
 
         parse_tree.build_tree(constraint_str=constraint_str)
@@ -182,7 +182,7 @@ if __name__ == '__main__':
 {% endhighlight python %}
 
 <p>
-    We now create the additional datasets dictionary mapping constraints and their base nodes to the <code class="codesnippet">addl_dataset</code> object that we created above. 
+    We now create the additional datasets dictionary mapping constraints and their base nodes to the additional candidate and safety dataset objects that we created above. 
 </p>
 
 {% highlight python %}
@@ -192,7 +192,8 @@ if __name__ == '__main__':
         base_nodes_this_tree = list(pt.base_node_dict.keys())
         for bn in base_nodes_this_tree:
             additional_datasets[pt.constraint_str][bn] = {
-                "dataset": addl_dataset
+                "candidate_dataset": addl_cand_dataset,
+                "safety_dataset": addl_safety_dataset
             }
 {% endhighlight python %}
 
@@ -203,21 +204,21 @@ if __name__ == '__main__':
 {
     'abs((PR | [M]) - (PR | [F])) - 0.2': {
         'PR | [M]': {
-            'dataset': <seldonian.dataset.SupervisedDataSet object at 0x14cb4ba30>
+            'candidate_dataset': <seldonian.dataset.SupervisedDataSet object at 0x14d083bb0>, 'safety_dataset': <seldonian.dataset.SupervisedDataSet object at 0x14d083ee0>
         }, 
         'PR | [F]': {
-            'dataset': <seldonian.dataset.SupervisedDataSet object at 0x14cb4ba30>
+            'candidate_dataset': <seldonian.dataset.SupervisedDataSet object at 0x14d083bb0>, 'safety_dataset': <seldonian.dataset.SupervisedDataSet object at 0x14d083ee0>
         }
     }
 }
 {% endhighlight python %}
 
 <p>
-    Notice in the code block above that we use <code class="codesnippet">pt.constraint_str</code> as the outermost key to the <code class="codesnippet">additional_datasets</code> dictionary. It is best practice to use this instead of the constraint string we supplied when building the parse tree, for the reasons described above. In our case our constraint string <code class="codesnippet">'abs((PR | [M]) - (PR | [F])) <= 0.2'</code> gets reformatted to <code class="codesnippet">'abs((PR | [M]) - (PR | [F])) - 0.2'</code>, which you can check by printing out <code class="codesnippet">pt.constraint_str</code> inside of the above for loop. 
+    Notice in the code block above that we use <code class="codesnippet">pt.constraint_str</code> as the outermost key to the <code class="codesnippet">additional_datasets</code> dictionary. It is best practice to use this instead of the constraint string we supplied when building the parse tree, for the reasons described above. In our case our constraint string <code class="codesnippet">'abs((PR | [M]) - (PR | [F])) <= 0.2'</code> gets reformatted to <code class="codesnippet">'abs((PR | [M]) - (PR | [F])) - 0.2'</code> when the tree is built.
 </p>
 
 <p>
-Besides the <code class="codesnippet">additional_datasets</code> parameter, every other input to the spec object is the same as in Tutorial E. The only remaining parameters we need to specify are the model, primary objective function, the initial solution function, and the fraction of data we want to put into the safety test. We will define those below and then build the completed spec object. 
+We also recently introduced the <code class="codesnippet">candidate_dataset</code> and <code class="codesnippet">safety_dataset</code> parameters to the <code class="codesnippet">Spec</code> class. These enable providing the candidate and safety datasets directly, rather than having the engine split the dataset provided in the <code class="codesnippet">dataset</code> parameter using the <code class="codesnippet">frac_data_in_safety</code> parameter. These two new parameters must be <code class="codesnippet">seldonian.dataset.DataSet</code> objects, no different from the requirements of the <code class="codesnippet">dataset</code> parameter. If these parameters are not <code class="codesnippet">None</code> (the default), then the <code class="codesnippet">dataset</code> parameter is ignored. In the code block below, we demonstrate how to provide the primary candidate and safety datasets. First, we setup the remaining objects needed to build the spec object, all of which are the same as those in Tutorial E. 
 </p>
 
 {% highlight python %}
@@ -225,19 +226,20 @@ Besides the <code class="codesnippet">additional_datasets</code> parameter, ever
     model = BinaryLogisticRegressionModel()
     primary_objective = objectives.binary_logistic_loss
 
-    frac_data_in_safety = 0.6
+    frac_data_in_safety = 0.6 # will not be used because we are providing candidate and safety datasets explicitly.
 
     def initial_solution_fn(m,X,y):
         return m.fit(X,y)
-    # Save spec object, using defaults where necessary
-
+    
     spec = SupervisedSpec(
-        dataset=primary_dataset,
+        dataset=None,
+        candidate_dataset=primary_cand_dataset,
+        safety_dataset=primary_safety_dataset,
         additional_datasets=additional_datasets,
         model=model,
         parse_trees=parse_trees,
         sub_regime=sub_regime,
-        frac_data_in_safety=frac_data_in_safety,
+        frac_data_in_safety=0.6,
         primary_objective=primary_objective,
         initial_solution_fn=initial_solution_fn,
         use_builtin_primary_gradient_fn=True,
@@ -256,7 +258,7 @@ Besides the <code class="codesnippet">additional_datasets</code> parameter, ever
             'verbose'       : True,
         }
     )
-    savename = "demographic_parity_addl_datasets.pkl"
+    savename = "demographic_parity_addl_datasets_nodups.pkl"
     save_pickle(savename,spec,verbose=True)
 {% endhighlight python %}
 
@@ -267,7 +269,7 @@ Below we provide a complete script with all of the steps combined for convenienc
 <div>
 <input type="button" style="float: right" class="btn btn-sm btn-secondary" onclick="copy2Clipboard(this)" value="Copy code snippet">
 {% highlight python %}
-# createSpec.py
+#createspec_nodups.py
 from seldonian.parse_tree.parse_tree import *
 from seldonian.dataset import DataSetLoader
 from seldonian.utils.io_utils import save_pickle
@@ -279,11 +281,12 @@ def initial_solution_fn(m,X,y):
     return m.fit(X,y)
 
 if __name__ == '__main__':
-
-    primary_data_pth = "gpa_classification_primary_dataset.csv"
+    primary_cand_data_pth = "gpa_classification_primary_cand_dataset.csv"
+    primary_safety_data_pth = "gpa_classification_primary_safety_dataset.csv"
     primary_metadata_pth = "primary_metadata_classification.json"
 
-    addl_data_pth = "gpa_classification_addl_dataset.csv"
+    addl_cand_data_pth = "gpa_classification_addl_cand_dataset.csv"
+    addl_safety_data_pth = "gpa_classification_addl_safety_dataset.csv"
     addl_metadata_pth = "addl_metadata_classification.json"
 
     regime = "supervised_learning"
@@ -291,17 +294,34 @@ if __name__ == '__main__':
     # Load datasets from file
     loader = DataSetLoader(regime=regime)
 
-    primary_dataset = loader.load_supervised_dataset(
-        filename=primary_data_pth, 
+    primary_cand_dataset = loader.load_supervised_dataset(
+        filename=primary_cand_data_pth, 
         metadata_filename=primary_metadata_pth, 
         file_type="csv"
     )
 
-    addl_dataset = loader.load_supervised_dataset(
-        filename=addl_data_pth, 
+    primary_safety_dataset = loader.load_supervised_dataset(
+        filename=primary_safety_data_pth, 
+        metadata_filename=primary_metadata_pth, 
+        file_type="csv"
+    )
+
+    addl_cand_dataset = loader.load_supervised_dataset(
+        filename=addl_cand_data_pth, 
         metadata_filename=addl_metadata_pth, 
         file_type="csv"
     )
+
+    addl_safety_dataset = loader.load_supervised_dataset(
+        filename=addl_safety_data_pth, 
+        metadata_filename=addl_metadata_pth, 
+        file_type="csv"
+    )
+
+
+    # Model, primary objective
+    model = BinaryLogisticRegressionModel()
+    primary_objective = objectives.binary_logistic_loss
 
     # Behavioral constraints
     constraint_strs = ['abs((PR | [M]) - (PR | [F])) - 0.2']
@@ -315,8 +335,8 @@ if __name__ == '__main__':
         parse_tree = ParseTree(
             delta=delta,
             regime="supervised_learning",
-            sub_regime=addl_dataset.meta.sub_regime,
-            columns=addl_dataset.sensitive_col_names,
+            sub_regime=addl_cand_dataset.meta.sub_regime,
+            columns=addl_cand_dataset.sensitive_col_names,
         )
 
         parse_tree.build_tree(constraint_str=constraint_str)
@@ -329,23 +349,21 @@ if __name__ == '__main__':
         base_nodes_this_tree = list(pt.base_node_dict.keys())
         for bn in base_nodes_this_tree:
             additional_datasets[pt.constraint_str][bn] = {
-                "dataset": addl_dataset
+                "candidate_dataset": addl_cand_dataset,
+                "safety_dataset": addl_safety_dataset
             }
 
-     # Model, primary objective
-    model = BinaryLogisticRegressionModel()
-    primary_objective = objectives.binary_logistic_loss
-
-    frac_data_in_safety = 0.6
 
     # Save spec object, using defaults where necessary
     spec = SupervisedSpec(
-        dataset=primary_dataset,
+        dataset=None,
+        candidate_dataset=primary_cand_dataset,
+        safety_dataset=primary_safety_dataset,
         additional_datasets=additional_datasets,
         model=model,
         parse_trees=parse_trees,
         sub_regime=sub_regime,
-        frac_data_in_safety=frac_data_in_safety,
+        frac_data_in_safety=0.6,
         primary_objective=primary_objective,
         initial_solution_fn=initial_solution_fn,
         use_builtin_primary_gradient_fn=True,
@@ -364,7 +382,7 @@ if __name__ == '__main__':
             'verbose'       : True,
         }
     )
-    savename = "demographic_parity_addl_datasets.pkl"
+    savename = "demographic_parity_addl_datasets_nodups.pkl"
     save_pickle(savename,spec,verbose=True)
             
 {% endhighlight python %}
@@ -387,7 +405,7 @@ def initial_solution_fn(m,X,y):
 
 if __name__ == '__main__':
 
-    savename = "demographic_parity_addl_datasets.pkl"
+    savename = "demographic_parity_addl_datasets_nodups.pkl"
     spec = load_pickle(savename)
             
     SA = SeldonianAlgorithm(spec)
@@ -406,7 +424,7 @@ if __name__ == '__main__':
 <div class="container p-3 my-2 border" style="background-color: #f3f4fc;">
 <h3 id="experiment"> Running a Seldonian Experiment with Additional Datasets </h3>
 <p>
-    As we saw in the previous section, running the engine with additional datasets requires very little modification beyond the normal procedure. The only difference is the inclusion of the <code class="codesnippet">additional_datasets</code> parameter when building the spec object. We will use the same spec object to run an experiment, but there are some additional points we need to consider with experiments that have additional datasets. 
+    As we saw in the previous section, running the engine with additional datasets requires very little modification beyond the normal procedure. The only differences were the inclusion of the <code class="codesnippet">additional_datasets</code>, <code class="codesnippet">candidate_dataset</code>, and <code class="codesnippet">safety_dataset</code> parameters when building the spec object. We will use the same spec object to run an experiment. There are some additional points we need to consider with experiments that have additional datasets. 
 </p>
 
 <p>
