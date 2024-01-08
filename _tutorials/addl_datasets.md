@@ -46,7 +46,7 @@ prev_page_name: (M) Efficient parallelization with the toolkit
     <b>Note 1:</b> It is important to ensure that if there are shared data points between the primary dataset and additional datasets that no data points that are used in candidate selection from any dataset (whether primary or additional) are used during the safety test. We leave this up to the user; there are no checks in the Seldonian Toolkit to ensure that no data are shared.
 </p>
 <p>
-    <b>Note 2:</b> Additional datasets are currently only supported for supervised learning problems with the toolkit.
+    <b>Note 2:</b> Additional datasets are currently only supported for supervised learning problems within the toolkit.
 </p>
 
 
@@ -551,7 +551,7 @@ if __name__ == "__main__":
 </div>
 
 <p>
-Running the script above will produce the following plot (one or very similar depending on your machine's random number generator):  
+Running the script above will produce the following plot (or a very similar one depending on your machine's random number generator):  
 </p>
 <div align="center">
     <figure>
